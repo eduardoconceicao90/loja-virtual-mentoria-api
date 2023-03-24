@@ -3,6 +3,8 @@ package com.eduardo.lojavirtual.model;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
@@ -17,4 +19,6 @@ public abstract class Pessoa {
     private String email;
     private String telefone;
 
+    @OneToMany(mappedBy = "pessoa", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Endereco> enderecos = new ArrayList<>();
 }
