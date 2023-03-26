@@ -5,10 +5,12 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum TipoEndereco {
+public enum StatusContaReceber {
 
-    COBRANCA("Cobrança"),
-    ENTREGA("Entrega");
+    COBRANCA("Pagar"),
+    VENCIDA("Vencida"),
+    ABERTA("Aberta"),
+    QUITADA("Quitada");
 
     private String descricao;
 
