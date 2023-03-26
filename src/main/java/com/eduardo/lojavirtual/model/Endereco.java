@@ -1,5 +1,6 @@
 package com.eduardo.lojavirtual.model;
 
+import com.eduardo.lojavirtual.model.enums.TipoEndereco;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -25,5 +26,8 @@ public class Endereco {
     @ManyToOne(targetEntity = Pessoa.class)
     @JoinColumn(name = "pessoa_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "pessoa_fk"))
     private Pessoa pessoa;
+
+    @Enumerated(EnumType.STRING)
+    private TipoEndereco tipoEndereco;
 
 }
