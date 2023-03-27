@@ -1,7 +1,6 @@
 package com.eduardo.lojavirtual.model;
 
 import com.eduardo.lojavirtual.model.enums.StatusContaPagar;
-import com.eduardo.lojavirtual.model.enums.StatusContaReceber;
 import lombok.Data;
 
 import javax.persistence.*;
