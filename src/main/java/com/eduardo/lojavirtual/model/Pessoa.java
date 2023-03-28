@@ -15,6 +15,7 @@ public abstract class Pessoa {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_pessoa")
     private Long id;
+
     private String nome;
     private String email;
     private String telefone;

@@ -29,7 +29,6 @@ public class ContaPagar {
     private Date dtPagamento;
 
     private BigDecimal valorTotal;
-
     private BigDecimal valorDesconto;
 
     @ManyToOne(targetEntity = Pessoa.class)
