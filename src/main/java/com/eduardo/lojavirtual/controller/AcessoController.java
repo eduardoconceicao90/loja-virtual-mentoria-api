@@ -14,10 +14,15 @@ public class AcessoController {
     @Autowired
     private AcessoService acessoService;
 
-    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/salvarAcesso") /* Mapeando a url para receber JSON */
     public ResponseEntity<Acesso> salvarAcesso(@RequestBody Acesso acesso){ /* Recebe o JSON e converte para Objeto*/
         Acesso acessoSalvo = acessoService.save(acesso);
         return ResponseEntity.ok().body(acessoSalvo);
+    }
+
+    @DeleteMapping(value = "/deletarAcesso/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id){
+        acessoService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }
