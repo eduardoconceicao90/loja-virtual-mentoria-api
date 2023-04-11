@@ -4,7 +4,6 @@ import com.eduardo.lojavirtual.controller.AcessoController;
 import com.eduardo.lojavirtual.model.Acesso;
 import com.eduardo.lojavirtual.repository.AcessoRepository;
 import com.eduardo.lojavirtual.service.AcessoService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import junit.framework.TestCase;
@@ -19,9 +18,7 @@ import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.lang.reflect.Type;
 import java.util.List;
-import java.util.Locale;
 
 @SpringBootTest(classes = LojaVirtualApplication.class)
 class LojaVirtualApplicationTests extends TestCase {
