@@ -1,9 +1,15 @@
 package com.eduardo.lojavirtual.security;
 
+import com.eduardo.lojavirtual.config.ApplicationContextLoad;
+import com.eduardo.lojavirtual.model.Usuario;
+import com.eduardo.lojavirtual.repository.UsuarioRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 
@@ -35,14 +41,47 @@ public class JWTTokenAutenticacaoService {
         /* Dá resposta para tela e para o cliente (outra API, navegar, aplicativo, etc.) */
         response.addHeader(HEADER_STRING, token);
 
-        libercaoCors(response);
+        liberacaoCors(response);
 
         /* Usado para ver no Postman para teste */
         response.getWriter().write("{\"Authorization\": \"" + token + "\"}");
+
+    }
+
+    /* Retorna o usuário validado com token ou caso nao seja valido retona null */
+    public Authentication getAuthetication(HttpServletRequest request, HttpServletResponse response) {
+
+        String token = request.getHeader(HEADER_STRING);
+
+        if (token != null) {
+            String tokenLimpo = token.replace(TOKEN_PREFIX, "").trim();
+
+            /* Faz a validacao do token do usuário na requisicao e obtem o USER */
+            String user = Jwts.parser()
+                    .setSigningKey(SECRET)
+                    .parseClaimsJws(tokenLimpo)
+                    .getBody().getSubject(); /* ADMIN ou Eduardo */
+
+            if (user != null) {
+                Usuario usuario = ApplicationContextLoad
+                        .getApplicationContext()
+                        .getBean(UsuarioRepository.class).findUserByLogin(user);
+                if (usuario != null) {
+                    return new UsernamePasswordAuthenticationToken(
+                            usuario.getLogin(),
+                            usuario.getSenha(),
+                            usuario.getAuthorities());
+                }
+            }
+        }
+
+        liberacaoCors(response);
+        return null;
+
     }
 
     /* Fazendo liberação contra erro de Cors no navegador */
-    private void libercaoCors(HttpServletResponse response){
+    private void liberacaoCors(HttpServletResponse response){
 
         if (response.getHeader("Access-Control-Allow-Origin") == null) {
             response.addHeader("Access-Control-Allow-Origin", "*");
