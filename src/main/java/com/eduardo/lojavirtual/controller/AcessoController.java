@@ -1,5 +1,6 @@
 package com.eduardo.lojavirtual.controller;
 
+import com.eduardo.lojavirtual.exception.ExceptionMentoriaJava;
 import com.eduardo.lojavirtual.model.Acesso;
 import com.eduardo.lojavirtual.repository.AcessoRepository;
 import com.eduardo.lojavirtual.service.AcessoService;
@@ -42,8 +43,11 @@ public class AcessoController {
 
     @ResponseBody
     @GetMapping(value = "/obterAcesso/{id}")
-    public ResponseEntity<Acesso> obterAcesso(@PathVariable Long id){
-        Acesso acesso = acessoRepository.findById(id).get();
+    public ResponseEntity<Acesso> obterAcesso(@PathVariable Long id) throws ExceptionMentoriaJava {
+        Acesso acesso = acessoRepository.findById(id).orElse(null);
+        if (acesso == null){
+            throw new ExceptionMentoriaJava("Não encontrou Acesso com o codigo: " + id);
+        }
         return new ResponseEntity(acesso, HttpStatus.OK);
     }
 
