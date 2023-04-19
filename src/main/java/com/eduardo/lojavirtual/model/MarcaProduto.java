@@ -17,4 +17,8 @@ public class MarcaProduto {
     @Column(name = "nome_descricao", nullable = false)
     private String nomeDesc;
 
+    @ManyToOne(targetEntity = Pessoa.class)
+    @JoinColumn(name = "empresa_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "empresa_fk"))
+    private Pessoa empresa;
+
 }
