@@ -21,6 +21,7 @@ public class AcessoController {
     @Autowired
     private AcessoRepository acessoRepository;
 
+    @ResponseBody /* Poder dar um retorno da API */
     @PostMapping(value = "/salvarAcesso") /* Mapeando a url para receber JSON */
     public ResponseEntity<Acesso> salvarAcesso(@RequestBody Acesso acesso) throws ExceptionMentoriaJava { /* Recebe o JSON e converte para Objeto*/
 
