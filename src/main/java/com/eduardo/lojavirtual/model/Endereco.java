@@ -1,6 +1,7 @@
 package com.eduardo.lojavirtual.model;
 
 import com.eduardo.lojavirtual.model.enums.TipoEndereco;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -35,6 +36,7 @@ public class Endereco {
     @Column(nullable = false)
     private String cep;
 
+    @JsonIgnore
     @ManyToOne(targetEntity = Pessoa.class)
     @JoinColumn(name = "pessoa_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "pessoa_fk"))
     private Pessoa pessoa;
@@ -43,6 +45,7 @@ public class Endereco {
     @Enumerated(EnumType.STRING)
     private TipoEndereco tipoEndereco;
 
+    @JsonIgnore
     @ManyToOne(targetEntity = Pessoa.class)
     @JoinColumn(name = "empresa_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "empresa_fk"))
     private Pessoa empresa;
