@@ -5,8 +5,6 @@ import com.eduardo.lojavirtual.exception.ExceptionMentoriaJava;
 import com.eduardo.lojavirtual.model.Endereco;
 import com.eduardo.lojavirtual.model.PessoaJuridica;
 import com.eduardo.lojavirtual.model.enums.TipoEndereco;
-import com.eduardo.lojavirtual.repository.PessoaRepository;
-import com.eduardo.lojavirtual.service.PessoaUserService;
 import junit.framework.TestCase;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +24,7 @@ public class TestePessoaUsuario extends TestCase {
         PessoaJuridica pessoaJuridica = new PessoaJuridica();
         pessoaJuridica.setCnpj("" + Calendar.getInstance().getTimeInMillis());
         pessoaJuridica.setNome("Teste");
-        pessoaJuridica.setEmail("teste@mail.com");
+        pessoaJuridica.setEmail("eduardosaconceicao@gmail.com");
         pessoaJuridica.setTelefone("81998855569");
         pessoaJuridica.setInsEstadual("65556565656665");
         pessoaJuridica.setInsMunicipal("55554565656565");
