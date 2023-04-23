@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
@@ -23,4 +25,12 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     @Modifying
     @Query(value = "insert into usuario_acesso(usuario_id, acesso_id) values (?1, (select id from acesso where descricao = 'ROLE_USER'))", nativeQuery = true)
     void insereAcessoUserPj(Long iduser);
+
+    @Transactional
+    @Modifying
+    @Query(nativeQuery = true, value = "insert into usuario_acesso(usuario_id, acesso_id) values (?1, (select id from acesso where descricao = ?2 limit 1))")
+    void insereAcessoUserPj(Long iduser, String acesso);
+
+    @Query(value = "select u from Usuario u where u.dataAtualSenha <= current_date - 90")
+    List<Usuario> usuarioSenhaVencida();
 }

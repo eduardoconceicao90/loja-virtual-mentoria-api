@@ -1,19 +1,26 @@
 package com.eduardo.lojavirtual.service;
 
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Service;
-
-import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 import java.io.UnsupportedEncodingException;
 import java.util.Properties;
+
+import javax.mail.Address;
+import javax.mail.Authenticator;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
 
 @Service
 public class ServiceSendEmail {
 
     private String userName = "eduardodevjavaweb@gmail.com";
-    private String senha = "uzfwpjwevqbtovpz";
+    private String senha = "fscbuidiqkvdlvmk";
 
     @Async
     public void enviarEmailHtml(String assunto, String menssagem, String emailDestino) throws UnsupportedEncodingException, MessagingException {
@@ -44,9 +51,8 @@ public class ServiceSendEmail {
         message.setFrom(new InternetAddress(userName, "Eduardo - Java Web", "UTF-8"));
         message.setRecipients(Message.RecipientType.TO, toUser);
         message.setSubject(assunto);
-        message.setText(menssagem);
+        message.setContent(menssagem, "text/html; charset=utf-8");
 
         Transport.send(message);
     }
-
 }
