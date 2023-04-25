@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/acesso")
 public class AcessoController {
 
     @Autowired
@@ -22,7 +21,7 @@ public class AcessoController {
     private AcessoRepository acessoRepository;
 
     @ResponseBody /* Poder dar um retorno da API */
-    @PostMapping(value = "/salvarAcesso") /* Mapeando a url para receber JSON */
+    @PostMapping(value = "**/salvarAcesso") /* Mapeando a url para receber JSON */
     public ResponseEntity<Acesso> salvarAcesso(@RequestBody Acesso acesso) throws ExceptionMentoriaJava { /* Recebe o JSON e converte para Objeto*/
 
         if(acesso.getId() == null) {
@@ -37,21 +36,21 @@ public class AcessoController {
     }
 
     @ResponseBody
-    @PostMapping(value = "/deletarAcesso")
+    @PostMapping(value = "**/deletarAcesso")
     public ResponseEntity<Void> delete(@RequestBody Acesso acesso){
         acessoService.delete(acesso.getId());
         return new ResponseEntity("Acesso removido", HttpStatus.NO_CONTENT);
     }
 
     @ResponseBody
-    @DeleteMapping(value = "/deletarAcessoPorId/{id}")
+    @DeleteMapping(value = "**/deletarAcessoPorId/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id){
         acessoService.delete(id);
         return new ResponseEntity("Acesso removido", HttpStatus.NO_CONTENT);
     }
 
     @ResponseBody
-    @GetMapping(value = "/obterAcesso/{id}")
+    @GetMapping(value = "**/obterAcesso/{id}")
     public ResponseEntity<Acesso> obterAcesso(@PathVariable Long id) throws ExceptionMentoriaJava {
         Acesso acesso = acessoRepository.findById(id).orElse(null);
         if (acesso == null){
@@ -61,7 +60,7 @@ public class AcessoController {
     }
 
     @ResponseBody
-    @GetMapping(value = "/buscarPorDesc/{desc}")
+    @GetMapping(value = "**/buscarPorDesc/{desc}")
     public ResponseEntity<List<Acesso>> buscarPorDesc(@PathVariable String desc){
         List<Acesso> acesso = acessoRepository.buscarAcessoDesc(desc.toUpperCase());
         return new ResponseEntity(acesso, HttpStatus.OK);
