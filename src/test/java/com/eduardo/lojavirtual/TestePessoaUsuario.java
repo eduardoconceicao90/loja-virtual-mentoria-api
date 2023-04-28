@@ -27,7 +27,7 @@ public class TestePessoaUsuario extends TestCase {
     public void testCadPessoaJuridica() throws ExceptionMentoriaJava {
 
         PessoaJuridica pessoaJuridica = new PessoaJuridica();
-        pessoaJuridica.setCnpj("93.598.764/0001-01");
+        pessoaJuridica.setCnpj("10.510.693/0001-16");
         pessoaJuridica.setNome("Teste");
         pessoaJuridica.setEmail("eduardosaconceicao@gmail.com");
         pessoaJuridica.setTelefone("81998855569");

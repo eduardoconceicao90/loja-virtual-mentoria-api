@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 public class PessoaController {
 
@@ -27,7 +29,7 @@ public class PessoaController {
 
     @ResponseBody
     @PostMapping(value = "**/salvarPj")
-    public ResponseEntity<PessoaJuridica> salvarPj(@RequestBody PessoaJuridica pessoaJuridica) throws ExceptionMentoriaJava{
+    public ResponseEntity<PessoaJuridica> salvarPj(@Valid @RequestBody PessoaJuridica pessoaJuridica) throws ExceptionMentoriaJava{
 
         if (pessoaJuridica == null) {
             throw new ExceptionMentoriaJava("Pessoa juridica nao pode ser NULL");
@@ -52,7 +54,7 @@ public class PessoaController {
 
     @ResponseBody
     @PostMapping(value = "**/salvarPf")
-    public ResponseEntity<PessoaFisica> salvarPf(@RequestBody PessoaFisica pessoaFisica) throws ExceptionMentoriaJava{
+    public ResponseEntity<PessoaFisica> salvarPf(@Valid @RequestBody PessoaFisica pessoaFisica) throws ExceptionMentoriaJava{
 
         if (pessoaFisica == null) {
             throw new ExceptionMentoriaJava("Pessoa fisica não pode ser NULL");
