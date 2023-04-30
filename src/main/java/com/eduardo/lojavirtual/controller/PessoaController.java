@@ -1,8 +1,11 @@
 package com.eduardo.lojavirtual.controller;
 
 import com.eduardo.lojavirtual.exception.ExceptionMentoriaJava;
+import com.eduardo.lojavirtual.model.Endereco;
 import com.eduardo.lojavirtual.model.PessoaFisica;
 import com.eduardo.lojavirtual.model.PessoaJuridica;
+import com.eduardo.lojavirtual.model.dto.CepDTO;
+import com.eduardo.lojavirtual.repository.EnderecoRepository;
 import com.eduardo.lojavirtual.repository.PessoaFisicaRepository;
 import com.eduardo.lojavirtual.repository.PessoaRepository;
 import com.eduardo.lojavirtual.service.PessoaUserService;
@@ -27,6 +30,15 @@ public class PessoaController {
     @Autowired
     private PessoaFisicaRepository pessoaFisicaRepository;
 
+    @Autowired
+    private EnderecoRepository enderecoRepository;
+
+    @ResponseBody
+    @GetMapping(value = "**/consultaCep/{cep}")
+    public ResponseEntity<CepDTO> consultaCep(@PathVariable("cep") String cep){
+        return new ResponseEntity<CepDTO>(pessoaUserService.consultaCep(cep), HttpStatus.OK);
+    }
+
     @ResponseBody
     @PostMapping(value = "**/salvarPj")
     public ResponseEntity<PessoaJuridica> salvarPj(@Valid @RequestBody PessoaJuridica pessoaJuridica) throws ExceptionMentoriaJava{
@@ -45,6 +57,38 @@ public class PessoaController {
 
         if (!ValidaCNPJ.isCNPJ(pessoaJuridica.getCnpj())) {
             throw new ExceptionMentoriaJava("Cnpj : " + pessoaJuridica.getCnpj() + " está inválido.");
+        }
+
+        if (pessoaJuridica.getId() == null || pessoaJuridica.getId() <= 0) {
+
+            for (int p = 0; p < pessoaJuridica.getEnderecos().size(); p++) {
+
+                CepDTO cepDTO = pessoaUserService.consultaCep(pessoaJuridica.getEnderecos().get(p).getCep());
+
+                pessoaJuridica.getEnderecos().get(p).setBairro(cepDTO.getBairro());
+                pessoaJuridica.getEnderecos().get(p).setCidade(cepDTO.getLocalidade());
+                pessoaJuridica.getEnderecos().get(p).setComplemento(cepDTO.getComplemento());
+                pessoaJuridica.getEnderecos().get(p).setRuaLogra(cepDTO.getLogradouro());
+                pessoaJuridica.getEnderecos().get(p).setUf(cepDTO.getUf());
+
+            }
+        } else {
+
+            for (int p = 0; p < pessoaJuridica.getEnderecos().size(); p++) {
+
+                Endereco enderecoTemp =  enderecoRepository.findById(pessoaJuridica.getEnderecos().get(p).getId()).get();
+
+                if (!enderecoTemp.getCep().equals(pessoaJuridica.getEnderecos().get(p).getCep())) {
+
+                    CepDTO cepDTO = pessoaUserService.consultaCep(pessoaJuridica.getEnderecos().get(p).getCep());
+
+                    pessoaJuridica.getEnderecos().get(p).setBairro(cepDTO.getBairro());
+                    pessoaJuridica.getEnderecos().get(p).setCidade(cepDTO.getLocalidade());
+                    pessoaJuridica.getEnderecos().get(p).setComplemento(cepDTO.getComplemento());
+                    pessoaJuridica.getEnderecos().get(p).setRuaLogra(cepDTO.getLogradouro());
+                    pessoaJuridica.getEnderecos().get(p).setUf(cepDTO.getUf());
+                }
+            }
         }
 
         pessoaJuridica = pessoaUserService.salvarPessoaJuridica(pessoaJuridica);

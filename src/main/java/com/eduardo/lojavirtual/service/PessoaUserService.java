@@ -3,6 +3,7 @@ package com.eduardo.lojavirtual.service;
 import com.eduardo.lojavirtual.model.PessoaFisica;
 import com.eduardo.lojavirtual.model.PessoaJuridica;
 import com.eduardo.lojavirtual.model.Usuario;
+import com.eduardo.lojavirtual.model.dto.CepDTO;
 import com.eduardo.lojavirtual.repository.PessoaFisicaRepository;
 import com.eduardo.lojavirtual.repository.PessoaRepository;
 import com.eduardo.lojavirtual.repository.UsuarioRepository;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Calendar;
 
@@ -131,4 +133,9 @@ public class PessoaUserService {
         }
         return pessoaFisica;
     }
+
+    public CepDTO consultaCep(String cep) {
+        return new RestTemplate().getForEntity("https://viacep.com.br/ws/" + cep + "/json/", CepDTO.class).getBody();
+    }
+
 }
