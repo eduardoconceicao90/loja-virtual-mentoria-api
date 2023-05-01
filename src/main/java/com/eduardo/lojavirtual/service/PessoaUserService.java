@@ -5,7 +5,7 @@ import com.eduardo.lojavirtual.model.PessoaJuridica;
 import com.eduardo.lojavirtual.model.Usuario;
 import com.eduardo.lojavirtual.model.dto.CepDTO;
 import com.eduardo.lojavirtual.repository.PessoaFisicaRepository;
-import com.eduardo.lojavirtual.repository.PessoaRepository;
+import com.eduardo.lojavirtual.repository.PessoaJuridicaRepository;
 import com.eduardo.lojavirtual.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -22,7 +22,7 @@ public class PessoaUserService {
     private UsuarioRepository usuarioRepository;
 
     @Autowired
-    private PessoaRepository pessoaRepository;
+    private PessoaJuridicaRepository pessoaJuridicaRepository;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -40,7 +40,7 @@ public class PessoaUserService {
             juridica.getEnderecos().get(i).setEmpresa(juridica);
         }
 
-        juridica = pessoaRepository.save(juridica);
+        juridica = pessoaJuridicaRepository.save(juridica);
 
         Usuario usuarioPj = usuarioRepository.findUserByPessoa(juridica.getId(), juridica.getEmail());
 

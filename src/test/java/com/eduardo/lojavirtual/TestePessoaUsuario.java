@@ -6,7 +6,7 @@ import com.eduardo.lojavirtual.model.Endereco;
 import com.eduardo.lojavirtual.model.PessoaFisica;
 import com.eduardo.lojavirtual.model.PessoaJuridica;
 import com.eduardo.lojavirtual.model.enums.TipoEndereco;
-import com.eduardo.lojavirtual.repository.PessoaRepository;
+import com.eduardo.lojavirtual.repository.PessoaJuridicaRepository;
 import junit.framework.TestCase;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ public class TestePessoaUsuario extends TestCase {
     private PessoaController pessoaController;
 
     @Autowired
-    private PessoaRepository pessoaRepository;
+    private PessoaJuridicaRepository pessoaRepository;
 
     @Test
     public void testCadPessoaJuridica() throws ExceptionMentoriaJava {

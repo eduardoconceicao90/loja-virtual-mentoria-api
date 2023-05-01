@@ -7,22 +7,24 @@ import com.eduardo.lojavirtual.model.PessoaJuridica;
 import com.eduardo.lojavirtual.model.dto.CepDTO;
 import com.eduardo.lojavirtual.repository.EnderecoRepository;
 import com.eduardo.lojavirtual.repository.PessoaFisicaRepository;
-import com.eduardo.lojavirtual.repository.PessoaRepository;
+import com.eduardo.lojavirtual.repository.PessoaJuridicaRepository;
 import com.eduardo.lojavirtual.service.PessoaUserService;
 import com.eduardo.lojavirtual.util.ValidaCNPJ;
 import com.eduardo.lojavirtual.util.ValidaCPF;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 public class PessoaController {
 
     @Autowired
-    private PessoaRepository pessoaRepository;
+    private PessoaJuridicaRepository pessoaJuridicaRepository;
 
     @Autowired
     private PessoaUserService pessoaUserService;
@@ -33,10 +35,45 @@ public class PessoaController {
     @Autowired
     private EnderecoRepository enderecoRepository;
 
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
     @ResponseBody
     @GetMapping(value = "**/consultaCep/{cep}")
     public ResponseEntity<CepDTO> consultaCep(@PathVariable("cep") String cep){
         return new ResponseEntity<CepDTO>(pessoaUserService.consultaCep(cep), HttpStatus.OK);
+    }
+
+    @ResponseBody
+    @GetMapping(value = "**/consultaPfNome/{nome}")
+    public ResponseEntity<List<PessoaFisica>> consultaPfNome(@PathVariable("nome") String nome) {
+        List<PessoaFisica> fisicas = pessoaFisicaRepository.pesquisaPorNomePF(nome.trim().toUpperCase());
+
+        // Opcional caso deseje gravar no bd a quantidade de vezes que o end-point foi executado.
+        jdbcTemplate.execute("begin; update tabela_acesso_end_point set qtd_acesso_end_point = qtd_acesso_end_point + 1 where nome_end_point = 'END-POINT-NOME-PESSOA-FISICA'; commit;");
+
+        return new ResponseEntity<List<PessoaFisica>>(fisicas, HttpStatus.OK);
+    }
+
+    @ResponseBody
+    @GetMapping(value = "**/consultaPfCpf/{cpf}")
+    public ResponseEntity<List<PessoaFisica>> consultaPfCpf(@PathVariable("cpf") String cpf) {
+        List<PessoaFisica> fisicas = pessoaFisicaRepository.existeCpfCadastradoList(cpf);
+        return new ResponseEntity<List<PessoaFisica>>(fisicas, HttpStatus.OK);
+    }
+
+    @ResponseBody
+    @GetMapping(value = "**/consultaNomePJ/{nome}")
+    public ResponseEntity<List<PessoaJuridica>> consultaNomePJ(@PathVariable("nome") String nome) {
+        List<PessoaJuridica> fisicas = pessoaJuridicaRepository.pesquisaPorNomePJ(nome.trim().toUpperCase());
+        return new ResponseEntity<List<PessoaJuridica>>(fisicas, HttpStatus.OK);
+    }
+
+    @ResponseBody
+    @GetMapping(value = "**/consultaCnpjPJ/{cnpj}")
+    public ResponseEntity<List<PessoaJuridica>> consultaCnpjPJ(@PathVariable("cnpj") String cnpj) {
+        List<PessoaJuridica> fisicas = pessoaJuridicaRepository.existeCnpjCadastradoList(cnpj.trim().toUpperCase());
+        return new ResponseEntity<List<PessoaJuridica>>(fisicas, HttpStatus.OK);
     }
 
     @ResponseBody
@@ -47,11 +84,11 @@ public class PessoaController {
             throw new ExceptionMentoriaJava("Pessoa juridica nao pode ser NULL");
         }
 
-        if (pessoaJuridica.getId() == null && pessoaRepository.existeCnpjCadastrado(pessoaJuridica.getCnpj()) != null) {
+        if (pessoaJuridica.getId() == null && pessoaJuridicaRepository.existeCnpjCadastrado(pessoaJuridica.getCnpj()) != null) {
             throw new ExceptionMentoriaJava("Já existe CNPJ cadastrado com o número: " + pessoaJuridica.getCnpj());
         }
 
-        if (pessoaJuridica.getId() == null && pessoaRepository.existeInsEstadualCadastrado(pessoaJuridica.getInsEstadual()) != null) {
+        if (pessoaJuridica.getId() == null && pessoaJuridicaRepository.existeInsEstadualCadastrado(pessoaJuridica.getInsEstadual()) != null) {
             throw new ExceptionMentoriaJava("Já existe Inscrição estadual cadastrado com o número: " + pessoaJuridica.getInsEstadual());
         }
 
