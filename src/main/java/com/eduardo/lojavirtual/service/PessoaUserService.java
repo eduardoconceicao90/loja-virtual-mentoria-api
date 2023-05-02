@@ -4,6 +4,7 @@ import com.eduardo.lojavirtual.model.PessoaFisica;
 import com.eduardo.lojavirtual.model.PessoaJuridica;
 import com.eduardo.lojavirtual.model.Usuario;
 import com.eduardo.lojavirtual.model.dto.CepDTO;
+import com.eduardo.lojavirtual.model.dto.ConsultaCnpjDTO;
 import com.eduardo.lojavirtual.repository.PessoaFisicaRepository;
 import com.eduardo.lojavirtual.repository.PessoaJuridicaRepository;
 import com.eduardo.lojavirtual.repository.UsuarioRepository;
@@ -136,6 +137,10 @@ public class PessoaUserService {
 
     public CepDTO consultaCep(String cep) {
         return new RestTemplate().getForEntity("https://viacep.com.br/ws/" + cep + "/json/", CepDTO.class).getBody();
+    }
+
+    public ConsultaCnpjDTO consultaCnpjReceitaWS(String cnpj) {
+        return new RestTemplate().getForEntity("https://receitaws.com.br/v1/cnpj/" + cnpj, ConsultaCnpjDTO.class).getBody();
     }
 
 }

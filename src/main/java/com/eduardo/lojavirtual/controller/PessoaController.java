@@ -5,16 +5,18 @@ import com.eduardo.lojavirtual.model.Endereco;
 import com.eduardo.lojavirtual.model.PessoaFisica;
 import com.eduardo.lojavirtual.model.PessoaJuridica;
 import com.eduardo.lojavirtual.model.dto.CepDTO;
+import com.eduardo.lojavirtual.model.dto.ConsultaCnpjDTO;
+import com.eduardo.lojavirtual.model.enums.TipoPessoa;
 import com.eduardo.lojavirtual.repository.EnderecoRepository;
 import com.eduardo.lojavirtual.repository.PessoaFisicaRepository;
 import com.eduardo.lojavirtual.repository.PessoaJuridicaRepository;
+import com.eduardo.lojavirtual.service.ContagemAcessoApi;
 import com.eduardo.lojavirtual.service.PessoaUserService;
 import com.eduardo.lojavirtual.util.ValidaCNPJ;
 import com.eduardo.lojavirtual.util.ValidaCPF;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -36,7 +38,7 @@ public class PessoaController {
     private EnderecoRepository enderecoRepository;
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private ContagemAcessoApi contagemAcessoApi;
 
     @ResponseBody
     @GetMapping(value = "**/consultaCep/{cep}")
@@ -45,12 +47,18 @@ public class PessoaController {
     }
 
     @ResponseBody
+    @GetMapping(value = "**/consultaCnpjReceitaWs/{cnpj}")
+    public ResponseEntity<ConsultaCnpjDTO> consultaCnpjReceitaWs(@PathVariable("cnpj") String cnpj){
+        return new ResponseEntity<ConsultaCnpjDTO>(pessoaUserService.consultaCnpjReceitaWS(cnpj), HttpStatus.OK);
+    }
+
+    @ResponseBody
     @GetMapping(value = "**/consultaPfNome/{nome}")
     public ResponseEntity<List<PessoaFisica>> consultaPfNome(@PathVariable("nome") String nome) {
         List<PessoaFisica> fisicas = pessoaFisicaRepository.pesquisaPorNomePF(nome.trim().toUpperCase());
 
         // Opcional caso deseje gravar no bd a quantidade de vezes que o end-point foi executado.
-        jdbcTemplate.execute("begin; update tabela_acesso_end_point set qtd_acesso_end_point = qtd_acesso_end_point + 1 where nome_end_point = 'END-POINT-NOME-PESSOA-FISICA'; commit;");
+        contagemAcessoApi.atualizaAcessoEndPointPF();
 
         return new ResponseEntity<List<PessoaFisica>>(fisicas, HttpStatus.OK);
     }
@@ -81,7 +89,11 @@ public class PessoaController {
     public ResponseEntity<PessoaJuridica> salvarPj(@Valid @RequestBody PessoaJuridica pessoaJuridica) throws ExceptionMentoriaJava{
 
         if (pessoaJuridica == null) {
-            throw new ExceptionMentoriaJava("Pessoa juridica nao pode ser NULL");
+            throw new ExceptionMentoriaJava("Pessoa juridica não pode ser NULL");
+        }
+
+        if (pessoaJuridica.getTipoPessoa() == null) {
+            throw new ExceptionMentoriaJava("Informe o tipo Jurídico ou Fornecedor da Loja");
         }
 
         if (pessoaJuridica.getId() == null && pessoaJuridicaRepository.existeCnpjCadastrado(pessoaJuridica.getCnpj()) != null) {
@@ -139,6 +151,10 @@ public class PessoaController {
 
         if (pessoaFisica == null) {
             throw new ExceptionMentoriaJava("Pessoa fisica não pode ser NULL");
+        }
+
+        if (pessoaFisica.getTipoPessoa() == null) {
+            pessoaFisica.setTipoPessoa(TipoPessoa.FISICA.name());
         }
 
         if (pessoaFisica.getId() == null && pessoaFisicaRepository.existeCpfCadastrado(pessoaFisica.getCpf()) != null) {
