@@ -21,9 +21,9 @@ public class CategoriaProdutoController {
     @GetMapping(value = "**/buscarPorDescCatgoria/{desc}")
     public ResponseEntity<List<CategoriaProduto>> buscarPorDesc(@PathVariable("desc") String desc) {
 
-        List<CategoriaProduto> acesso = categoriaProdutoRepository.buscarCategoriaDes(desc.toUpperCase());
+        List<CategoriaProduto> categoriaProduto = categoriaProdutoRepository.buscarCategoriaDes(desc.toUpperCase());
 
-        return new ResponseEntity<List<CategoriaProduto>>(acesso, HttpStatus.OK);
+        return new ResponseEntity<List<CategoriaProduto>>(categoriaProduto, HttpStatus.OK);
     }
 
     @ResponseBody /* Poder dar um retorno da API */

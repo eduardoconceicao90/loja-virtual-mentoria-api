@@ -3,6 +3,7 @@ package com.eduardo.lojavirtual.model;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Data
 @Entity
@@ -14,11 +15,12 @@ public class MarcaProduto {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_marca_produto")
     private Long id;
 
+    @NotNull(message = "A descrição da Marca de ser informada")
     @Column(name = "nome_descricao", nullable = false)
     private String nomeDesc;
 
     @ManyToOne(targetEntity = Pessoa.class)
     @JoinColumn(name = "empresa_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "empresa_fk"))
-    private Pessoa empresa;
+    private PessoaJuridica empresa;
 
 }
