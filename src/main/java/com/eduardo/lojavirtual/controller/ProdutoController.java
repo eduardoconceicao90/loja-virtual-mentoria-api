@@ -37,7 +37,6 @@ public class ProdutoController {
             throw new ExceptionMentoriaJava("Categoria deve ser informada");
         }
 
-
         if (produto.getMarcaProduto() == null || produto.getMarcaProduto().getId() <= 0) {
             throw new ExceptionMentoriaJava("Marca deve ser informada");
         }
