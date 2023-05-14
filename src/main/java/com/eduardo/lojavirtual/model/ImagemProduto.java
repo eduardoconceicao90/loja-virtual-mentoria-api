@@ -1,17 +1,9 @@
 package com.eduardo.lojavirtual.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.*;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "imagem_produto")
 @SequenceGenerator(name = "seq_imagem_produto", sequenceName = "seq_imagem_produto", allocationSize = 1, initialValue = 1)
@@ -36,6 +28,46 @@ public class ImagemProduto {
     @ManyToOne(targetEntity = PessoaJuridica .class)
     @JoinColumn(name = "empresa_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "empresa_fk"))
     private PessoaJuridica  empresa;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getImagemOriginal() {
+        return imagemOriginal;
+    }
+
+    public void setImagemOriginal(String imagemOriginal) {
+        this.imagemOriginal = imagemOriginal;
+    }
+
+    public String getImagemMiniatura() {
+        return imagemMiniatura;
+    }
+
+    public void setImagemMiniatura(String imagemMiniatura) {
+        this.imagemMiniatura = imagemMiniatura;
+    }
+
+    public Produto getProduto() {
+        return produto;
+    }
+
+    public void setProduto(Produto produto) {
+        this.produto = produto;
+    }
+
+    public PessoaJuridica getEmpresa() {
+        return empresa;
+    }
+
+    public void setEmpresa(PessoaJuridica empresa) {
+        this.empresa = empresa;
+    }
 
     @Override
     public int hashCode() {

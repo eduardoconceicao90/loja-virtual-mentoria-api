@@ -1,10 +1,5 @@
 package com.eduardo.lojavirtual.model.enums;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
-@Getter
-@AllArgsConstructor
 public enum StatusContaReceber {
 
     COBRANCA("Pagar"),
@@ -13,6 +8,14 @@ public enum StatusContaReceber {
     QUITADA("Quitada");
 
     private String descricao;
+
+    private StatusContaReceber(String descricao) {
+        this.descricao = descricao;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
 
     @Override
     public String toString() {

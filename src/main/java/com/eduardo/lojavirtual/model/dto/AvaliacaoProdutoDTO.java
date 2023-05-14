@@ -2,18 +2,7 @@ package com.eduardo.lojavirtual.model.dto;
 
 import com.eduardo.lojavirtual.model.AvaliacaoProduto;
 import com.eduardo.lojavirtual.model.PessoaFisica;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-import javax.persistence.*;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
-
-@Getter
-@Setter
-@NoArgsConstructor
 public class AvaliacaoProdutoDTO {
 
     private Long id;
@@ -26,5 +15,37 @@ public class AvaliacaoProdutoDTO {
         this.descricao = obj.getDescricao();
         this.nota = obj.getNota();
         this.pessoa = obj.getPessoa();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
+
+    public Integer getNota() {
+        return nota;
+    }
+
+    public void setNota(Integer nota) {
+        this.nota = nota;
+    }
+
+    public PessoaFisica getPessoa() {
+        return pessoa;
+    }
+
+    public void setPessoa(PessoaFisica pessoa) {
+        this.pessoa = pessoa;
     }
 }

@@ -1,16 +1,7 @@
 package com.eduardo.lojavirtual.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 import javax.persistence.*;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "categoria_produto")
 @SequenceGenerator(name = "seq_categoria_produto", sequenceName = "seq_categoria_produto", allocationSize = 1, initialValue = 1)
@@ -26,6 +17,30 @@ public class CategoriaProduto {
     @ManyToOne(targetEntity = Pessoa.class)
     @JoinColumn(name = "empresa_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "empresa_fk"))
     private PessoaJuridica empresa = new PessoaJuridica();
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getNomeDesc() {
+        return nomeDesc;
+    }
+
+    public void setNomeDesc(String nomeDesc) {
+        this.nomeDesc = nomeDesc;
+    }
+
+    public PessoaJuridica getEmpresa() {
+        return empresa;
+    }
+
+    public void setEmpresa(PessoaJuridica empresa) {
+        this.empresa = empresa;
+    }
 
     @Override
     public int hashCode() {

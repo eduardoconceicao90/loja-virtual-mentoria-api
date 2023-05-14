@@ -1,16 +1,7 @@
 package com.eduardo.lojavirtual.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 import javax.persistence.*;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "status_rastreio")
 @SequenceGenerator(name = "seq_status_rastreio", sequenceName = "seq_status_rastreio", allocationSize = 1, initialValue = 1)
@@ -32,6 +23,62 @@ public class StatusRastreio {
     @ManyToOne(targetEntity = PessoaJuridica.class)
     @JoinColumn(name = "empresa_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "empresa_fk"))
     private PessoaJuridica empresa;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getCentroDistribuicao() {
+        return centroDistribuicao;
+    }
+
+    public void setCentroDistribuicao(String centroDistribuicao) {
+        this.centroDistribuicao = centroDistribuicao;
+    }
+
+    public String getCidade() {
+        return cidade;
+    }
+
+    public void setCidade(String cidade) {
+        this.cidade = cidade;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public VendaCompraLojaVirtual getVendaCompraLojaVirtual() {
+        return vendaCompraLojaVirtual;
+    }
+
+    public void setVendaCompraLojaVirtual(VendaCompraLojaVirtual vendaCompraLojaVirtual) {
+        this.vendaCompraLojaVirtual = vendaCompraLojaVirtual;
+    }
+
+    public PessoaJuridica getEmpresa() {
+        return empresa;
+    }
+
+    public void setEmpresa(PessoaJuridica empresa) {
+        this.empresa = empresa;
+    }
 
     @Override
     public int hashCode() {

@@ -1,10 +1,5 @@
 package com.eduardo.lojavirtual.model.enums;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
-@Getter
-@AllArgsConstructor
 public enum TipoPessoa {
 
     JURIDICA("Jurídica"),
@@ -12,6 +7,14 @@ public enum TipoPessoa {
     FISICA("Física");
 
     private String descricao;
+
+    private TipoPessoa(String descrica) {
+        this.descricao = descrica;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
 
     @Override
     public String toString() {

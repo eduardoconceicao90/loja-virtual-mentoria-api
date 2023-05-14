@@ -1,19 +1,10 @@
 package com.eduardo.lojavirtual.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "avaliacao_produto")
 @SequenceGenerator(name = "seq_avaliacao_produto", sequenceName = "seq_avaliacao_produto", allocationSize = 1, initialValue = 1)
@@ -43,6 +34,54 @@ public class AvaliacaoProduto {
     @ManyToOne
     @JoinColumn(name = "produto_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "produto_fk"))
     private Produto produto;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
+
+    public Integer getNota() {
+        return nota;
+    }
+
+    public void setNota(Integer nota) {
+        this.nota = nota;
+    }
+
+    public PessoaFisica getPessoa() {
+        return pessoa;
+    }
+
+    public void setPessoa(PessoaFisica pessoa) {
+        this.pessoa = pessoa;
+    }
+
+    public PessoaJuridica getEmpresa() {
+        return empresa;
+    }
+
+    public void setEmpresa(PessoaJuridica empresa) {
+        this.empresa = empresa;
+    }
+
+    public Produto getProduto() {
+        return produto;
+    }
+
+    public void setProduto(Produto produto) {
+        this.produto = produto;
+    }
 
     @Override
     public int hashCode() {

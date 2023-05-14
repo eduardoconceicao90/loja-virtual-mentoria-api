@@ -1,9 +1,5 @@
 package com.eduardo.lojavirtual.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -12,10 +8,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "usuario")
 @SequenceGenerator(name = "seq_usuario", sequenceName = "seq_usuario", allocationSize = 1, initialValue = 1)
@@ -51,6 +43,62 @@ public class Usuario implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "acesso_id", referencedColumnName = "id", table = "acesso",  unique = false,
             foreignKey = @ForeignKey(name = "acesso_fk", value = ConstraintMode.CONSTRAINT)))
     private List<Acesso> acessos;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public String getSenha() {
+        return senha;
+    }
+
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
+
+    public Date getDataAtualSenha() {
+        return dataAtualSenha;
+    }
+
+    public void setDataAtualSenha(Date dataAtualSenha) {
+        this.dataAtualSenha = dataAtualSenha;
+    }
+
+    public Pessoa getPessoa() {
+        return pessoa;
+    }
+
+    public void setPessoa(Pessoa pessoa) {
+        this.pessoa = pessoa;
+    }
+
+    public Pessoa getEmpresa() {
+        return empresa;
+    }
+
+    public void setEmpresa(Pessoa empresa) {
+        this.empresa = empresa;
+    }
+
+    public List<Acesso> getAcessos() {
+        return acessos;
+    }
+
+    public void setAcessos(List<Acesso> acessos) {
+        this.acessos = acessos;
+    }
 
     /* Autoridades = São os acessos, ou seja ROLE_ADMIN, ROLE_FINANCEIRO... */
     @Override

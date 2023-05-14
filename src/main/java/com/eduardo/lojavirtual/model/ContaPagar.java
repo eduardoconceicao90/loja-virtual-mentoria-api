@@ -1,10 +1,6 @@
 package com.eduardo.lojavirtual.model;
 
 import com.eduardo.lojavirtual.model.enums.StatusContaPagar;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -12,10 +8,6 @@ import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Date;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "conta_pagar")
 @SequenceGenerator(name = "seq_conta_pagar", sequenceName = "seq_conta_pagar", allocationSize = 1, initialValue = 1)
@@ -60,6 +52,86 @@ public class ContaPagar {
     @ManyToOne(targetEntity = PessoaJuridica.class)
     @JoinColumn(name = "empresa_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "empresa_fk"))
     private PessoaJuridica  empresa;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
+
+    public StatusContaPagar getStatus() {
+        return status;
+    }
+
+    public void setStatus(StatusContaPagar status) {
+        this.status = status;
+    }
+
+    public Date getDtVencimento() {
+        return dtVencimento;
+    }
+
+    public void setDtVencimento(Date dtVencimento) {
+        this.dtVencimento = dtVencimento;
+    }
+
+    public Date getDtPagamento() {
+        return dtPagamento;
+    }
+
+    public void setDtPagamento(Date dtPagamento) {
+        this.dtPagamento = dtPagamento;
+    }
+
+    public BigDecimal getValorTotal() {
+        return valorTotal;
+    }
+
+    public void setValorTotal(BigDecimal valorTotal) {
+        this.valorTotal = valorTotal;
+    }
+
+    public BigDecimal getValorDesconto() {
+        return valorDesconto;
+    }
+
+    public void setValorDesconto(BigDecimal valorDesconto) {
+        this.valorDesconto = valorDesconto;
+    }
+
+    public PessoaFisica getPessoaFisica() {
+        return pessoaFisica;
+    }
+
+    public void setPessoaFisica(PessoaFisica pessoaFisica) {
+        this.pessoaFisica = pessoaFisica;
+    }
+
+    public PessoaJuridica getPessoa_fornecedor() {
+        return pessoa_fornecedor;
+    }
+
+    public void setPessoa_fornecedor(PessoaJuridica pessoa_fornecedor) {
+        this.pessoa_fornecedor = pessoa_fornecedor;
+    }
+
+    public PessoaJuridica getEmpresa() {
+        return empresa;
+    }
+
+    public void setEmpresa(PessoaJuridica empresa) {
+        this.empresa = empresa;
+    }
 
     @Override
     public int hashCode() {

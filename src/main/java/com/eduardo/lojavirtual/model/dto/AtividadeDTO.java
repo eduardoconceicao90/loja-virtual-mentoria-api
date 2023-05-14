@@ -1,13 +1,23 @@
 package com.eduardo.lojavirtual.model.dto;
 
-import lombok.Getter;
-import lombok.Setter;
-
-@Getter
-@Setter
 public class AtividadeDTO {
 
     private String text;
     private String code;
 
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
 }
