@@ -1,8 +1,10 @@
 package com.eduardo.lojavirtual.model.dto;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class BillingDTO {
 
     private boolean free;

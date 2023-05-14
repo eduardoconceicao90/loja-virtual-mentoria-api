@@ -1,22 +1,17 @@
 package com.eduardo.lojavirtual.controller;
 
-import java.util.List;
-
-import javax.validation.Valid;
-
 import com.eduardo.lojavirtual.exception.ExceptionMentoriaJava;
 import com.eduardo.lojavirtual.model.AvaliacaoProduto;
+import com.eduardo.lojavirtual.model.dto.AvaliacaoProdutoDTO;
 import com.eduardo.lojavirtual.repository.AvaliacaoProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class AvaliacaoProdutoController {
@@ -54,23 +49,26 @@ public class AvaliacaoProdutoController {
 
     @ResponseBody
     @GetMapping(value = "**/avaliacaoProduto/{idProduto}")
-    public ResponseEntity<List<AvaliacaoProduto>> avaliacaoProduto(@PathVariable("idProduto") Long idProduto) {
+    public ResponseEntity<List<AvaliacaoProdutoDTO>> avaliacaoProduto(@PathVariable("idProduto") Long idProduto) {
         List<AvaliacaoProduto> avaliacaoProdutos = avaliacaoProdutoRepository.avaliacaoProduto(idProduto);
-        return new ResponseEntity<List<AvaliacaoProduto>>(avaliacaoProdutos, HttpStatus.OK);
+        List<AvaliacaoProdutoDTO> avaliacaoProdutosList = avaliacaoProdutos.stream().map(obj -> new AvaliacaoProdutoDTO(obj)).collect(Collectors.toList());
+        return ResponseEntity.ok().body(avaliacaoProdutosList);
     }
 
     @ResponseBody
     @GetMapping(value = "**/avaliacaoPessoa/{idPessoa}")
-    public ResponseEntity<List<AvaliacaoProduto>> avaliacaoPessoa(@PathVariable("idPessoa") Long idPessoa) {
+    public ResponseEntity<List<AvaliacaoProdutoDTO>> avaliacaoPessoa(@PathVariable("idPessoa") Long idPessoa) {
         List<AvaliacaoProduto> avaliacaoProdutos = avaliacaoProdutoRepository.avaliacaoPessoa(idPessoa);
-        return new ResponseEntity<List<AvaliacaoProduto>>(avaliacaoProdutos, HttpStatus.OK);
+        List<AvaliacaoProdutoDTO> avaliacaoProdutosList = avaliacaoProdutos.stream().map(obj -> new AvaliacaoProdutoDTO(obj)).collect(Collectors.toList());
+        return ResponseEntity.ok().body(avaliacaoProdutosList);
     }
 
     @ResponseBody
     @GetMapping(value = "**/avaliacaoProdutoPessoa/{idProduto}/{idPessoa}")
-    public ResponseEntity<List<AvaliacaoProduto>> avaliacaoProdutoPessoa(@PathVariable("idProduto") Long idProduto, @PathVariable("idPessoa") Long idPessoa) {
+    public ResponseEntity<List<AvaliacaoProdutoDTO>> avaliacaoProdutoPessoa(@PathVariable("idProduto") Long idProduto, @PathVariable("idPessoa") Long idPessoa) {
         List<AvaliacaoProduto> avaliacaoProdutos = avaliacaoProdutoRepository.avaliacaoProdutoPessoa(idProduto, idPessoa);
-        return new ResponseEntity<List<AvaliacaoProduto>>(avaliacaoProdutos, HttpStatus.OK);
+        List<AvaliacaoProdutoDTO> avaliacaoProdutosList = avaliacaoProdutos.stream().map(obj -> new AvaliacaoProdutoDTO(obj)).collect(Collectors.toList());
+        return ResponseEntity.ok().body(avaliacaoProdutosList);
     }
 
 }
