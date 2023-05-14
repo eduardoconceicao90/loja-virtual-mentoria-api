@@ -81,5 +81,5 @@ public class Produto {
     private MarcaProduto marcaProduto = new MarcaProduto();
 
     @OneToMany(mappedBy = "produto", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<ImagemProduto> imagens = new ArrayList<ImagemProduto>();
+    private List<ImagemProduto> imagens = new ArrayList<>();
 }
