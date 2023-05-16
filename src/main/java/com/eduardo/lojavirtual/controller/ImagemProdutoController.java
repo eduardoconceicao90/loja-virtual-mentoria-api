@@ -31,13 +31,14 @@ public class ImagemProdutoController {
 
         ImagemProdutoDTO imagemProdutoDTO = new ImagemProdutoDTO();
         imagemProdutoDTO.setId(imagemProduto.getId());
-        imagemProdutoDTO.setEmpresa(imagemProduto.getEmpresa().getId());
-        imagemProdutoDTO.setProduto(imagemProduto.getProduto().getId());
-        imagemProdutoDTO.setImagemMiniatura(imagemProduto.getImagemMiniatura());
         imagemProdutoDTO.setImagemOriginal(imagemProduto.getImagemOriginal());
+        imagemProdutoDTO.setImagemMiniatura(imagemProduto.getImagemMiniatura());
+        imagemProdutoDTO.setProduto(imagemProduto.getProduto().getId());
+        imagemProdutoDTO.setEmpresa(imagemProduto.getEmpresa().getId());
 
         return new ResponseEntity<ImagemProdutoDTO>(imagemProdutoDTO, HttpStatus.OK);
     }
+
 
     @ResponseBody
     @DeleteMapping(value = "**/deleteTodoImagemProduto/{idProduto}")

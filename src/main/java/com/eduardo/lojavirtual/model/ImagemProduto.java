@@ -1,5 +1,6 @@
 package com.eduardo.lojavirtual.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
@@ -19,15 +20,17 @@ public class ImagemProduto {
     @Column(columnDefinition = "text", nullable = false)
     private String imagemMiniatura;
 
-    @JsonIgnoreProperties(allowGetters = true)
+    @JsonIgnore
+    //@JsonIgnoreProperties(allowGetters = true)
     @ManyToOne
     @JoinColumn(name = "produto_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "produto_fk"))
     private Produto produto;
 
-    @JsonIgnoreProperties(allowGetters = true)
+    @JsonIgnore
+    //@JsonIgnoreProperties(allowGetters = true)
     @ManyToOne(targetEntity = PessoaJuridica .class)
     @JoinColumn(name = "empresa_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "empresa_fk"))
-    private PessoaJuridica  empresa;
+    private PessoaJuridica empresa;
 
     public Long getId() {
         return id;

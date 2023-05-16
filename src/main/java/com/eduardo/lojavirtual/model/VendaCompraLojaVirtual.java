@@ -82,6 +82,8 @@ public class VendaCompraLojaVirtual {
     @OneToMany(mappedBy = "vendaCompraLojaVirtual", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<ItemVendaLoja> itemVendaLojas = new ArrayList<>();
 
+    private Boolean excluido = Boolean.FALSE;
+
     public Long getId() {
         return id;
     }
@@ -200,6 +202,14 @@ public class VendaCompraLojaVirtual {
 
     public void setItemVendaLojas(List<ItemVendaLoja> itemVendaLojas) {
         this.itemVendaLojas = itemVendaLojas;
+    }
+
+    public Boolean getExcluido() {
+        return excluido;
+    }
+
+    public void setExcluido(Boolean excluido) {
+        this.excluido = excluido;
     }
 
     @Override

@@ -1,20 +1,20 @@
 package com.eduardo.lojavirtual.model.dto;
 
 import com.eduardo.lojavirtual.model.AvaliacaoProduto;
-import com.eduardo.lojavirtual.model.PessoaFisica;
+import com.eduardo.lojavirtual.model.Produto;
 
 public class AvaliacaoProdutoDTO {
 
     private Long id;
     private String descricao;
     private Integer nota;
-    private PessoaFisica pessoa;
+    private Produto produto;
 
     public AvaliacaoProdutoDTO(AvaliacaoProduto obj) {
         this.id = obj.getId();
         this.descricao = obj.getDescricao();
         this.nota = obj.getNota();
-        this.pessoa = obj.getPessoa();
+        this.produto = obj.getProduto();
     }
 
     public Long getId() {
@@ -41,11 +41,11 @@ public class AvaliacaoProdutoDTO {
         this.nota = nota;
     }
 
-    public PessoaFisica getPessoa() {
-        return pessoa;
+    public Produto getProduto() {
+        return produto;
     }
 
-    public void setPessoa(PessoaFisica pessoa) {
-        this.pessoa = pessoa;
+    public void setProduto(Produto produto) {
+        this.produto = produto;
     }
 }
