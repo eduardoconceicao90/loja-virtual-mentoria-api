@@ -8,13 +8,13 @@ public class AvaliacaoProdutoDTO {
     private Long id;
     private String descricao;
     private Integer nota;
-    private Produto produto;
+    private ProdutoDTO produtoDTO;
 
     public AvaliacaoProdutoDTO(AvaliacaoProduto obj) {
         this.id = obj.getId();
         this.descricao = obj.getDescricao();
         this.nota = obj.getNota();
-        this.produto = obj.getProduto();
+        this.produtoDTO = new ProdutoDTO(obj.getProduto());
     }
 
     public Long getId() {
@@ -41,11 +41,11 @@ public class AvaliacaoProdutoDTO {
         this.nota = nota;
     }
 
-    public Produto getProduto() {
-        return produto;
+    public ProdutoDTO getProdutoDTO() {
+        return produtoDTO;
     }
 
-    public void setProduto(Produto produto) {
-        this.produto = produto;
+    public void setProdutoDTO(ProdutoDTO produtoDTO) {
+        this.produtoDTO = produtoDTO;
     }
 }

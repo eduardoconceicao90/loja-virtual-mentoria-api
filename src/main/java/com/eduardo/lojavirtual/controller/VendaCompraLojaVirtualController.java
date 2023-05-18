@@ -3,6 +3,7 @@ package com.eduardo.lojavirtual.controller;
 import com.eduardo.lojavirtual.exception.ExceptionMentoriaJava;
 import com.eduardo.lojavirtual.model.*;
 import com.eduardo.lojavirtual.model.dto.ItemVendaDTO;
+import com.eduardo.lojavirtual.model.dto.ProdutoDTO;
 import com.eduardo.lojavirtual.model.dto.VendaCompraLojaVirtualDTO;
 import com.eduardo.lojavirtual.repository.EnderecoRepository;
 import com.eduardo.lojavirtual.repository.NotaFiscalVendaRepository;
@@ -97,7 +98,7 @@ public class VendaCompraLojaVirtualController {
 
             ItemVendaDTO itemVendaDTO = new ItemVendaDTO();
             itemVendaDTO.setQuantidade(item.getQuantidade());
-            itemVendaDTO.setProduto(item.getProduto());
+            itemVendaDTO.setProdutoDTO(new ProdutoDTO(item.getProduto()));
 
             compraLojaVirtualDTO.getItemVendaLoja().add(itemVendaDTO);
         }
@@ -129,7 +130,7 @@ public class VendaCompraLojaVirtualController {
 
             ItemVendaDTO itemVendaDTO = new ItemVendaDTO();
             itemVendaDTO.setQuantidade(item.getQuantidade());
-            itemVendaDTO.setProduto(item.getProduto());
+            itemVendaDTO.setProdutoDTO(new ProdutoDTO(item.getProduto()));
 
             compraLojaVirtualDTO.getItemVendaLoja().add(itemVendaDTO);
         }
@@ -188,7 +189,7 @@ public class VendaCompraLojaVirtualController {
 
                 ItemVendaDTO itemVendaDTO = new ItemVendaDTO();
                 itemVendaDTO.setQuantidade(item.getQuantidade());
-                itemVendaDTO.setProduto(item.getProduto());
+                itemVendaDTO.setProdutoDTO(new ProdutoDTO(item.getProduto()));
 
                 compraLojaVirtualDTO.getItemVendaLoja().add(itemVendaDTO);
             }

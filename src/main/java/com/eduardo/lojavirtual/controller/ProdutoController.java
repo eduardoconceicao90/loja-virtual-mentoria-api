@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.imageio.ImageIO;
 import javax.mail.MessagingException;
@@ -18,6 +19,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -137,7 +139,8 @@ public class ProdutoController {
             }
         }
 
-        return new ResponseEntity<Produto>(produtoSalvo, HttpStatus.OK);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(produtoSalvo.getId()).toUri();
+        return ResponseEntity.created(uri).build();
     }
 
     @ResponseBody /* Poder dar um retorno da API */

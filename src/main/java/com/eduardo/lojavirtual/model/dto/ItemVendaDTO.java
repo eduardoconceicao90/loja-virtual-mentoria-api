@@ -5,7 +5,7 @@ import com.eduardo.lojavirtual.model.Produto;
 public class ItemVendaDTO {
 
     private Double quantidade;
-    private Produto produto;
+    private ProdutoDTO produtoDTO;
 
     public Double getQuantidade() {
         return quantidade;
@@ -15,11 +15,11 @@ public class ItemVendaDTO {
         this.quantidade = quantidade;
     }
 
-    public Produto getProduto() {
-        return produto;
+    public ProdutoDTO getProdutoDTO() {
+        return produtoDTO;
     }
 
-    public void setProduto(Produto produto) {
-        this.produto = produto;
+    public void setProdutoDTO(ProdutoDTO produtoDTO) {
+        this.produtoDTO = produtoDTO;
     }
 }

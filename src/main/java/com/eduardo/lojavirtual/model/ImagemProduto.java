@@ -20,14 +20,12 @@ public class ImagemProduto {
     @Column(columnDefinition = "text", nullable = false)
     private String imagemMiniatura;
 
-    @JsonIgnore
-    //@JsonIgnoreProperties(allowGetters = true)
+    @JsonIgnoreProperties(allowGetters = true)
     @ManyToOne
     @JoinColumn(name = "produto_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "produto_fk"))
     private Produto produto;
 
-    @JsonIgnore
-    //@JsonIgnoreProperties(allowGetters = true)
+    @JsonIgnoreProperties(allowGetters = true)
     @ManyToOne(targetEntity = PessoaJuridica .class)
     @JoinColumn(name = "empresa_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "empresa_fk"))
     private PessoaJuridica empresa;
