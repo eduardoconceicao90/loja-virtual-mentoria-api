@@ -1,5 +1,7 @@
 package com.eduardo.lojavirtual.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -26,6 +28,7 @@ public class NotaFiscalVenda {
     @Column(columnDefinition = "text", nullable = false)
     private String pdf;
 
+    @JsonIgnore
     @OneToOne
     @JoinColumn(name = "venda_compra_loja_virt_id", nullable = true, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "venda_compra_loja_virt_fk"))
     private VendaCompraLojaVirtual vendaCompraLojaVirtual;

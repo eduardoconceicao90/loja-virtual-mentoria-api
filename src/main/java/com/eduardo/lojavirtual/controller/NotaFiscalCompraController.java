@@ -2,7 +2,9 @@ package com.eduardo.lojavirtual.controller;
 
 import com.eduardo.lojavirtual.exception.ExceptionMentoriaJava;
 import com.eduardo.lojavirtual.model.NotaFiscalCompra;
+import com.eduardo.lojavirtual.model.NotaFiscalVenda;
 import com.eduardo.lojavirtual.repository.NotaFiscalCompraRepository;
+import com.eduardo.lojavirtual.repository.NotaFiscalVendaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,9 @@ public class NotaFiscalCompraController {
 
     @Autowired
     private NotaFiscalCompraRepository notaFiscalCompraRepository;
+
+    @Autowired
+    private NotaFiscalVendaRepository notaFiscalVendaRepository;
 
     @ResponseBody
     @PostMapping(value = "**/salvarNotaFiscalCompra")
@@ -78,6 +83,32 @@ public class NotaFiscalCompraController {
     public ResponseEntity<List<NotaFiscalCompra>> buscarNotaFiscalPorDesc(@PathVariable("desc") String desc) {
         List<NotaFiscalCompra>  notaFiscalCompra = notaFiscalCompraRepository.buscaNotaDesc(desc.toUpperCase().trim());
         return new ResponseEntity<List<NotaFiscalCompra>>(notaFiscalCompra, HttpStatus.OK);
+    }
+
+    @ResponseBody
+    @GetMapping(value = "**/obterNotaFiscalCompraDaVenda/{idvenda}")
+    public ResponseEntity<List<NotaFiscalVenda>> obterNotaFiscalCompraDaVenda(@PathVariable("idvenda") Long idvenda) throws ExceptionMentoriaJava {
+
+        List<NotaFiscalVenda> notaFiscalCompra = notaFiscalVendaRepository.buscaNotaPorVenda(idvenda);
+
+        if (notaFiscalCompra == null) {
+            throw new ExceptionMentoriaJava("Não encontrou Nota Fiscal de venda com código da venda: " + idvenda);
+        }
+
+        return new ResponseEntity<List<NotaFiscalVenda>>(notaFiscalCompra, HttpStatus.OK);
+    }
+
+    @ResponseBody
+    @GetMapping(value = "**/obterNotaFiscalCompraDaVendaUnico/{idvenda}")
+    public ResponseEntity<NotaFiscalVenda> obterNotaFiscalCompraDaVendaUnico(@PathVariable("idvenda") Long idvenda) throws ExceptionMentoriaJava {
+
+        NotaFiscalVenda notaFiscalCompra = notaFiscalVendaRepository.buscaNotaPorVendaUnica(idvenda);
+
+        if (notaFiscalCompra == null) {
+            throw new ExceptionMentoriaJava("Não encontrou Nota Fiscal de venda com código da venda: " + idvenda);
+        }
+
+        return new ResponseEntity<NotaFiscalVenda>(notaFiscalCompra, HttpStatus.OK);
     }
 
 }

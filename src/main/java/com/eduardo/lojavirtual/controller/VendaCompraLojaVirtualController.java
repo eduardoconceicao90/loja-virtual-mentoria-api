@@ -70,10 +70,10 @@ public class VendaCompraLojaVirtualController {
         vendaCompraLojaVirtual = vendaCompraLojaVirtualRepository.saveAndFlush(vendaCompraLojaVirtual);
 
         StatusRastreio statusRastreio = new StatusRastreio();
-        statusRastreio.setCentroDistribuicao("Loja Local");
-        statusRastreio.setCidade("Local");
+        statusRastreio.setCentroDistribuicao("CD Eduardo");
+        statusRastreio.setCidade("Recife");
         statusRastreio.setEmpresa(vendaCompraLojaVirtual.getEmpresa());
-        statusRastreio.setEstado("Local");
+        statusRastreio.setEstado("PE");
         statusRastreio.setStatus("Inicio Compra");
         statusRastreio.setVendaCompraLojaVirtual(vendaCompraLojaVirtual);
 
