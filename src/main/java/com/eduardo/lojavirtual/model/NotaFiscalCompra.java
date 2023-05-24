@@ -41,6 +41,7 @@ public class NotaFiscalCompra {
     @Temporal(TemporalType.DATE)
     private Date dataCompra;
 
+    /* Campo também usado para o fornecedor do produto */
     @ManyToOne(targetEntity = PessoaJuridica.class)
     @JoinColumn(name = "pessoa_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "pessoa_fk"))
     private PessoaJuridica pessoa;
