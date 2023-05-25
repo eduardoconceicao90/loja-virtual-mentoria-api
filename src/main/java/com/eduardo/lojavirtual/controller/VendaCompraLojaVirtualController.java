@@ -177,16 +177,16 @@ public class VendaCompraLojaVirtualController {
 
     @ResponseBody
     @DeleteMapping(value = "**/deleteVendaTotalBanco/{idVenda}")
-    public ResponseEntity<String> deleteVendaTotalBanco(@PathVariable(value = "idVenda") Long idVenda) {
+    public ResponseEntity<?> deleteVendaTotalBanco(@PathVariable(value = "idVenda") Long idVenda) {
         vendaService.exclusaoTotalVendaBanco(idVenda);
-        return new ResponseEntity<String>("Venda excluida com sucesso.",HttpStatus.OK);
+        return new ResponseEntity("Venda excluida com sucesso.",HttpStatus.OK);
     }
 
     @ResponseBody
     @DeleteMapping(value = "**/deleteVendaTotalBanco2/{idVenda}")
-    public ResponseEntity<String> deleteVendaTotalBanco2(@PathVariable(value = "idVenda") Long idVenda) {
+    public ResponseEntity<?> deleteVendaTotalBanco2(@PathVariable(value = "idVenda") Long idVenda) {
         vendaService.exclusaoTotalVendaBanco2(idVenda);
-        return new ResponseEntity<String>("Venda excluida logicamente com sucesso.",HttpStatus.OK);
+        return new ResponseEntity("Venda excluida logicamente com sucesso.",HttpStatus.OK);
     }
 
     @ResponseBody

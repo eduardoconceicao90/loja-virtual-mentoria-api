@@ -44,7 +44,7 @@ public class AvaliacaoProdutoController {
     @DeleteMapping(value = "**/deleteAvalicaoPessoa/{idAvaliacao}")
     public ResponseEntity<?> deleteAvalicaoPessoa(@PathVariable("idAvaliacao") Long idAvaliacao) {
         avaliacaoProdutoRepository.deleteById(idAvaliacao);
-        return new ResponseEntity<String>("Avaliacao Removida", HttpStatus.OK);
+        return new ResponseEntity("Avaliacao Removida", HttpStatus.OK);
     }
 
     @ResponseBody

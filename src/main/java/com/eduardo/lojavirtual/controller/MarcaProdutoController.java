@@ -36,16 +36,16 @@ public class MarcaProdutoController {
 
     @ResponseBody
     @PostMapping(value = "**/deleteMarca")
-    public ResponseEntity<String> deleteMarca(@RequestBody MarcaProduto marcaProduto) {
+    public ResponseEntity<?> deleteMarca(@RequestBody MarcaProduto marcaProduto) {
         marcaProdutoRepository.deleteById(marcaProduto.getId());
-        return new ResponseEntity<String>("Marca Removida",HttpStatus.OK);
+        return new ResponseEntity("Marca Removida",HttpStatus.OK);
     }
 
     @ResponseBody
     @DeleteMapping(value = "**/deleteMarcaPorId/{id}")
-    public ResponseEntity<String> deleteMarcaPorId(@PathVariable("id") Long id) {
+    public ResponseEntity<?> deleteMarcaPorId(@PathVariable("id") Long id) {
         marcaProdutoRepository.deleteById(id);
-        return new ResponseEntity<String>("Marca Removida",HttpStatus.OK);
+        return new ResponseEntity("Marca Removida",HttpStatus.OK);
     }
 
     @ResponseBody

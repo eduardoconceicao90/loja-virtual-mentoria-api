@@ -1,6 +1,7 @@
 package com.eduardo.lojavirtual.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -13,12 +14,14 @@ public class CupomDesconto {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_cupom_desconto")
     private Long id;
 
+    @NotEmpty(message = "Informe o codigo do desconto")
     @Column(nullable = false)
     private String codDesc;
 
     private BigDecimal valorRealDesc;
     private BigDecimal valorPorcentDesc;
 
+    @NotEmpty(message = "Informe a data de validade do cupom")
     @Column(nullable = false)
     @Temporal(TemporalType.DATE)
     private Date dataValidadeCupom;

@@ -37,14 +37,14 @@ public class AcessoController {
 
     @ResponseBody
     @PostMapping(value = "**/deletarAcesso")
-    public ResponseEntity<Void> delete(@RequestBody Acesso acesso){
+    public ResponseEntity<?> delete(@RequestBody Acesso acesso){
         acessoService.delete(acesso.getId());
         return new ResponseEntity("Acesso removido", HttpStatus.NO_CONTENT);
     }
 
     @ResponseBody
     @DeleteMapping(value = "**/deletarAcessoPorId/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id){
+    public ResponseEntity<?> delete(@PathVariable Long id){
         acessoService.delete(id);
         return new ResponseEntity("Acesso removido", HttpStatus.NO_CONTENT);
     }

@@ -44,7 +44,7 @@ public class ImagemProdutoController {
     @DeleteMapping(value = "**/deleteTodoImagemProduto/{idProduto}")
     public ResponseEntity<?> deleteTodoImagemProduto(@PathVariable("idProduto") Long idProduto) {
         imagemProdutoRepository.deleteImagem(idProduto);
-        return new ResponseEntity<String>("Imagems do produto removida", HttpStatus.OK);
+        return new ResponseEntity("Imagems do produto removida", HttpStatus.OK);
     }
 
     @ResponseBody
@@ -52,11 +52,11 @@ public class ImagemProdutoController {
     public ResponseEntity<?> deleteImagemProdutoPorId(@RequestBody ImagemProduto imagemProduto) {
 
         if(!imagemProdutoRepository.existsById(imagemProduto.getId())) {
-            return new ResponseEntity<String>("Imagem já foi removida ou não existe com esse id: " + imagemProduto.getId(), HttpStatus.OK);
+            return new ResponseEntity("Imagem já foi removida ou não existe com esse id: " + imagemProduto.getId(), HttpStatus.OK);
         }
 
         imagemProdutoRepository.deleteById(imagemProduto.getId());
-        return new ResponseEntity<String>("Imagem removida", HttpStatus.OK);
+        return new ResponseEntity("Imagem removida", HttpStatus.OK);
     }
 
     @ResponseBody
@@ -64,11 +64,11 @@ public class ImagemProdutoController {
     public ResponseEntity<?> deleteImagemProdutoPorId(@PathVariable("id") Long id) {
 
         if(!imagemProdutoRepository.existsById(id)) {
-            return new ResponseEntity<String>("Imagem já foi removida ou não existe com esse id: " + id, HttpStatus.OK);
+            return new ResponseEntity("Imagem já foi removida ou não existe com esse id: " + id, HttpStatus.OK);
         }
 
         imagemProdutoRepository.deleteById(id);
-        return new ResponseEntity<String>("Imagem removida", HttpStatus.OK);
+        return new ResponseEntity("Imagem removida", HttpStatus.OK);
     }
 
     @ResponseBody

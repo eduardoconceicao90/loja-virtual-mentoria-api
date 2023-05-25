@@ -145,16 +145,16 @@ public class ProdutoController {
 
     @ResponseBody /* Poder dar um retorno da API */
     @PostMapping(value = "**/deleteProduto") /* Mapeando a url para receber JSON */
-    public ResponseEntity<String> deleteProduto(@RequestBody Produto produto) { /* Recebe o JSON e converte pra Objeto */
+    public ResponseEntity<?> deleteProduto(@RequestBody Produto produto) { /* Recebe o JSON e converte pra Objeto */
         produtoRepository.deleteById(produto.getId());
-        return new ResponseEntity<String>("Produto Removido", HttpStatus.OK);
+        return new ResponseEntity("Produto Removido", HttpStatus.OK);
     }
 
     @ResponseBody
     @DeleteMapping(value = "**/deleteProdutoPorId/{id}")
-    public ResponseEntity<String> deleteProdutoPorId(@PathVariable("id") Long id) {
+    public ResponseEntity<?> deleteProdutoPorId(@PathVariable("id") Long id) {
         produtoRepository.deleteById(id);
-        return new ResponseEntity<String>("Produto Removido",HttpStatus.OK);
+        return new ResponseEntity("Produto Removido",HttpStatus.OK);
     }
 
     @ResponseBody

@@ -44,16 +44,16 @@ public class ContaPagarController {
 
     @ResponseBody
     @PostMapping(value = "**/deleteContaPagar")
-    public ResponseEntity<String> deleteContaPagar(@RequestBody ContaPagar contaPagar) {
+    public ResponseEntity<?> deleteContaPagar(@RequestBody ContaPagar contaPagar) {
         contaPagarRepository.deleteById(contaPagar.getId());
-        return new ResponseEntity<String>("Conta Pagar Removida",HttpStatus.OK);
+        return new ResponseEntity("Conta Pagar Removida",HttpStatus.OK);
     }
 
     @ResponseBody
     @DeleteMapping(value = "**/deleteContaPagarPorId/{id}")
-    public ResponseEntity<String> deleteContaPagarPorId(@PathVariable("id") Long id) {
+    public ResponseEntity<?> deleteContaPagarPorId(@PathVariable("id") Long id) {
         contaPagarRepository.deleteById(id);
-        return new ResponseEntity<String>("Conta Pagar Removida",HttpStatus.OK);
+        return new ResponseEntity("Conta Pagar Removida",HttpStatus.OK);
     }
 
     @ResponseBody
