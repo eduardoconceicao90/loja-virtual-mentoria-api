@@ -10,7 +10,7 @@ import java.util.List;
 @Repository
 public interface CupomDescontoRepository extends JpaRepository<CupomDesconto, Long> {
 
-    @Query(value = "select c from CupDesc c where c.empresa.id = ?1")
-    public List<CupomDesconto> cupomDescontoPorEmpresa(Long idEmpresa);
+    @Query(value = "select c from CupomDesconto c where c.empresa.id = ?1")
+    List<CupomDesconto> cupomDescontoPorEmpresa(Long idEmpresa);
 
 }
