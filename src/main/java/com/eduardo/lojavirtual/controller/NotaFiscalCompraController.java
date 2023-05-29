@@ -4,6 +4,7 @@ import com.eduardo.lojavirtual.exception.ExceptionMentoriaJava;
 import com.eduardo.lojavirtual.model.NotaFiscalCompra;
 import com.eduardo.lojavirtual.model.NotaFiscalVenda;
 import com.eduardo.lojavirtual.model.dto.ObejtoRequisicaoRelatorioProdCompraNotaFiscalDTO;
+import com.eduardo.lojavirtual.model.dto.ObejtoRequisicaoRelatorioProdutoAlertaEstoqueDTO;
 import com.eduardo.lojavirtual.repository.NotaFiscalCompraRepository;
 import com.eduardo.lojavirtual.repository.NotaFiscalVendaRepository;
 import com.eduardo.lojavirtual.service.NotaFiscalCompraService;
@@ -31,13 +32,25 @@ public class NotaFiscalCompraController {
     @ResponseBody
     @PostMapping(value = "**/relatorioProdCompradoNotaFiscal")
     public ResponseEntity<List<ObejtoRequisicaoRelatorioProdCompraNotaFiscalDTO>> relatorioProdCompradoNotaFiscal
-            (@Valid @RequestBody ObejtoRequisicaoRelatorioProdCompraNotaFiscalDTO obejtoRequisicaoRelatorioProdCompraNotaFiscalDto){
+            (@Valid @RequestBody ObejtoRequisicaoRelatorioProdCompraNotaFiscalDTO objetoRequisicaoRelatorioProdCompraNotaFiscalDto){
 
         List<ObejtoRequisicaoRelatorioProdCompraNotaFiscalDTO> retorno = new ArrayList<>();
 
-        retorno = notaFiscalCompraService.gerarRelatorioProdCompraNota(obejtoRequisicaoRelatorioProdCompraNotaFiscalDto);
+        retorno = notaFiscalCompraService.gerarRelatorioProdCompraNota(objetoRequisicaoRelatorioProdCompraNotaFiscalDto);
 
         return new ResponseEntity<List<ObejtoRequisicaoRelatorioProdCompraNotaFiscalDTO>>(retorno, HttpStatus.OK);
+    }
+
+    @ResponseBody
+    @PostMapping(value = "**/relatorioProdAlertaEstoque")
+    public ResponseEntity<List<ObejtoRequisicaoRelatorioProdutoAlertaEstoqueDTO>> relatorioProdAlertaEstoque
+            (@Valid @RequestBody ObejtoRequisicaoRelatorioProdutoAlertaEstoqueDTO objetoRequisicaoRelatorioProdAlertaEstoqueDto){
+
+        List<ObejtoRequisicaoRelatorioProdutoAlertaEstoqueDTO> retorno = new ArrayList<>();
+
+        retorno = notaFiscalCompraService.gerarRelatorioAlertaEstoque(objetoRequisicaoRelatorioProdAlertaEstoqueDto);
+
+        return new ResponseEntity<List<ObejtoRequisicaoRelatorioProdutoAlertaEstoqueDTO>>(retorno, HttpStatus.OK);
     }
 
     @ResponseBody

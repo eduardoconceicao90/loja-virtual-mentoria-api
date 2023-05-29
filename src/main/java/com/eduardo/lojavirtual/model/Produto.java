@@ -63,7 +63,7 @@ public class Produto {
 
     private Boolean alertaQtdEstoque = Boolean.FALSE;
 
-    private Integer qtdeClique = 0;
+    private Integer qtdClique = 0;
 
     @NotNull(message = "A empresa responsável deve ser informada")
     @ManyToOne(targetEntity = Pessoa.class)
@@ -196,11 +196,11 @@ public class Produto {
     }
 
     public Integer getQtdeClique() {
-        return qtdeClique;
+        return qtdClique;
     }
 
     public void setQtdeClique(Integer qtdeClique) {
-        this.qtdeClique = qtdeClique;
+        this.qtdClique = qtdeClique;
     }
 
     public PessoaJuridica getEmpresa() {

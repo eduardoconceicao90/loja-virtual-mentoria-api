@@ -6,10 +6,10 @@ public class ObejtoRequisicaoRelatorioProdCompraNotaFiscalDTO {
 
     private String nomeProduto ="";
 
-    @NotEmpty(message = "Informa a data inicial")
+    @NotEmpty(message = "Informar a data inicial")
     private String dataInicial;
 
-    @NotEmpty(message = "Informa a data final")
+    @NotEmpty(message = "Informar a data final")
     private String dataFinal;
 
     private String codigoNota ="";
