@@ -1,5 +1,6 @@
 package com.eduardo.lojavirtual.model;
 
+import com.eduardo.lojavirtual.model.enums.StatusVendaLojaVirtual;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
@@ -78,6 +79,11 @@ public class VendaCompraLojaVirtual {
     @ManyToOne(targetEntity = PessoaJuridica.class)
     @JoinColumn(name = "empresa_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "empresa_fk"))
     private PessoaJuridica empresa;
+
+    @NotNull(message = "Status da venda ou compra deve ser informado")
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private StatusVendaLojaVirtual statusVendaLojaVirtual;
 
     @OneToMany(mappedBy = "vendaCompraLojaVirtual", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<ItemVendaLoja> itemVendaLojas = new ArrayList<>();
