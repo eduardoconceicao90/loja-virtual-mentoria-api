@@ -5,6 +5,7 @@ import com.eduardo.lojavirtual.model.NotaFiscalCompra;
 import com.eduardo.lojavirtual.model.NotaFiscalVenda;
 import com.eduardo.lojavirtual.model.dto.ObejtoRequisicaoRelatorioProdCompraNotaFiscalDTO;
 import com.eduardo.lojavirtual.model.dto.ObejtoRequisicaoRelatorioProdutoAlertaEstoqueDTO;
+import com.eduardo.lojavirtual.model.dto.ObjetoRelatorioStatusCompraDTO;
 import com.eduardo.lojavirtual.repository.NotaFiscalCompraRepository;
 import com.eduardo.lojavirtual.repository.NotaFiscalVendaRepository;
 import com.eduardo.lojavirtual.service.NotaFiscalCompraService;
@@ -28,6 +29,18 @@ public class NotaFiscalCompraController {
 
     @Autowired
     private NotaFiscalCompraService notaFiscalCompraService;
+
+    @ResponseBody
+    @PostMapping(value = "**/relatorioStatusCompra")
+    public ResponseEntity<List<ObjetoRelatorioStatusCompraDTO>> relatorioStatusCompra
+            (@Valid @RequestBody ObjetoRelatorioStatusCompraDTO objetoRelatorioStatusCompraDto){
+
+        List<ObjetoRelatorioStatusCompraDTO> retorno = new ArrayList<>();
+
+        retorno = notaFiscalCompraService.relatorioStatusVendaLojaVirtual(objetoRelatorioStatusCompraDto);
+
+        return new ResponseEntity<List<ObjetoRelatorioStatusCompraDTO>>(retorno, HttpStatus.OK);
+    }
 
     @ResponseBody
     @PostMapping(value = "**/relatorioProdCompradoNotaFiscal")

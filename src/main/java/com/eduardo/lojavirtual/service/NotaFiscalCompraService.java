@@ -2,6 +2,7 @@ package com.eduardo.lojavirtual.service;
 
 import com.eduardo.lojavirtual.model.dto.ObejtoRequisicaoRelatorioProdCompraNotaFiscalDTO;
 import com.eduardo.lojavirtual.model.dto.ObejtoRequisicaoRelatorioProdutoAlertaEstoqueDTO;
+import com.eduardo.lojavirtual.model.dto.ObjetoRelatorioStatusCompraDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -15,6 +16,44 @@ public class NotaFiscalCompraService {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    public List<ObjetoRelatorioStatusCompraDTO> relatorioStatusVendaLojaVirtual(ObjetoRelatorioStatusCompraDTO objetoRelatorioStatusCompra){
+
+        List<ObjetoRelatorioStatusCompraDTO> retorno = new ArrayList<>();
+
+        String sql = "select p.id as codigoProduto, "
+                + " p.nome as nomeProduto, "
+                + " pf.email as emailCliente, "
+                + " pf.telefone as foneCliente, "
+                + " p.valor_venda as valorVendaProduto, "
+                + " pf.id as codigoCliente, "
+                + " pf.nome as nomeCliente,"
+                + " p.qtd_estoque as qtdEstoque, "
+                + " vda.id as codigoVenda, "
+                + " vda.status_venda_loja_virtual as statusVenda "
+                + " from vd_cp_loja_virt as vda "
+                + " inner join item_venda_loja as ivl on ivl.venda_compra_loja_virt_id = vda.id "
+                + " inner join produto as p on p.id = ivl.produto_id "
+                + " inner join pessoa_fisica as pf on pf.id = vda.pessoa_id ";
+
+        sql+= " where vda.data_venda >= '"+objetoRelatorioStatusCompra.getDataInicial()+"' and vda.data_venda  <= '"+objetoRelatorioStatusCompra.getDataFinal()+"' ";
+
+        if(!objetoRelatorioStatusCompra.getNomeProduto().isEmpty()) {
+            sql += " and upper(p.nome) like upper('%"+objetoRelatorioStatusCompra.getNomeProduto()+"%') ";
+        }
+
+        if (!objetoRelatorioStatusCompra.getStatusVenda().isEmpty()) {
+            sql+= " and vda.status_venda_loja_virtual in ('"+objetoRelatorioStatusCompra.getStatusVenda()+"') ";
+        }
+
+        if (!objetoRelatorioStatusCompra.getNomeCliente().isEmpty()) {
+            sql += " and pf.nome like '%"+objetoRelatorioStatusCompra.getNomeCliente()+"%' ";
+        }
+
+        retorno = jdbcTemplate.query(sql, new BeanPropertyRowMapper(ObjetoRelatorioStatusCompraDTO.class));
+
+        return retorno;
+    }
 
     /*
         Este relatório permite saber os produtos comprados para serem vendidos pela loja virtual,
