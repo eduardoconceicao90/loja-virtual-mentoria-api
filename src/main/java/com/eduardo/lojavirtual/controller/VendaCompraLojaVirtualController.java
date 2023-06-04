@@ -408,7 +408,7 @@ public class VendaCompraLojaVirtualController {
                 .addHeader("Accept", "application/json")
                 .addHeader("Content-Type", "application/json")
                 .addHeader("Authorization", "Bearer " + TokenIntegracao.TOKEN_MELHOR_ENVIO_SANDBOX)
-                .addHeader("User-Agent", "suporte@jdevtreinamento.com.br")
+                .addHeader("User-Agent", "eduardodevjavaweb@gmail.com")
                 .build();
 
         okhttp3.Response response = client.newCall(request).execute();
