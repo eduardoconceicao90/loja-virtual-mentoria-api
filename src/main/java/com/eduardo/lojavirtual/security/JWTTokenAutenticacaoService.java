@@ -20,7 +20,7 @@ import java.util.Date;
 @Service
 public class JWTTokenAutenticacaoService {
 
-    /* Token de validade de 10 dias */
+    /* Token tem validade de 10 dias */
     private static final long EXPIRATION_TIME = 864000000;
 
     /* Chave de senha para juntar com o JWT */
@@ -48,7 +48,6 @@ public class JWTTokenAutenticacaoService {
 
         /* Usado para ver no Postman para teste */
         response.getWriter().write("{\"Authorization\": \"" + token + "\"}");
-
     }
 
     /* Retorna o usuário validado com token ou caso nao seja valido retona null */
@@ -57,7 +56,6 @@ public class JWTTokenAutenticacaoService {
         String token = request.getHeader(HEADER_STRING);
 
         try {
-
             if (token != null) {
                 String tokenLimpo = token.replace(TOKEN_PREFIX, "").trim();
 
@@ -90,7 +88,6 @@ public class JWTTokenAutenticacaoService {
 
         liberacaoCors(response);
         return null;
-
     }
 
     /* Fazendo liberação contra erro de Cors no navegador */

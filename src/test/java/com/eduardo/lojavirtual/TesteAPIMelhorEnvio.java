@@ -1,7 +1,14 @@
 package com.eduardo.lojavirtual;
 
+import com.eduardo.lojavirtual.model.dto.melhorEnvio.EmpresaTransporteDTO;
 import com.eduardo.lojavirtual.util.TokenIntegracao;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.*;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class TesteAPIMelhorEnvio {
 
@@ -20,6 +27,38 @@ public class TesteAPIMelhorEnvio {
                 .build();
 
         Response response = client.newCall(request).execute();
-        System.out.println(response.body().string());
+
+        JsonNode jsonNode = new ObjectMapper().readTree(response.body().string());
+
+        Iterator<JsonNode> iterator = jsonNode.iterator();
+
+        List<EmpresaTransporteDTO> empresaTransporteDTOs = new ArrayList<EmpresaTransporteDTO>();
+
+        while(iterator.hasNext()) {
+            JsonNode node = iterator.next();
+
+            EmpresaTransporteDTO empresaTransporteDTO = new EmpresaTransporteDTO();
+
+            if (node.get("id") != null) {
+                empresaTransporteDTO.setId(node.get("id").asText());
+            }
+
+            if (node.get("name") != null) {
+                empresaTransporteDTO.setNome(node.get("name").asText());
+            }
+
+            if (node.get("price") != null) {
+                empresaTransporteDTO.setValor(node.get("price").asText());
+            }
+
+            if (node.get("company") != null) {
+                empresaTransporteDTO.setEmpresa(node.get("company").get("name").asText());
+                empresaTransporteDTO.setPicture(node.get("company").get("picture").asText());
+            }
+
+            if (empresaTransporteDTO.dadosOK()) {
+                empresaTransporteDTOs.add(empresaTransporteDTO);
+            }
+        }
     }
 }

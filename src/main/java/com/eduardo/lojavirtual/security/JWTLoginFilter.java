@@ -18,7 +18,7 @@ import java.io.IOException;
 
 public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 
-    /* Confgurando o gerenciado de autenticacao */
+    /* Confgurando o gerenciamento de autenticacao */
     public JWTLoginFilter(String url, AuthenticationManager authenticationManager) {
 
         /* Obriga a autenticar a url */
