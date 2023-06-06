@@ -1,5 +1,7 @@
 package com.eduardo.lojavirtual.model;
 
+import com.eduardo.lojavirtual.model.enums.TipoEndereco;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -39,6 +41,20 @@ public abstract class Pessoa {
     @ManyToOne(targetEntity = Pessoa.class)
     @JoinColumn(name = "empresa_id", nullable = true, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "empresa_fk"))
     private Pessoa empresa;
+
+    public Endereco enderecoEntrega() {
+
+        Endereco enderecoReturn = null;
+
+        for (Endereco endereco : enderecos) {
+            if (endereco.getTipoEndereco().name().equals(TipoEndereco.ENTREGA.name())) {
+                enderecoReturn = endereco;
+                break;
+            }
+        }
+
+        return enderecoReturn;
+    }
 
     public Long getId() {
         return id;

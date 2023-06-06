@@ -31,6 +31,9 @@ public class Endereco {
     @Column(nullable = false)
     private String uf;
 
+    @Column(nullable = true)
+    private String pais;
+
     @Column(nullable = false)
     private String cep;
 
@@ -102,6 +105,14 @@ public class Endereco {
 
     public void setUf(String uf) {
         this.uf = uf;
+    }
+
+    public String getPais() {
+        return pais;
+    }
+
+    public void setPais(String pais) {
+        this.pais = pais;
     }
 
     public String getCep() {
