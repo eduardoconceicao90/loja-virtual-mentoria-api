@@ -19,6 +19,7 @@ import okhttp3.Request;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
@@ -57,6 +58,9 @@ public class VendaCompraLojaVirtualController {
 
     @Autowired
     private ServiceSendEmail serviceSendEmail;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @ResponseBody
     @PostMapping(value = "**/salvarVendaLoja")
@@ -556,7 +560,13 @@ public class VendaCompraLojaVirtualController {
 
         okhttp3.Response response = client.newCall(request).execute();
 
-        JsonNode jsonNode = new ObjectMapper().readTree(response.body().string());
+        String respostaJson = response.body().string();
+
+        if (respostaJson.contains("error")) {
+            throw new ExceptionMentoriaJava(respostaJson);
+        }
+
+        JsonNode jsonNode = new ObjectMapper().readTree(respostaJson);
 
         Iterator<JsonNode> iterator = jsonNode.iterator();
 
@@ -564,12 +574,16 @@ public class VendaCompraLojaVirtualController {
 
         while(iterator.hasNext()) {
             JsonNode node = iterator.next();
-            idEtiqueta = node.get("id").asText();
+            if (node.get("id") != null) {
+                idEtiqueta = node.get("id").asText();
+            }else {
+                idEtiqueta = node.asText();
+            }
             break;
         }
 
         /*Salvando o código da etiqueta*/
-        vendaCompraLojaVirtualRepository.updateEtiqueta(idEtiqueta, compraLojaVirtual.getId());
+        jdbcTemplate.execute("begin; update vd_cp_loja_virt set codigo_etiqueta = '"+idEtiqueta+"' where id = "+compraLojaVirtual.getId()+"  ;commit;");
 
         /*Compra etiqueta*/
         OkHttpClient clientCompra = new OkHttpClient().newBuilder().build();
@@ -609,7 +623,7 @@ public class VendaCompraLojaVirtualController {
             return new ResponseEntity<String>("Não foi possível gerar a etiqueta", HttpStatus.OK);
         }
 
-        /*Faz impresão das etiquetas*/
+        /*Faz impressão das etiquetas*/
         OkHttpClient clientIm = new OkHttpClient().newBuilder().build();
         okhttp3.MediaType mediaTypeIm = MediaType.parse("application/json");
         okhttp3.RequestBody bodyIm = okhttp3.RequestBody.create(mediaTypeIm, "{\n    \"mode\": \"private\",\n    \"orders\": [\n        \""+idEtiqueta+"\"\n    ]\n}");
@@ -630,9 +644,30 @@ public class VendaCompraLojaVirtualController {
 
         String urlEtiqueta = responseIm.body().string();
 
-        vendaCompraLojaVirtualRepository.updateURLEtiqueta(urlEtiqueta, compraLojaVirtual.getId());
+        jdbcTemplate.execute("begin; update vd_cp_loja_virt set url_imprime_etiqueta =  '"+urlEtiqueta+"'  where id = " + compraLojaVirtual.getId() + ";commit;");
 
         return new ResponseEntity<String>("Sucesso", HttpStatus.OK);
+    }
+
+    @ResponseBody
+    @GetMapping(value = "**/cancelaEtiqueta/{idEtiqueta}/{reason_id}/{descricao}")
+    public ResponseEntity<String> cancelaEtiqueta(@PathVariable String idEtiqueta, @PathVariable String reason_id, @PathVariable String descricao) throws IOException{
+
+        OkHttpClient client = new OkHttpClient().newBuilder() .build();
+        okhttp3.MediaType mediaType = okhttp3.MediaType.parse("application/json");
+        okhttp3.RequestBody body = okhttp3.RequestBody.create(mediaType, "{\n    \"order\": {\n        \"id\": \""+idEtiqueta+"\",\n        \"reason_id\": \""+reason_id+"\",\n        \"description\": \""+descricao+"\"\n    }\n}");
+        okhttp3.Request request = new Request.Builder()
+                .url(TokenIntegracao.URL_MELHOR_ENVIO_SANDBOX+"api/v2/me/shipment/cancel")
+                .method("POST", body)
+                .addHeader("Accept", "application/json")
+                .addHeader("Content-Type", "application/json")
+                .addHeader("Authorization", "Bearer "+ TokenIntegracao.TOKEN_MELHOR_ENVIO_SANDBOX)
+                .addHeader("User-Agent", "eduardodevjavaweb@gmail.com")
+                .build();
+
+        okhttp3.Response response = client.newCall(request).execute();
+
+        return new ResponseEntity<String>(response.body().string(), HttpStatus.OK);
     }
 
 }

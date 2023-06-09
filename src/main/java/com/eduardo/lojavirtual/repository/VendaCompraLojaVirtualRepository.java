@@ -62,13 +62,5 @@ public interface VendaCompraLojaVirtualRepository extends JpaRepository<VendaCom
             + " and i.vendaCompraLojaVirtual.dataVenda >= ?1 "
             + " and i.vendaCompraLojaVirtual.dataVenda <= ?2 ")
     List<VendaCompraLojaVirtual> consultaVendaFaixaData(Date data1, Date data2);
-
-    @Modifying(flushAutomatically = true)
-    @Query(nativeQuery = true, value = "update vd_cp_loja_virt set codigo_etiqueta = ?1 where id = ?2")
-    void updateEtiqueta(String idEtiqueta, Long idVenda);
-
-    @Modifying(flushAutomatically = true)
-    @Query(nativeQuery = true, value = "update vd_cp_loja_virt set url_imprime_etiqueta = ?1 where id = ?2")
-    void updateURLEtiqueta(String urlEtiqueta, Long id);
-
+    
 }
