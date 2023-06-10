@@ -2,10 +2,10 @@ package com.eduardo.lojavirtual.controller;
 
 import com.eduardo.lojavirtual.exception.ExceptionMentoriaJava;
 import com.eduardo.lojavirtual.model.*;
-import com.eduardo.lojavirtual.model.dto.melhorEnvio.*;
 import com.eduardo.lojavirtual.model.dto.ItemVendaDTO;
 import com.eduardo.lojavirtual.model.dto.ProdutoDTO;
 import com.eduardo.lojavirtual.model.dto.VendaCompraLojaVirtualDTO;
+import com.eduardo.lojavirtual.model.dto.melhorEnvio.*;
 import com.eduardo.lojavirtual.model.enums.StatusContaReceber;
 import com.eduardo.lojavirtual.repository.*;
 import com.eduardo.lojavirtual.service.ServiceSendEmail;
@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -89,16 +90,6 @@ public class VendaCompraLojaVirtualController {
 
         /*Salva primeiro a venda e todos os dados*/
         vendaCompraLojaVirtual = vendaCompraLojaVirtualRepository.saveAndFlush(vendaCompraLojaVirtual);
-
-        StatusRastreio statusRastreio = new StatusRastreio();
-        statusRastreio.setCentroDistribuicao("CD Eduardo");
-        statusRastreio.setCidade("Recife");
-        statusRastreio.setEmpresa(vendaCompraLojaVirtual.getEmpresa());
-        statusRastreio.setEstado("PE");
-        statusRastreio.setStatus("Inicio Compra");
-        statusRastreio.setVendaCompraLojaVirtual(vendaCompraLojaVirtual);
-
-        statusRastreioRepository.save(statusRastreio);
 
         /*Associa a venda gravada no banco com a nota fiscal*/
         vendaCompraLojaVirtual.getNotaFiscalVenda().setVendaCompraLojaVirtual(vendaCompraLojaVirtual);
@@ -645,6 +636,50 @@ public class VendaCompraLojaVirtualController {
         String urlEtiqueta = responseIm.body().string();
 
         jdbcTemplate.execute("begin; update vd_cp_loja_virt set url_imprime_etiqueta =  '"+urlEtiqueta+"'  where id = " + compraLojaVirtual.getId() + ";commit;");
+
+        /*Insere o idEtiqueta para rastreio*/
+        OkHttpClient clientRastreio = new OkHttpClient().newBuilder().build();
+        okhttp3.MediaType mediaTypeR = okhttp3.MediaType.parse("application/json");
+        okhttp3.RequestBody bodyR = okhttp3.RequestBody.create(mediaTypeR, "{\n    \"orders\": [\n        \""+idEtiqueta+"\"\n    ]\n}");
+        okhttp3.Request requestR = new Request.Builder()
+                .url(TokenIntegracao.URL_MELHOR_ENVIO_SANDBOX+ "api/v2/me/shipment/tracking")
+                .method("POST", bodyR)
+                .addHeader("Accept", "application/json")
+                .addHeader("Content-Type", "application/json")
+                .addHeader("Authorization", "Bearer " +  TokenIntegracao.TOKEN_MELHOR_ENVIO_SANDBOX)
+                .addHeader("User-Agent", "eduardodevjavaweb@gmail.com").build();
+
+        Response responseR = clientRastreio.newCall(requestR).execute();
+
+        JsonNode jsonNodeR = new ObjectMapper().readTree(responseR.body().string());
+
+        Iterator<JsonNode> iteratorR = jsonNodeR.iterator();
+
+        String idEtiquetaR = "";
+
+        while(iteratorR.hasNext()) {
+            JsonNode node = iteratorR.next();
+            if (node.get("tracking") != null) {
+                idEtiquetaR = node.get("tracking").asText();
+            }else {
+                idEtiquetaR = node.asText();
+            }
+            break;
+        }
+
+        List<StatusRastreio> rastreios = statusRastreioRepository.listaRastreioVenda(idVenda);
+
+        if (rastreios.isEmpty()) {
+
+            StatusRastreio rastreio = new StatusRastreio();
+            rastreio.setEmpresa(compraLojaVirtual.getEmpresa());
+            rastreio.setVendaCompraLojaVirtual(compraLojaVirtual);
+            rastreio.setUrlRastreio("https://www.melhorrastreio.com.br/rastreio/" + idEtiquetaR);
+
+            statusRastreioRepository.saveAndFlush(rastreio);
+        }else {
+            statusRastreioRepository.salvaUrlRastreio("https://www.melhorrastreio.com.br/rastreio/" + idEtiquetaR, idVenda);
+        }
 
         return new ResponseEntity<String>("Sucesso", HttpStatus.OK);
     }
