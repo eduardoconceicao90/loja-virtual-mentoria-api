@@ -18,6 +18,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -637,7 +638,7 @@ public class VendaCompraLojaVirtualController {
 
         jdbcTemplate.execute("begin; update vd_cp_loja_virt set url_imprime_etiqueta =  '"+urlEtiqueta+"'  where id = " + compraLojaVirtual.getId() + ";commit;");
 
-        /*Insere o idEtiqueta para rastreio*/
+        /*Insere o idEtiqueta para UrlRastreio*/
         OkHttpClient clientRastreio = new OkHttpClient().newBuilder().build();
         okhttp3.MediaType mediaTypeR = okhttp3.MediaType.parse("application/json");
         okhttp3.RequestBody bodyR = okhttp3.RequestBody.create(mediaTypeR, "{\n    \"orders\": [\n        \""+idEtiqueta+"\"\n    ]\n}");
@@ -667,19 +668,7 @@ public class VendaCompraLojaVirtualController {
             break;
         }
 
-        List<StatusRastreio> rastreios = statusRastreioRepository.listaRastreioVenda(idVenda);
-
-        if (rastreios.isEmpty()) {
-
-            StatusRastreio rastreio = new StatusRastreio();
-            rastreio.setEmpresa(compraLojaVirtual.getEmpresa());
-            rastreio.setVendaCompraLojaVirtual(compraLojaVirtual);
-            rastreio.setUrlRastreio("https://www.melhorrastreio.com.br/rastreio/" + idEtiquetaR);
-
-            statusRastreioRepository.saveAndFlush(rastreio);
-        }else {
-            statusRastreioRepository.salvaUrlRastreio("https://www.melhorrastreio.com.br/rastreio/" + idEtiquetaR, idVenda);
-        }
+        jdbcTemplate.execute("begin; insert into status_rastreio (id, venda_compra_loja_virt_id, empresa_id, url_rastreio) values (nextval('seq_status_rastreio'), "+compraLojaVirtual.getId()+", "+compraLojaVirtual.getEmpresa().getId()+", 'https://www.melhorrastreio.com.br/rastreio/"+idEtiquetaR+"');commit;");
 
         return new ResponseEntity<String>("Sucesso", HttpStatus.OK);
     }
