@@ -1,6 +1,6 @@
 package com.eduardo.lojavirtual.model.dto.melhorEnvio;
 
-public class ProductsDTO {
+public class Products {
 
     private String id;
     private String width;

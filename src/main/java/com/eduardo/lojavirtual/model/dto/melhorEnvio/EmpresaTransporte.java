@@ -1,6 +1,6 @@
 package com.eduardo.lojavirtual.model.dto.melhorEnvio;
 
-public class EmpresaTransporteDTO {
+public class EmpresaTransporte {
 
     private String id;
     private String nome;

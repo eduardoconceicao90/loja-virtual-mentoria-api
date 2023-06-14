@@ -1,6 +1,6 @@
 package com.eduardo.lojavirtual.model.dto.melhorEnvio;
 
-public class ProductsEnvioEtiquetaDTO {
+public class ProductsEnvioEtiqueta {
 
     private String name;
     private String quantity;

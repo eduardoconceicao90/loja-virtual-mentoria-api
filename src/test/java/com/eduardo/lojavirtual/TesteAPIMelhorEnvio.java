@@ -1,14 +1,6 @@
 package com.eduardo.lojavirtual;
 
-import com.eduardo.lojavirtual.model.dto.melhorEnvio.EmpresaTransporteDTO;
-import com.eduardo.lojavirtual.util.TokenIntegracao;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.*;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 public class TesteAPIMelhorEnvio {
 

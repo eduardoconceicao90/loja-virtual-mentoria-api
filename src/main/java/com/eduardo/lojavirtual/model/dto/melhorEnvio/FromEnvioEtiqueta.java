@@ -1,6 +1,6 @@
 package com.eduardo.lojavirtual.model.dto.melhorEnvio;
 
-public class ToEnvioEtiquetaDTO {
+public class FromEnvioEtiqueta {
 
     private String name;
     private String phone;
@@ -13,7 +13,6 @@ public class ToEnvioEtiquetaDTO {
     private String number;
     private String district;
     private String city;
-    private String state_abbr;
     private String country_id;
     private String postal_code;
     private String note;
@@ -104,14 +103,6 @@ public class ToEnvioEtiquetaDTO {
 
     public void setCity(String city) {
         this.city = city;
-    }
-
-    public String getState_abbr() {
-        return state_abbr;
-    }
-
-    public void setState_abbr(String state_abbr) {
-        this.state_abbr = state_abbr;
     }
 
     public String getCountry_id() {

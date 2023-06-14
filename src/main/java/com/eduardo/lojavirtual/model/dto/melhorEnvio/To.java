@@ -1,6 +1,6 @@
 package com.eduardo.lojavirtual.model.dto.melhorEnvio;
 
-public class FromDTO {
+public class To {
 
     private String postal_code;
 

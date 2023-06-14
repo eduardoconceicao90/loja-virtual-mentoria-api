@@ -3,7 +3,7 @@ package com.eduardo.lojavirtual.model.dto.melhorEnvio;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OptionsEnvioEtiquetaDTO {
+public class OptionsEnvioEtiqueta {
 
     private String insurance_value;
     private boolean receipt;
@@ -11,11 +11,11 @@ public class OptionsEnvioEtiquetaDTO {
     private boolean reverse;
     private boolean non_commercial;
 
-    private InvoiceEnvioDTO invoice = new InvoiceEnvioDTO();
+    private InvoiceEnvio invoice = new InvoiceEnvio();
 
     private String platform;
 
-    private List<TagsEnvioDTO> tags = new ArrayList<TagsEnvioDTO>();
+    private List<TagsEnvio> tags = new ArrayList<TagsEnvio>();
 
     public String getInsurance_value() {
         return insurance_value;
@@ -57,11 +57,11 @@ public class OptionsEnvioEtiquetaDTO {
         this.non_commercial = non_commercial;
     }
 
-    public InvoiceEnvioDTO getInvoice() {
+    public InvoiceEnvio getInvoice() {
         return invoice;
     }
 
-    public void setInvoice(InvoiceEnvioDTO invoice) {
+    public void setInvoice(InvoiceEnvio invoice) {
         this.invoice = invoice;
     }
 
@@ -73,11 +73,11 @@ public class OptionsEnvioEtiquetaDTO {
         this.platform = platform;
     }
 
-    public List<TagsEnvioDTO> getTags() {
+    public List<TagsEnvio> getTags() {
         return tags;
     }
 
-    public void setTags(List<TagsEnvioDTO> tags) {
+    public void setTags(List<TagsEnvio> tags) {
         this.tags = tags;
     }
 

@@ -1,6 +1,6 @@
 package com.eduardo.lojavirtual.model.dto.melhorEnvio;
 
-public class VolumesEnvioEtiquetaDTO {
+public class VolumesEnvioEtiqueta {
 
     private String height;
     private String width;
