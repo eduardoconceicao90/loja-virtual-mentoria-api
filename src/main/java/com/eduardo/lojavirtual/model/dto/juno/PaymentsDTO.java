@@ -1,6 +1,6 @@
 package com.eduardo.lojavirtual.model.dto.juno;
 
-public class Payments {
+public class PaymentsDTO {
 
     private String id;
     private String chargeId;

@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Charge {
+public class ChargeDTO {
 
     private String pixKey;
     private boolean pixIncludeImage = true;

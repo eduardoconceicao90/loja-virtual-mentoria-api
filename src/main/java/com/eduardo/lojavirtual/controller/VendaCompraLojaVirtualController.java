@@ -390,8 +390,8 @@ public class VendaCompraLojaVirtualController {
 
     @ResponseBody
     @PostMapping(value = "**/consultarFreteLojaVirtual")
-    public ResponseEntity<List<EmpresaTransporte>> consultaFrete(
-                                                      @Valid @RequestBody ConsultaFrete consultaFreteDTO ) throws Exception{
+    public ResponseEntity<List<EmpresaTransporteDTO>> consultaFrete(
+                                                      @Valid @RequestBody ConsultaFreteDTO consultaFreteDTO ) throws Exception{
 
         ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(consultaFreteDTO);
@@ -414,12 +414,12 @@ public class VendaCompraLojaVirtualController {
 
         Iterator<JsonNode> iterator = jsonNode.iterator();
 
-        List<EmpresaTransporte> empresaTransporteDTOs = new ArrayList<EmpresaTransporte>();
+        List<EmpresaTransporteDTO> empresaTransporteDTOs = new ArrayList<EmpresaTransporteDTO>();
 
         while(iterator.hasNext()) {
             JsonNode node = iterator.next();
 
-            EmpresaTransporte empresaTransporteDTO = new EmpresaTransporte();
+            EmpresaTransporteDTO empresaTransporteDTO = new EmpresaTransporteDTO();
 
             if (node.get("id") != null) {
                 empresaTransporteDTO.setId(node.get("id").asText());
@@ -443,7 +443,7 @@ public class VendaCompraLojaVirtualController {
             }
         }
 
-        return new ResponseEntity<List<EmpresaTransporte>>(empresaTransporteDTOs, HttpStatus.OK);
+        return new ResponseEntity<List<EmpresaTransporteDTO>>(empresaTransporteDTOs, HttpStatus.OK);
     }
 
     @ResponseBody
@@ -459,7 +459,7 @@ public class VendaCompraLojaVirtualController {
         List<Endereco> enderecos = enderecoRepository.enderecoPj(compraLojaVirtual.getEmpresa().getId());
         compraLojaVirtual.getEmpresa().setEnderecos(enderecos);
 
-        EnvioEtiqueta envioEtiquetaDTO = new EnvioEtiqueta();
+        EnvioEtiquetaDTO envioEtiquetaDTO = new EnvioEtiquetaDTO();
 
         envioEtiquetaDTO.setService(compraLojaVirtual.getServicoTransportadora());
         envioEtiquetaDTO.setAgency("49");
@@ -491,11 +491,11 @@ public class VendaCompraLojaVirtualController {
         envioEtiquetaDTO.getTo().setPostal_code(compraLojaVirtual.getPessoa().enderecoEntrega().getCep());
         envioEtiquetaDTO.getTo().setNote("Não há");
 
-        List<ProductsEnvioEtiqueta> products = new ArrayList<ProductsEnvioEtiqueta>();
+        List<ProductsEnvioEtiquetaDTO> products = new ArrayList<ProductsEnvioEtiquetaDTO>();
 
         for (ItemVendaLoja itemVendaLoja : compraLojaVirtual.getItemVendaLojas()) {
 
-            ProductsEnvioEtiqueta dto = new ProductsEnvioEtiqueta();
+            ProductsEnvioEtiquetaDTO dto = new ProductsEnvioEtiquetaDTO();
 
             dto.setName(itemVendaLoja.getProduto().getNome());
             dto.setQuantity(itemVendaLoja.getQuantidade().toString());
@@ -506,11 +506,11 @@ public class VendaCompraLojaVirtualController {
 
         envioEtiquetaDTO.setProducts(products);
 
-        List<VolumesEnvioEtiqueta> volumes = new ArrayList<VolumesEnvioEtiqueta>();
+        List<VolumesEnvioEtiquetaDTO> volumes = new ArrayList<VolumesEnvioEtiquetaDTO>();
 
         for (ItemVendaLoja itemVendaLoja : compraLojaVirtual.getItemVendaLojas()) {
 
-            VolumesEnvioEtiqueta dto = new VolumesEnvioEtiqueta();
+            VolumesEnvioEtiquetaDTO dto = new VolumesEnvioEtiquetaDTO();
 
             dto.setHeight(itemVendaLoja.getProduto().getAltura().toString());
             dto.setLength(itemVendaLoja.getProduto().getProfundidade().toString());
@@ -530,7 +530,7 @@ public class VendaCompraLojaVirtualController {
         envioEtiquetaDTO.getOptions().getInvoice().setKey(compraLojaVirtual.getNotaFiscalVenda().getNumero());
         envioEtiquetaDTO.getOptions().setPlatform(compraLojaVirtual.getEmpresa().getNomeFantasia());
 
-        TagsEnvio dtoTagEnvio = new TagsEnvio();
+        TagsEnvioDTO dtoTagEnvio = new TagsEnvioDTO();
         dtoTagEnvio.setTag("Identificação do pedido na plataforma, exemplo:" + compraLojaVirtual.getId());
         dtoTagEnvio.setUrl(null);
         envioEtiquetaDTO.getOptions().getTags().add(dtoTagEnvio);

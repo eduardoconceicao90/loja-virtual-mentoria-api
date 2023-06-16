@@ -1,6 +1,6 @@
 package com.eduardo.lojavirtual.model.dto.juno;
 
-public class Pix {
+public class PixDTO {
 
     private String id;
     private String payloadInBase64;

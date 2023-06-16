@@ -1,6 +1,6 @@
 package com.eduardo.lojavirtual.model.dto.melhorEnvio;
 
-public class InvoiceEnvio {
+public class InvoiceEnvioDTO {
 
     private String key;
 

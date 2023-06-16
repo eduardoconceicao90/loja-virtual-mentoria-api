@@ -1,6 +1,6 @@
 package com.eduardo.lojavirtual.model.dto.juno;
 
-public class Self {
+public class SelfDTO {
 
     private String href;
 

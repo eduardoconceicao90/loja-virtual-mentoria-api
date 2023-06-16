@@ -3,7 +3,7 @@ package com.eduardo.lojavirtual.model.dto.juno;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ConteudoBoletoJuno {
+public class ConteudoBoletoJunoDTO {
 
     private String id;
     private String code;
@@ -16,13 +16,13 @@ public class ConteudoBoletoJuno {
     private String amount;
     private String status;
 
-    private BilletDetails billetDetails = new BilletDetails();
+    private BilletDetailsDTO billetDetails = new BilletDetailsDTO();
 
-    private List<Payments> payments = new ArrayList<Payments>();
+    private List<PaymentsDTO> payments = new ArrayList<PaymentsDTO>();
 
-    private Pix pix = new Pix();
+    private PixDTO pix = new PixDTO();
 
-    private List<Links> _links = new ArrayList<Links>();
+    private List<LinksDTO> _links = new ArrayList<LinksDTO>();
 
     public String getId() {
         return id;
@@ -104,35 +104,35 @@ public class ConteudoBoletoJuno {
         this.status = status;
     }
 
-    public BilletDetails getBilletDetails() {
+    public BilletDetailsDTO getBilletDetails() {
         return billetDetails;
     }
 
-    public void setBilletDetails(BilletDetails billetDetails) {
+    public void setBilletDetails(BilletDetailsDTO billetDetails) {
         this.billetDetails = billetDetails;
     }
 
-    public List<Payments> getPayments() {
+    public List<PaymentsDTO> getPayments() {
         return payments;
     }
 
-    public void setPayments(List<Payments> payments) {
+    public void setPayments(List<PaymentsDTO> payments) {
         this.payments = payments;
     }
 
-    public Pix getPix() {
+    public PixDTO getPix() {
         return pix;
     }
 
-    public void setPix(Pix pix) {
+    public void setPix(PixDTO pix) {
         this.pix = pix;
     }
 
-    public List<Links> get_links() {
+    public List<LinksDTO> get_links() {
         return _links;
     }
 
-    public void set_links(List<Links> _links) {
+    public void set_links(List<LinksDTO> _links) {
         this._links = _links;
     }
 }

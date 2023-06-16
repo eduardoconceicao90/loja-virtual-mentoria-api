@@ -1,6 +1,6 @@
 package com.eduardo.lojavirtual.model.dto.juno;
 
-public class ObjetoPostCarneJuno {
+public class ObjetoPostCarneJunoDTO {
 
     /* Descrição da cobrança */
     private String description;
@@ -19,6 +19,12 @@ public class ObjetoPostCarneJuno {
 
     /* Referncia para produto da loja ou codigo do produto */
     private String reference;
+
+    private String payerCpfCnpj;
+
+    private String email;
+
+    private Long idVenda;
 
     public String getDescription() {
         return description;
@@ -68,4 +74,27 @@ public class ObjetoPostCarneJuno {
         this.reference = reference;
     }
 
+    public String getPayerCpfCnpj() {
+        return payerCpfCnpj;
+    }
+
+    public void setPayerCpfCnpj(String payerCpfCnpj) {
+        this.payerCpfCnpj = payerCpfCnpj;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Long getIdVenda() {
+        return idVenda;
+    }
+
+    public void setIdVenda(Long idVenda) {
+        this.idVenda = idVenda;
+    }
 }

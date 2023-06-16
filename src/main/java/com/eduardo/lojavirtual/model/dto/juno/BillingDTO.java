@@ -1,19 +1,19 @@
 package com.eduardo.lojavirtual.model.dto.juno;
 
-public class Billing {
+public class BillingDTO {
 
-    private String nome;
+    private String name;
     private String document;
     private String email;
     private String phone;
     private boolean notify = true;
 
-    public String getNome() {
-        return nome;
+    public String getName() {
+        return name;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDocument() {

@@ -1,6 +1,6 @@
 package com.eduardo.lojavirtual.model.dto.melhorEnvio;
 
-public class TagsEnvio {
+public class TagsEnvioDTO {
 
     private String tag;
     private String url;

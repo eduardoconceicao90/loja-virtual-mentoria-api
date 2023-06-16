@@ -1,6 +1,6 @@
 package com.eduardo.lojavirtual.model.dto.juno;
 
-public class BilletDetails {
+public class BilletDetailsDTO {
 
     private String bankAccount;
     private String ourNumber;

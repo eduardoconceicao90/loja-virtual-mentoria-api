@@ -1,8 +1,19 @@
 package com.eduardo.lojavirtual.service;
 
 import com.eduardo.lojavirtual.model.AccessTokenJunoAPI;
+import com.eduardo.lojavirtual.model.BoletoJuno;
+import com.eduardo.lojavirtual.model.VendaCompraLojaVirtual;
+import com.eduardo.lojavirtual.model.dto.juno.BoletoGeradoApiJunoDTO;
+import com.eduardo.lojavirtual.model.dto.juno.CobrancaJunoAPIDTO;
+import com.eduardo.lojavirtual.model.dto.juno.ConteudoBoletoJunoDTO;
+import com.eduardo.lojavirtual.model.dto.juno.ObjetoPostCarneJunoDTO;
 import com.eduardo.lojavirtual.repository.AccessTokenJunoRepository;
+import com.eduardo.lojavirtual.repository.BoletoJunoRepository;
+import com.eduardo.lojavirtual.repository.VendaCompraLojaVirtualRepository;
 import com.eduardo.lojavirtual.util.TokenIntegracao;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
@@ -11,6 +22,11 @@ import org.springframework.stereotype.Service;
 
 import javax.ws.rs.core.MediaType;
 import javax.xml.bind.DatatypeConverter;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 @Service
 public class ServiceJuno {
@@ -20,6 +36,104 @@ public class ServiceJuno {
 
     @Autowired
     private AccessTokenJunoRepository accessTokenJunoRepository;
+
+    @Autowired
+    private VendaCompraLojaVirtualRepository vendaCompraLojaVirtualRepository;
+
+    @Autowired
+    private BoletoJunoRepository boletoJunoRepository;
+
+    public String gerarCarneApi(ObjetoPostCarneJunoDTO objetoPostCarneJuno) throws Exception {
+
+        VendaCompraLojaVirtual vendaCompraLojaVirtual = vendaCompraLojaVirtualRepository.findById(objetoPostCarneJuno.getIdVenda()).get();
+
+        CobrancaJunoAPIDTO cobrancaJunoAPI = new CobrancaJunoAPIDTO();
+
+        cobrancaJunoAPI.getCharge().setPixKey(TokenIntegracao.CHAVE_BOLETO_PIX);
+        cobrancaJunoAPI.getCharge().setDescription(objetoPostCarneJuno.getDescription());
+        cobrancaJunoAPI.getCharge().setAmount(Float.valueOf(objetoPostCarneJuno.getTotalAmount()));
+        cobrancaJunoAPI.getCharge().setInstallments(Integer.parseInt(objetoPostCarneJuno.getInstallments()));
+
+        Calendar dataVencimento = Calendar.getInstance();
+        dataVencimento.add(Calendar.DAY_OF_MONTH, 7);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        cobrancaJunoAPI.getCharge().setDueDate(dateFormat.format(dataVencimento.getTime()));
+
+        cobrancaJunoAPI.getCharge().setFine(BigDecimal.valueOf(1.00));
+        cobrancaJunoAPI.getCharge().setInterest(BigDecimal.valueOf(1.00));
+        cobrancaJunoAPI.getCharge().setMaxOverdueDays(10);
+        cobrancaJunoAPI.getCharge().getPaymentTypes().add("BOLETO_PIX");
+
+        cobrancaJunoAPI.getBilling().setName(objetoPostCarneJuno.getPayerName());
+        cobrancaJunoAPI.getBilling().setDocument(objetoPostCarneJuno.getPayerCpfCnpj());
+        cobrancaJunoAPI.getBilling().setEmail(objetoPostCarneJuno.getEmail());
+        cobrancaJunoAPI.getBilling().setPhone(objetoPostCarneJuno.getPayerPhone());
+
+        AccessTokenJunoAPI accessTokenJunoAPI = this.obterTokenApiJuno();
+        if (accessTokenJunoAPI != null) {
+
+            Client client = new HostIgnoringClient("https://api.juno.com.br/").hostIgnoringClient();
+            WebResource webResource = client.resource("https://api.juno.com.br/charges");
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            String json = objectMapper.writeValueAsString(cobrancaJunoAPI);
+
+            ClientResponse clientResponse = webResource
+                    .accept("application/json;charset=UTF-8")
+                    .header("Content-Type", "application/json;charset=UTF-8")
+                    .header("X-API-Version", 2)
+                    .header("X-Resource-Token", TokenIntegracao.TOKEN_PRIVATE_JUNO)
+                    .header("Authorization", "Bearer " + accessTokenJunoAPI.getAccess_token())
+                    .post(ClientResponse.class, json);
+
+            String stringRetorno = clientResponse.getEntity(String.class);
+
+            if (clientResponse.getStatus() == 200) { /* Retornou com sucesso */
+
+                clientResponse.close();
+                objectMapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY); /* Converte relacionamento um para muitos dentro desse json */
+
+                BoletoGeradoApiJunoDTO jsonRetornoObj = objectMapper.readValue(stringRetorno,
+                        new TypeReference<BoletoGeradoApiJunoDTO>() {});
+
+                int recorrencia = 1;
+
+                List<BoletoJuno> boletoJunos = new ArrayList<BoletoJuno>();
+
+                for (ConteudoBoletoJunoDTO c : jsonRetornoObj.get_embedded().getCharges()) {
+
+                    BoletoJuno boletoJuno = new BoletoJuno();
+
+                    boletoJuno.setEmpresa(vendaCompraLojaVirtual.getEmpresa());
+                    boletoJuno.setVendaCompraLojaVirtual(vendaCompraLojaVirtual);
+                    boletoJuno.setCode(c.getCode());
+                    boletoJuno.setLink(c.getLink());
+                    boletoJuno.setDataVencimento(new SimpleDateFormat("yyyy-MM-dd").format(new SimpleDateFormat("yyyy-MM-dd").parse(c.getDueDate())));
+                    boletoJuno.setCheckoutUrl(c.getCheckoutUrl());
+                    boletoJuno.setValor(new BigDecimal(c.getAmount()));
+                    boletoJuno.setIdChrBoleto(c.getId());
+                    boletoJuno.setInstallmentLink(c.getInstallmentLink());
+                    boletoJuno.setIdPix(c.getPix().getId());
+                    boletoJuno.setPayloadInBase64(c.getPix().getPayloadInBase64());
+                    boletoJuno.setImageInBase64(c.getPix().getImageInBase64());
+                    boletoJuno.setRecorrencia(recorrencia);
+
+                    boletoJunos.add(boletoJuno);
+                    recorrencia ++;
+                }
+
+                boletoJunoRepository.saveAllAndFlush(boletoJunos);
+
+                return boletoJunos.get(0).getLink();
+
+            }else {
+                return stringRetorno;
+            }
+
+        }else {
+            return "Não existe chave de acesso para a API";
+        }
+    }
 
     public String geraChaveBoletoPix() throws Exception {
 
