@@ -2,6 +2,7 @@ package com.eduardo.lojavirtual.service;
 
 import com.eduardo.lojavirtual.model.AccessTokenJunoAPI;
 import com.eduardo.lojavirtual.repository.AccessTokenJunoRepository;
+import com.eduardo.lojavirtual.util.TokenIntegracao;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
@@ -19,6 +20,26 @@ public class ServiceJuno {
 
     @Autowired
     private AccessTokenJunoRepository accessTokenJunoRepository;
+
+    public String geraChaveBoletoPix() throws Exception {
+
+        AccessTokenJunoAPI accessTokenJunoAPI = this.obterTokenApiJuno();
+
+        Client client = new HostIgnoringClient("https://api.juno.com.br/").hostIgnoringClient();
+        WebResource webResource = client.resource("https://api.juno.com.br/pix/keys");
+        //WebResource webResource = client.resource("https://api.juno.com.br/api-integration/pix/keys");
+
+        ClientResponse clientResponse = webResource
+                .accept("application/json;charset=UTF-8")
+                .header("Content-Type", "application/json")
+                .header("X-API-Version", 2)
+                .header("X-Resource-Token", TokenIntegracao.TOKEN_PRIVATE_JUNO)
+                .header("Authorization", "Bearer " + accessTokenJunoAPI.getAccess_token())
+                //.header("X-Idempotency-Key", "chave-boleto-pix")
+                .post(ClientResponse.class, "{ \"type\": \"RANDOM_KEY\" }");
+
+        return clientResponse.getEntity(String.class);
+    }
 
     public AccessTokenJunoAPI obterTokenApiJuno() throws Exception {
 
