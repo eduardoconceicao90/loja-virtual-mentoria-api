@@ -5,9 +5,11 @@ import com.eduardo.lojavirtual.model.*;
 import com.eduardo.lojavirtual.model.dto.ItemVendaDTO;
 import com.eduardo.lojavirtual.model.dto.ProdutoDTO;
 import com.eduardo.lojavirtual.model.dto.VendaCompraLojaVirtualDTO;
+import com.eduardo.lojavirtual.model.dto.juno.ObjetoPostCarneJunoDTO;
 import com.eduardo.lojavirtual.model.dto.melhorEnvio.*;
 import com.eduardo.lojavirtual.model.enums.StatusContaReceber;
 import com.eduardo.lojavirtual.repository.*;
+import com.eduardo.lojavirtual.service.ServiceJuno;
 import com.eduardo.lojavirtual.service.ServiceSendEmail;
 import com.eduardo.lojavirtual.service.VendaService;
 import com.eduardo.lojavirtual.util.TokenIntegracao;
@@ -62,6 +64,9 @@ public class VendaCompraLojaVirtualController {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private ServiceJuno serviceJuno;
 
     @ResponseBody
     @PostMapping(value = "**/salvarVendaLoja")
@@ -691,6 +696,12 @@ public class VendaCompraLojaVirtualController {
         okhttp3.Response response = client.newCall(request).execute();
 
         return new ResponseEntity<String>(response.body().string(), HttpStatus.OK);
+    }
+
+    @ResponseBody
+    @PostMapping(value = "**/gerarBoletoPix")
+    public ResponseEntity<String> gerarBoletoPix(@Valid @RequestBody ObjetoPostCarneJunoDTO objetoPostCarneJuno) throws Exception{
+        return new ResponseEntity<String>(serviceJuno.gerarCarneApi(objetoPostCarneJuno), HttpStatus.OK);
     }
 
 }
