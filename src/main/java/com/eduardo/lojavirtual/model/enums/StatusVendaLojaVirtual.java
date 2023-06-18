@@ -6,7 +6,7 @@ public enum StatusVendaLojaVirtual {
     CANCELADA("Cancelada"),
     ABANDONOU_CARRINHO("Abandonou Carrinho");
 
-    private String descricao = "";
+    private String descricao;
 
     private StatusVendaLojaVirtual(String valor) {
         this.descricao = valor;
