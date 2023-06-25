@@ -261,4 +261,20 @@ public class ServiceJuno {
         return resposta;
 
     }
+
+    public void deleteWebHook(String idWebHook) throws Exception {
+
+        AccessTokenJunoAPI accessTokenJunoAPI = this.obterTokenApiJuno();
+
+        Client client = new HostIgnoringClient("https://api.juno.com.br/").hostIgnoringClient();
+        WebResource webResource = client.resource("https://api.juno.com.br/notifications/webhooks/" + idWebHook);
+
+        webResource
+                .accept("application/json;charset=UTF-8")
+                .header("Content-Type", "application/json")
+                .header("X-API-Version", 2)
+                .header("X-Resource-Token", TokenIntegracao.TOKEN_PRIVATE_JUNO)
+                .header("Authorization", "Bearer " + accessTokenJunoAPI.getAccess_token())
+                .delete();
+    }
 }

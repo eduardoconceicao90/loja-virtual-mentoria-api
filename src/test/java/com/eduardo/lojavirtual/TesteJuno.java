@@ -35,4 +35,11 @@ public class TesteJuno extends TestCase {
 
         System.out.println(retorno);
     }
+
+    @Test
+    public void deleteWebHook() throws Exception {
+
+        serviceJuno.deleteWebHook("wbh_******************************");
+
+    }
 }
