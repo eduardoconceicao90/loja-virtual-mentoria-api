@@ -27,4 +27,12 @@ public class TesteJuno extends TestCase {
 
         System.out.println(retorno);
     }
+
+    @Test
+    public void listaWebHook() throws Exception {
+
+        String retorno = serviceJuno.listaWebHook();
+
+        System.out.println(retorno);
+    }
 }
