@@ -31,6 +31,8 @@ public class WebConfigSecurity extends WebSecurityConfigurerAdapter implements H
         http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 .disable().authorizeRequests().antMatchers("/").permitAll()
                 .antMatchers("/index").permitAll()
+                .antMatchers(HttpMethod.GET, "/requisicaojunoboleto/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/requisicaojunoboleto/**").permitAll()
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
                 /* Redireciona ou da um retorno para index quando desloga */
@@ -51,11 +53,11 @@ public class WebConfigSecurity extends WebSecurityConfigurerAdapter implements H
         auth.userDetailsService(implUserDetailsService).passwordEncoder(new BCryptPasswordEncoder());
     }
 
-    /* Ignora alguas URL livre de autenticação */
+    /* Ignora algumas URL livre de autenticação */
     @Override
     public void configure(WebSecurity web) throws Exception {
-                  //web.ignoring().antMatchers(HttpMethod.GET, "/acesso/**")
-                  //.antMatchers(HttpMethod.POST, "/acesso/**")
-                  //.antMatchers(HttpMethod.DELETE, "/acesso/**");
+                  web.ignoring()
+                          .antMatchers(HttpMethod.GET, "/requisicaojunoboleto/**")
+                          .antMatchers(HttpMethod.POST, "/requisicaojunoboleto/**");
     }
 }

@@ -135,7 +135,7 @@ public class ServiceJuno {
         }
     }
 
-    public String geraChaveBoletoPix() throws Exception {
+    public String gerarChaveBoletoPix() throws Exception {
 
         AccessTokenJunoAPI accessTokenJunoAPI = this.obterTokenApiJuno();
 
