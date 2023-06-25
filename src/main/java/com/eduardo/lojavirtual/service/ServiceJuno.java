@@ -7,6 +7,7 @@ import com.eduardo.lojavirtual.model.dto.juno.BoletoGeradoApiJunoDTO;
 import com.eduardo.lojavirtual.model.dto.juno.CobrancaJunoAPIDTO;
 import com.eduardo.lojavirtual.model.dto.juno.ConteudoBoletoJunoDTO;
 import com.eduardo.lojavirtual.model.dto.juno.ObjetoPostCarneJunoDTO;
+import com.eduardo.lojavirtual.model.dto.juno.notificacaoPagamento.CriarWebHookDTO;
 import com.eduardo.lojavirtual.repository.AccessTokenJunoRepository;
 import com.eduardo.lojavirtual.repository.BoletoJunoRepository;
 import com.eduardo.lojavirtual.repository.VendaCompraLojaVirtualRepository;
@@ -214,5 +215,29 @@ public class ServiceJuno {
             return "Cancelado com sucesso";
         }
         return clientResponse.getEntity(String.class);
+    }
+
+    public String criarWebHook(CriarWebHookDTO criarWebHook) throws Exception {
+
+        AccessTokenJunoAPI accessTokenJunoAPI = this.obterTokenApiJuno();
+
+        Client client = new HostIgnoringClient("https://api.juno.com.br/").hostIgnoringClient();
+        WebResource webResource = client.resource("https://api.juno.com.br/notifications/webhooks");
+
+        String json = new ObjectMapper().writeValueAsString(criarWebHook);
+
+        ClientResponse clientResponse = webResource
+                .accept("application/json;charset=UTF-8")
+                .header("Content-Type", "application/json")
+                .header("X-API-Version", 2)
+                .header("X-Resource-Token", TokenIntegracao.TOKEN_PRIVATE_JUNO)
+                .header("Authorization", "Bearer " + accessTokenJunoAPI.getAccess_token())
+                .post(ClientResponse.class, json);
+
+        String resposta = clientResponse.getEntity(String.class);
+        clientResponse.close();
+
+        return resposta;
+
     }
 }
