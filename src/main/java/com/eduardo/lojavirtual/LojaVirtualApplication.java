@@ -9,6 +9,10 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.servlet.ViewResolver;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import java.util.concurrent.Executor;
 
@@ -16,11 +20,23 @@ import java.util.concurrent.Executor;
 @EnableAsync
 @EnableScheduling
 @EnableTransactionManagement
+@EnableWebMvc
 @ComponentScan(basePackages = {"com.eduardo.*"})
-public class LojaVirtualApplication implements AsyncConfigurer {
+public class LojaVirtualApplication implements AsyncConfigurer, WebMvcConfigurer {
 
 	public static void main(String[] args) {
 		SpringApplication.run(LojaVirtualApplication.class, args);
+	}
+
+	@Bean
+	public ViewResolver viewResolver() {
+
+		InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
+
+		viewResolver.setPrefix("classpath:templates/");
+		viewResolver.setSuffix(".html");
+
+		return viewResolver;
 	}
 
 	@Override
