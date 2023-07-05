@@ -10,12 +10,12 @@ import java.util.List;
 public class VendaCompraLojaVirtualDTO {
 
     private Long id;
-    private BigDecimal valorTotal;
-    private BigDecimal valorDesc;
+    private BigDecimal valorTotal = BigDecimal.ZERO;
+    private BigDecimal valorDesc = BigDecimal.ZERO;
     private Pessoa pessoa;
     private Endereco cobranca;
     private Endereco entrega;
-    private BigDecimal valorFrete;
+    private BigDecimal valorFrete = BigDecimal.ZERO;
     private List<ItemVendaDTO> itemVendaLoja = new ArrayList<>();
 
     public Long getId() {
@@ -35,6 +35,11 @@ public class VendaCompraLojaVirtualDTO {
     }
 
     public BigDecimal getValorDesc() {
+
+        if (valorDesc == null) {
+            return BigDecimal.ZERO;
+        }
+
         return valorDesc;
     }
 
