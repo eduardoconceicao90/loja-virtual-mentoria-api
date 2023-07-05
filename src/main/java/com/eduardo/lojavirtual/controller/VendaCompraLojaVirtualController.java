@@ -162,25 +162,7 @@ public class VendaCompraLojaVirtualController {
             compraLojaVirtual = new VendaCompraLojaVirtual();
         }
 
-        VendaCompraLojaVirtualDTO compraLojaVirtualDTO = new VendaCompraLojaVirtualDTO();
-
-        compraLojaVirtualDTO.setId(compraLojaVirtual.getId());
-        compraLojaVirtualDTO.setValorTotal(compraLojaVirtual.getValorTotal());
-        compraLojaVirtualDTO.setPessoa(compraLojaVirtual.getPessoa());
-        compraLojaVirtualDTO.setEntrega(compraLojaVirtual.getEnderecoEntrega());
-        compraLojaVirtualDTO.setCobranca(compraLojaVirtual.getEnderecoCobranca());
-        compraLojaVirtualDTO.setValorDesc(compraLojaVirtual.getValorDesconto());
-        compraLojaVirtualDTO.setValorFrete(compraLojaVirtual.getValorFrete());
-
-        for (ItemVendaLoja item : compraLojaVirtual.getItemVendaLojas()) {
-
-            ItemVendaDTO itemVendaDTO = new ItemVendaDTO();
-            itemVendaDTO.setQuantidade(item.getQuantidade());
-            itemVendaDTO.setProdutoDTO(new ProdutoDTO(item.getProduto()));
-
-            compraLojaVirtualDTO.getItemVendaLoja().add(itemVendaDTO);
-        }
-
+        VendaCompraLojaVirtualDTO compraLojaVirtualDTO = vendaService.consultaVenda(compraLojaVirtual);
         return new ResponseEntity<VendaCompraLojaVirtualDTO>(compraLojaVirtualDTO, HttpStatus.OK);
     }
 

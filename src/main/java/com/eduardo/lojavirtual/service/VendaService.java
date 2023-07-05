@@ -1,6 +1,10 @@
 package com.eduardo.lojavirtual.service;
 
+import com.eduardo.lojavirtual.model.ItemVendaLoja;
 import com.eduardo.lojavirtual.model.VendaCompraLojaVirtual;
+import com.eduardo.lojavirtual.model.dto.ItemVendaDTO;
+import com.eduardo.lojavirtual.model.dto.ProdutoDTO;
+import com.eduardo.lojavirtual.model.dto.VendaCompraLojaVirtualDTO;
 import com.eduardo.lojavirtual.repository.VendaCompraLojaVirtualRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -58,6 +62,32 @@ public class VendaService {
         Date date2 = dateFormat.parse(data2);
 
         return vendaCompraLojaVirtualRepository.consultaVendaFaixaData(date1, date2);
+    }
+
+    public VendaCompraLojaVirtualDTO consultaVenda(VendaCompraLojaVirtual compraLojaVirtual) {
+
+        VendaCompraLojaVirtualDTO compraLojaVirtualDTO = new VendaCompraLojaVirtualDTO();
+
+        compraLojaVirtualDTO.setValorTotal(compraLojaVirtual.getValorTotal());
+        compraLojaVirtualDTO.setPessoa(compraLojaVirtual.getPessoa());
+
+        compraLojaVirtualDTO.setEntrega(compraLojaVirtual.getEnderecoEntrega());
+        compraLojaVirtualDTO.setCobranca(compraLojaVirtual.getEnderecoCobranca());
+
+        compraLojaVirtualDTO.setValorDesc(compraLojaVirtual.getValorDesconto());
+        compraLojaVirtualDTO.setValorFrete(compraLojaVirtual.getValorFrete());
+        compraLojaVirtualDTO.setId(compraLojaVirtual.getId());
+
+        for (ItemVendaLoja item : compraLojaVirtual.getItemVendaLojas()) {
+
+            ItemVendaDTO itemVendaDTO = new ItemVendaDTO();
+            itemVendaDTO.setQuantidade(item.getQuantidade());
+            itemVendaDTO.setProdutoDTO(new ProdutoDTO(item.getProduto()));
+
+            compraLojaVirtualDTO.getItemVendaLoja().add(itemVendaDTO);
+        }
+
+        return compraLojaVirtualDTO;
     }
 
 }
