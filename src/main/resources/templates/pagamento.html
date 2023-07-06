@@ -17,6 +17,8 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.map"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
 
     <script type="text/javascript" src="https://www.boletobancario.com/boletofacil/wro/direct-checkout.min.js"></script>
 
@@ -24,6 +26,11 @@
     <!--var checkout = new DirectCheckout('PUBLIC_TOKEN');-->
 
         $(document).ready(function() {
+
+            $('#cpf').mask('000.000.000-00',{reverse: true});
+        	$('#cep').mask('00000-000',{reverse: true});
+        	$('#numerocartao').mask('0000.0000.0000.0000',{reverse: true});
+        	$('#cvv').mask('000',{reverse: true});
 
             function limpa_formulário_cep() {
                 // Limpa valores do formulário de cep.
