@@ -105,6 +105,61 @@
           var estado = $('#estado').val();
           var cidade = $('#cidade').val();
 
+          if(numerocartao.trim() == ''){
+              alert('Informe o número do cartão de crédito.');
+              return;
+	      }
+
+          if(nomecartao.trim() == ''){
+              alert('Informe o nome como escrito no cartão de crédito.');
+              return;
+          }
+
+          if(cpf.trim() == ''){
+              alert('Informe CPF do responsável pelo cartão de crédito.');
+              return;
+          }
+
+          if(mesvalidade.trim() == ''){
+              alert('Informe mês de válidade do cartão de crédito.');
+              return;
+	      }
+
+	      if(anovalidade.trim() == ''){
+              alert('Informe ano de válidade do cartão de crédito.');
+              return;
+	      }
+
+	      if(cvv.trim() == ''){
+              alert('Informe CVV do cartão de crédito.');
+              return;
+	      }
+
+	      if(cep.trim() == ''){
+              alert('Informe CEP de cobrança do cartão de crédito.');
+              return;
+	      }
+
+	      if(rua.trim() == ''){
+              alert('Informe a rua de cobrança do cartão de crédito.');
+              return;
+	      }
+
+	      if(numero.trim() == ''){
+              alert('Informe a número de cobrança do cartão de crédito.');
+              return;
+	      }
+
+	      if(estado.trim() == ''){
+              alert('Informe o estado de cobrança do cartão de crédito.');
+              return;
+	      }
+
+	      if(cidade.trim() == ''){
+              alert('Informe a cidade de cobrança do cartão de crédito.');
+              return;
+	      }
+
         }
     </script>
 
@@ -194,7 +249,7 @@
 
         <div class="form-row">
             <div class="form-group col-md-12">
-                <label for="qtdparcela">Selecione o número de parcela:</label>
+                <label for="qtdparcela">Selecione o número de parcelas:</label>
                 <select class="form-control" required="required" id="qtdparcela" style="height: 40px;">
                     <option value="1">1x</option>
                     <option value="2">2x</option>
