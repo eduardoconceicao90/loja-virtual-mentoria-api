@@ -198,6 +198,17 @@
               return;
 	      });
 
+	      if (isValidCardData && isValidExpireDate && isValidSecurityCode && isValidCardNumber){
+		      checkout.getCardHash(cardData, function(cardHash) {
+
+		  }, function(error) {
+		      alert('Não foi possível gerar o HASH do cartão de crédito": ' + error);
+			  return;
+		    });
+          }else {
+              alert('O pagamento não pode ser realizado.');
+              return;
+          }
         }
     </script>
 
