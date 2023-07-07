@@ -199,8 +199,47 @@
 	      });
 
 	      if (isValidCardData && isValidExpireDate && isValidSecurityCode && isValidCardNumber){
-		      checkout.getCardHash(cardData, function(cardHash) {
+		     checkout.getCardHash(cardData, function(cardHash) {
 
+		     document.getElementById('buttonrealizarPagamento').disabled = true;
+			 document.getElementById('buttonrealizarPagamento').value = 'Efetuando pagamento...';
+
+		     $.ajax({
+			   method: 'POST',
+			   url: 'finalizarCompraCartao',
+			   data: {
+				   cardHash: cardHash,
+				   cardNumber: cardData.cardNumber,
+				   holderName: cardData.holderName,
+				   securityCode: cardData.securityCode,
+				   expirationMonth: cardData.expirationMonth,
+				   expirationYear: cardData.expirationYear,
+				   idVendaCampo: idVendaCampo,
+				   cpf: cpf,
+				   qtdparcela: qtdparcela,
+				   cep: cep,
+				   rua: rua,
+				   numero: numero,
+				   estado: estado,
+				   cidade: cidade
+			   }
+		     }).success(function (response) {
+			   if (response == 'sucesso') {
+			      document.getElementById('buttonrealizarPagamento').disabled = true;
+			      document.getElementById('buttonrealizarPagamento').value = 'Sucesso, OK... Pago';
+			   }else {
+				   document.getElementById('buttonrealizarPagamento').disabled = false;
+				   document.getElementById('buttonrealizarPagamento').value = 'Realizar Pagamento';
+
+				   alert(response);
+			   }
+		     }).fail(function (xhr, status, errorThrown) {
+			   document.getElementById('buttonrealizarPagamento').disabled = false;
+			   document.getElementById('buttonrealizarPagamento').value = 'Realizar Pagamento';
+
+			   alert('Erro ao efetuar pagamento: ' + errorThrown);
+			   return;
+		     });
 		  }, function(error) {
 		      alert('Não foi possível gerar o HASH do cartão de crédito": ' + error);
 			  return;
@@ -347,7 +386,7 @@
 
         <div class="form-row">
             <div class="form-group col-md-12">
-                <input onclick="realizarPagamento();" type="button" class="btn btn-primary btn-lg" value="Realizar Pagamento" style="font-size: 23px;height: 50px; width: 100%">
+                <input id="buttonrealizarPagamento" onclick="realizarPagamento();" type="button" class="btn btn-primary btn-lg" value="Realizar Pagamento" style="font-size: 23px;height: 50px; width: 100%">
             </div>
         </div>
 
