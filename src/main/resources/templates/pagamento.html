@@ -189,6 +189,15 @@
               return;
           }
 
+          var isValidCardData = checkout.isValidCardData(cardData, function(error) {
+              if (error.toString().includes('Invalid holder name', error)){
+                  alert('Seu nome informado não está igual ao escrito no cartão de crédito.');
+              }else{
+                  alert('Mensagem de erro: ' + error.toString());
+              }
+              return;
+	      });
+
         }
     </script>
 
