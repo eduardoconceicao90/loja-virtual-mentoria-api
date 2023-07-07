@@ -160,6 +160,35 @@
               return;
 	      }
 
+	      var cardData = {
+			cardNumber: numerocartao.replaceAll('.',""),
+			holderName: nomecartao,
+			securityCode: cvv,
+			expirationMonth: mesvalidade,
+			expirationYear: anovalidade
+	      };
+
+          var isValidCardNumber = checkout.isValidCardNumber(cardData.cardNumber);
+
+          if (isValidCardNumber == false){
+              alert('Número do cartão é inválido');
+              return;
+          }
+
+          var isValidSecurityCode = checkout.isValidSecurityCode(cardData.cardNumber, cvv);
+
+          if (isValidSecurityCode == false){
+              alert('Códivo CVV de segurança é inválido.');
+              return;
+          }
+
+          var isValidExpireDate = checkout.isValidExpireDate(cardData.expirationMonth, cardData.expirationYear);
+
+          if (isValidExpireDate == false){
+              alert('Data de validade é inválida');
+              return;
+          }
+
         }
     </script>
 
