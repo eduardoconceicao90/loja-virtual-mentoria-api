@@ -1,9 +1,12 @@
 package com.eduardo.lojavirtual.controller;
 
+import com.eduardo.lojavirtual.model.AccessTokenJunoAPI;
 import com.eduardo.lojavirtual.model.VendaCompraLojaVirtual;
 import com.eduardo.lojavirtual.model.dto.VendaCompraLojaVirtualDTO;
 import com.eduardo.lojavirtual.repository.VendaCompraLojaVirtualRepository;
+import com.eduardo.lojavirtual.service.ServiceJuno;
 import com.eduardo.lojavirtual.service.VendaService;
+import com.eduardo.lojavirtual.util.ValidaCPF;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +25,9 @@ public class PagamentoController {
 
     @Autowired
     private VendaService vendaService;
+
+    @Autowired
+    private ServiceJuno serviceJuno;
 
     @RequestMapping(method = RequestMethod.GET, value = "**/pagamento/{idVendaCompra}")
     public ModelAndView pagamento(@PathVariable(value = "idVendaCompra", required = false) String idVendaCompra) {
@@ -52,7 +58,33 @@ public class PagamentoController {
                                                         @RequestParam("rua") String rua,
                                                         @RequestParam("numero") String numero,
                                                         @RequestParam("estado") String estado,
-                                                        @RequestParam("cidade") String cidade) throws Exception{
+                                                        @RequestParam("cidade") String cidade) throws Exception {
+
+        VendaCompraLojaVirtual vendaCompraLojaVirtual = vendaCompraLojaVirtualRepository.findById(idVendaCampo).orElse(null);
+
+        if (vendaCompraLojaVirtual == null) {
+            return new ResponseEntity<String>("Código da venda não existe!", HttpStatus.OK);
+        }
+
+        String cpfLimpo =  cpf.replaceAll("\\.", "").replaceAll("\\-", "");
+
+        if (!ValidaCPF.isCPF(cpfLimpo)) {
+            return new ResponseEntity<String>("CPF informado é inválido.", HttpStatus.OK);
+        }
+
+        if (qtdparcela > 12 || qtdparcela <= 0) {
+            return new ResponseEntity<String>("Quantidade de parcelar deve ser de 1 até 12.", HttpStatus.OK);
+        }
+
+        if (vendaCompraLojaVirtual.getValorTotal().doubleValue() <= 0) {
+            return new ResponseEntity<String>("Valor da venda não pode ser Zero(0).", HttpStatus.OK);
+        }
+
+        AccessTokenJunoAPI accessTokenJunoAPI = serviceJuno.obterTokenApiJuno();
+
+        if (accessTokenJunoAPI == null) {
+            return new ResponseEntity<String>("Autorização bancária não foi encontrada.", HttpStatus.OK);
+        }
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
