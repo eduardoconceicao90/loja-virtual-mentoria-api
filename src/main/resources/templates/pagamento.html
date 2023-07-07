@@ -88,6 +88,24 @@
                 }
             });
         });
+
+        function realizarPagamento(){
+
+          var idVendaCampo = $('#idVendaCampo').val();
+          var numerocartao = $('#numerocartao').val();
+          var nomecartao = $('#nomecartao').val();
+          var cpf = $('#cpf').val();
+          var mesvalidade = $('#mesvalidade').val();
+          var anovalidade = $('#anovalidade').val();
+          var cvv = $('#cvv').val();
+          var qtdparcela = $('#qtdparcela').val();
+          var cep = $('#cep').val();
+          var rua = $('#rua').val();
+          var numero = $('#numero').val();
+          var estado = $('#estado').val();
+          var cidade = $('#cidade').val();
+
+        }
     </script>
 
 </head>
@@ -96,6 +114,7 @@
 <div class="container">
 
     <form style="padding-top: 20px; padding-bottom: 20px" id="formcheckout">
+        <input type="hidden" th:value="${venda.id}" id="idVendaCampo">
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="nome">Nome:</label>
@@ -224,7 +243,7 @@
 
         <div class="form-row">
             <div class="form-group col-md-12">
-                <input type="button" class="btn btn-primary btn-lg" value="Realizar Pagamento" style="font-size: 23px;height: 50px; width: 100%">
+                <input onclick="realizarPagamento();" type="button" class="btn btn-primary btn-lg" value="Realizar Pagamento" style="font-size: 23px;height: 50px; width: 100%">
             </div>
         </div>
 
