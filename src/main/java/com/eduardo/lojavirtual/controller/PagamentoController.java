@@ -3,9 +3,11 @@ package com.eduardo.lojavirtual.controller;
 import com.eduardo.lojavirtual.model.AccessTokenJunoAPI;
 import com.eduardo.lojavirtual.model.VendaCompraLojaVirtual;
 import com.eduardo.lojavirtual.model.dto.VendaCompraLojaVirtualDTO;
+import com.eduardo.lojavirtual.model.dto.juno.CobrancaJunoAPIDTO;
 import com.eduardo.lojavirtual.repository.VendaCompraLojaVirtualRepository;
 import com.eduardo.lojavirtual.service.ServiceJuno;
 import com.eduardo.lojavirtual.service.VendaService;
+import com.eduardo.lojavirtual.util.TokenIntegracao;
 import com.eduardo.lojavirtual.util.ValidaCPF;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +18,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 @Controller
 public class PagamentoController {
@@ -85,6 +92,34 @@ public class PagamentoController {
         if (accessTokenJunoAPI == null) {
             return new ResponseEntity<String>("Autorização bancária não foi encontrada.", HttpStatus.OK);
         }
+
+        CobrancaJunoAPIDTO cobrancaJunoAPI = new CobrancaJunoAPIDTO();
+        cobrancaJunoAPI.getCharge().setPixKey(TokenIntegracao.CHAVE_BOLETO_PIX);
+        cobrancaJunoAPI.getCharge().setDescription("Pagamento da venda: " + vendaCompraLojaVirtual.getId() + " para o cliente: " + vendaCompraLojaVirtual.getPessoa().getNome());
+
+        if (qtdparcela == 1) {
+            cobrancaJunoAPI.getCharge().setAmount(vendaCompraLojaVirtual.getValorTotal().floatValue());
+        }else {
+            BigDecimal valorParcela = vendaCompraLojaVirtual.getValorTotal().divide(BigDecimal.valueOf(qtdparcela), RoundingMode.DOWN).setScale(2, RoundingMode.DOWN);
+            cobrancaJunoAPI.getCharge().setAmount(valorParcela.floatValue());
+        }
+
+        cobrancaJunoAPI.getCharge().setInstallments(qtdparcela);
+
+        Calendar dataVencimento = Calendar.getInstance();
+        dataVencimento.add(Calendar.DAY_OF_MONTH, 7);
+        SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd");
+        cobrancaJunoAPI.getCharge().setDueDate(dateFormater.format(dataVencimento.getTime()));
+
+        cobrancaJunoAPI.getCharge().setFine(BigDecimal.valueOf(1.00));
+        cobrancaJunoAPI.getCharge().setInterest(BigDecimal.valueOf(1.00));
+        cobrancaJunoAPI.getCharge().setMaxOverdueDays(7);
+        cobrancaJunoAPI.getCharge().getPaymentTypes().add("CREDIT_CARD");
+
+        cobrancaJunoAPI.getBilling().setName(holderName);
+        cobrancaJunoAPI.getBilling().setDocument(cpfLimpo);
+        cobrancaJunoAPI.getBilling().setEmail(vendaCompraLojaVirtual.getPessoa().getEmail());
+        cobrancaJunoAPI.getBilling().setPhone(vendaCompraLojaVirtual.getPessoa().getTelefone());
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
