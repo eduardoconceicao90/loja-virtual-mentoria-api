@@ -4,10 +4,7 @@ import com.eduardo.lojavirtual.model.AccessTokenJunoAPI;
 import com.eduardo.lojavirtual.model.BoletoJuno;
 import com.eduardo.lojavirtual.model.VendaCompraLojaVirtual;
 import com.eduardo.lojavirtual.model.dto.VendaCompraLojaVirtualDTO;
-import com.eduardo.lojavirtual.model.dto.juno.BoletoGeradoApiJunoDTO;
-import com.eduardo.lojavirtual.model.dto.juno.CobrancaJunoAPIDTO;
-import com.eduardo.lojavirtual.model.dto.juno.ConteudoBoletoJunoDTO;
-import com.eduardo.lojavirtual.model.dto.juno.ErroResponseDTO;
+import com.eduardo.lojavirtual.model.dto.juno.*;
 import com.eduardo.lojavirtual.repository.BoletoJunoRepository;
 import com.eduardo.lojavirtual.repository.VendaCompraLojaVirtualRepository;
 import com.eduardo.lojavirtual.service.HostIgnoringClient;
@@ -198,6 +195,20 @@ public class PagamentoController {
         if (boletosJuno == null || (boletosJuno != null && boletosJuno.isEmpty())) {
             return new ResponseEntity<String>("O registro financeiro não pode ser criado para pagamento", HttpStatus.OK);
         }
+
+        /**------------------------REALIZANDO PAGAMENTO POR CARTÃO-------------------------**/
+
+        BoletoJuno boletoJunoQuitacao = boletosJuno.get(0);
+
+        PagamentoCartaoCreditoDTO pagamentoCartaoCredito = new PagamentoCartaoCreditoDTO();
+        pagamentoCartaoCredito.setChargeId(boletoJunoQuitacao.getChargeICartao());
+        pagamentoCartaoCredito.getCreditCardDetails().setCreditCardHash(cardHash);
+        pagamentoCartaoCredito.getBilling().setEmail(vendaCompraLojaVirtual.getPessoa().getEmail());
+        pagamentoCartaoCredito.getBilling().getAddress().setState(estado);
+        pagamentoCartaoCredito.getBilling().getAddress().setNumber(numero);
+        pagamentoCartaoCredito.getBilling().getAddress().setCity(cidade);
+        pagamentoCartaoCredito.getBilling().getAddress().setStreet(rua);
+        pagamentoCartaoCredito.getBilling().getAddress().setPostCode(cep.replaceAll("\\-", "").replaceAll("\\.", ""));
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
