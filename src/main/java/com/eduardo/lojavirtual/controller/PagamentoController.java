@@ -4,11 +4,18 @@ import com.eduardo.lojavirtual.model.AccessTokenJunoAPI;
 import com.eduardo.lojavirtual.model.VendaCompraLojaVirtual;
 import com.eduardo.lojavirtual.model.dto.VendaCompraLojaVirtualDTO;
 import com.eduardo.lojavirtual.model.dto.juno.CobrancaJunoAPIDTO;
+import com.eduardo.lojavirtual.model.dto.juno.ErroResponseDTO;
 import com.eduardo.lojavirtual.repository.VendaCompraLojaVirtualRepository;
+import com.eduardo.lojavirtual.service.HostIgnoringClient;
 import com.eduardo.lojavirtual.service.ServiceJuno;
 import com.eduardo.lojavirtual.service.VendaService;
 import com.eduardo.lojavirtual.util.TokenIntegracao;
 import com.eduardo.lojavirtual.util.ValidaCPF;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -120,6 +127,29 @@ public class PagamentoController {
         cobrancaJunoAPI.getBilling().setDocument(cpfLimpo);
         cobrancaJunoAPI.getBilling().setEmail(vendaCompraLojaVirtual.getPessoa().getEmail());
         cobrancaJunoAPI.getBilling().setPhone(vendaCompraLojaVirtual.getPessoa().getTelefone());
+
+        Client client = new HostIgnoringClient("https://api.juno.com.br/").hostIgnoringClient();
+        WebResource webResource = client.resource("https://api.juno.com.br/charges");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(cobrancaJunoAPI);
+
+        ClientResponse clientResponse = webResource
+                .accept("application/json;charset=UTF-8")
+                .header("Content-Type", "application/json;charset=UTF-8")
+                .header("X-API-Version", 2)
+                .header("X-Resource-Token", TokenIntegracao.TOKEN_PRIVATE_JUNO)
+                .header("Authorization", "Bearer " + accessTokenJunoAPI.getAccess_token())
+                .post(ClientResponse.class, json);
+
+        String stringRetorno = clientResponse.getEntity(String.class);
+
+        if (clientResponse.getStatus() != 200) {
+            ErroResponseDTO jsonRetornoErro = objectMapper.readValue(stringRetorno, new TypeReference<ErroResponseDTO>() {});
+            return new ResponseEntity<String>(jsonRetornoErro.listaErro(), HttpStatus.OK);
+        }
+
+        clientResponse.close();
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
