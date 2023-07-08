@@ -1,10 +1,14 @@
 package com.eduardo.lojavirtual.controller;
 
 import com.eduardo.lojavirtual.model.AccessTokenJunoAPI;
+import com.eduardo.lojavirtual.model.BoletoJuno;
 import com.eduardo.lojavirtual.model.VendaCompraLojaVirtual;
 import com.eduardo.lojavirtual.model.dto.VendaCompraLojaVirtualDTO;
+import com.eduardo.lojavirtual.model.dto.juno.BoletoGeradoApiJunoDTO;
 import com.eduardo.lojavirtual.model.dto.juno.CobrancaJunoAPIDTO;
+import com.eduardo.lojavirtual.model.dto.juno.ConteudoBoletoJunoDTO;
 import com.eduardo.lojavirtual.model.dto.juno.ErroResponseDTO;
+import com.eduardo.lojavirtual.repository.BoletoJunoRepository;
 import com.eduardo.lojavirtual.repository.VendaCompraLojaVirtualRepository;
 import com.eduardo.lojavirtual.service.HostIgnoringClient;
 import com.eduardo.lojavirtual.service.ServiceJuno;
@@ -12,6 +16,7 @@ import com.eduardo.lojavirtual.service.VendaService;
 import com.eduardo.lojavirtual.util.TokenIntegracao;
 import com.eduardo.lojavirtual.util.ValidaCPF;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
@@ -29,7 +34,9 @@ import org.springframework.web.servlet.ModelAndView;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 @Controller
 public class PagamentoController {
@@ -42,6 +49,9 @@ public class PagamentoController {
 
     @Autowired
     private ServiceJuno serviceJuno;
+
+    @Autowired
+    private BoletoJunoRepository boletoJunoRepository;
 
     @RequestMapping(method = RequestMethod.GET, value = "**/pagamento/{idVendaCompra}")
     public ModelAndView pagamento(@PathVariable(value = "idVendaCompra", required = false) String idVendaCompra) {
@@ -115,7 +125,7 @@ public class PagamentoController {
 
         Calendar dataVencimento = Calendar.getInstance();
         dataVencimento.add(Calendar.DAY_OF_MONTH, 7);
-        SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat dateFormater = new SimpleDateFormat("yyy-MM-dd");
         cobrancaJunoAPI.getCharge().setDueDate(dateFormater.format(dataVencimento.getTime()));
 
         cobrancaJunoAPI.getCharge().setFine(BigDecimal.valueOf(1.00));
@@ -150,6 +160,44 @@ public class PagamentoController {
         }
 
         clientResponse.close();
+
+        objectMapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
+
+        BoletoGeradoApiJunoDTO jsonRetorno = objectMapper.readValue(stringRetorno, new TypeReference<BoletoGeradoApiJunoDTO>() {});
+
+        int recorrencia = 1;
+
+        List<BoletoJuno> boletosJuno = new ArrayList<BoletoJuno>();
+
+        for (ConteudoBoletoJunoDTO c : jsonRetorno.get_embedded().getCharges()) {
+
+            BoletoJuno boletoJuno = new BoletoJuno();
+
+            boletoJuno.setChargeICartao(c.getId());
+            boletoJuno.setCheckoutUrl(c.getCheckoutUrl());
+            boletoJuno.setCode(c.getCode());
+            boletoJuno.setDataVencimento(new SimpleDateFormat("yyyy-MM-dd").format(new SimpleDateFormat("yyy-MM-dd").parse(c.getDueDate())));
+            boletoJuno.setEmpresa(vendaCompraLojaVirtual.getEmpresa());
+            boletoJuno.setIdChrBoleto(c.getId());
+            boletoJuno.setIdPix(c.getPix().getId());
+            boletoJuno.setImageInBase64(c.getPix().getImageInBase64());
+            boletoJuno.setInstallmentLink(c.getInstallmentLink());
+            boletoJuno.setLink(c.getLink());
+            boletoJuno.setPayloadInBase64(c.getPix().getPayloadInBase64());
+            boletoJuno.setQuitado(false);
+            boletoJuno.setRecorrencia(recorrencia);
+            boletoJuno.setValor(new BigDecimal(c.getAmount()).setScale(2, RoundingMode.HALF_UP));
+            boletoJuno.setVendaCompraLojaVirtual(vendaCompraLojaVirtual);
+
+            boletoJuno = boletoJunoRepository.saveAndFlush(boletoJuno);
+
+            boletosJuno.add(boletoJuno);
+            recorrencia ++;
+        }
+
+        if (boletosJuno == null || (boletosJuno != null && boletosJuno.isEmpty())) {
+            return new ResponseEntity<String>("O registro financeiro não pode ser criado para pagamento", HttpStatus.OK);
+        }
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
