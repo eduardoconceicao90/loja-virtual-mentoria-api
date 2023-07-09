@@ -254,6 +254,12 @@ public class PagamentoController {
 
         PaymentsCartaoCreditoDTO cartaoCredito = retornoPagamentoCartaoJuno.getPayments().get(0);
 
+        if (!cartaoCredito.getStatus().equalsIgnoreCase("CONFIRMED")) {
+            for (BoletoJuno boletoJuno : boletosJuno) {
+                serviceJuno.cancelarBoleto(boletoJuno.getCode());
+            }
+        }
+
         if (cartaoCredito.getStatus().equalsIgnoreCase("DECLINED")) {
             return new ResponseEntity<String>("Pagamento rejeito pela análise de risco", HttpStatus.OK);
         }
@@ -273,6 +279,12 @@ public class PagamentoController {
             return new ResponseEntity<String>("Pagamento parcialmente estornado.", HttpStatus.OK);
         }
         else  if (cartaoCredito.getStatus().equalsIgnoreCase("CONFIRMED")) {
+
+            for (BoletoJuno boletoJuno : boletosJuno) {
+                boletoJunoRepository.quitarBoletoById(boletoJuno.getId());
+            }
+
+            vendaCompraLojaVirtualRepository.updateFinalizaVenda(vendaCompraLojaVirtual.getId());
 
             return new ResponseEntity<String>("sucesso", HttpStatus.OK);
         }
