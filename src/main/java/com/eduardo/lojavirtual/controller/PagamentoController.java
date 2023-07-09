@@ -241,6 +241,17 @@ public class PagamentoController {
             return new ResponseEntity<String>(erroResponse.listaErro(), HttpStatus.OK);
         }
 
+        RetornoPagamentoCartaoJunoDTO retornoPagamentoCartaoJuno = objectMapperCartao.readValue(stringRetornoCartao, new TypeReference<RetornoPagamentoCartaoJunoDTO>() {});
+
+        if (retornoPagamentoCartaoJuno.getPayments().size() <= 0) {
+
+            for (BoletoJuno boletoJuno : boletosJuno) {
+                serviceJuno.cancelarBoleto(boletoJuno.getCode());
+            }
+
+            return new ResponseEntity<String>("Nenhum pagamento foi retornado para processar.", HttpStatus.OK);
+        }
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
