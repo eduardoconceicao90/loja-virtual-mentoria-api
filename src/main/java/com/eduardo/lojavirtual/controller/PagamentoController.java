@@ -252,6 +252,31 @@ public class PagamentoController {
             return new ResponseEntity<String>("Nenhum pagamento foi retornado para processar.", HttpStatus.OK);
         }
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        PaymentsCartaoCreditoDTO cartaoCredito = retornoPagamentoCartaoJuno.getPayments().get(0);
+
+        if (cartaoCredito.getStatus().equalsIgnoreCase("DECLINED")) {
+            return new ResponseEntity<String>("Pagamento rejeito pela análise de risco", HttpStatus.OK);
+        }
+        else  if (cartaoCredito.getStatus().equalsIgnoreCase("FAILED")) {
+            return new ResponseEntity<String>("Pagamento não realizado por falha", HttpStatus.OK);
+        }
+        else  if (cartaoCredito.getStatus().equalsIgnoreCase("NOT_AUTHORIZED")) {
+            return new ResponseEntity<String>("Pagamento não autorizado pela instituição responsável pelo cartão de crédito, no caso, a emissora do seu cartão.", HttpStatus.OK);
+        }
+        else  if (cartaoCredito.getStatus().equalsIgnoreCase("CUSTOMER_PAID_BACK")) {
+            return new ResponseEntity<String>("Pagamento estornado a pedido do cliente.", HttpStatus.OK);
+        }
+        else  if (cartaoCredito.getStatus().equalsIgnoreCase("BANK_PAID_BACK")) {
+            return new ResponseEntity<String>("Pagamento estornado a pedido do banco.", HttpStatus.OK);
+        }
+        else  if (cartaoCredito.getStatus().equalsIgnoreCase("PARTIALLY_REFUNDED")) {
+            return new ResponseEntity<String>("Pagamento parcialmente estornado.", HttpStatus.OK);
+        }
+        else  if (cartaoCredito.getStatus().equalsIgnoreCase("CONFIRMED")) {
+
+            return new ResponseEntity<String>("sucesso", HttpStatus.OK);
+        }
+
+        return new ResponseEntity<String>("Nenhuma operação realizada!",HttpStatus.OK);
     }
 }
