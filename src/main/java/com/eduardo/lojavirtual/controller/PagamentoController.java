@@ -210,6 +210,37 @@ public class PagamentoController {
         pagamentoCartaoCredito.getBilling().getAddress().setStreet(rua);
         pagamentoCartaoCredito.getBilling().getAddress().setPostCode(cep.replaceAll("\\-", "").replaceAll("\\.", ""));
 
+        Client clientCartao = new HostIgnoringClient("https://api.juno.com.br/").hostIgnoringClient();
+        WebResource webResourceCartao = clientCartao.resource("https://api.juno.com.br/payments");
+
+        ObjectMapper objectMapperCartao = new ObjectMapper();
+        String jsonCartao = objectMapperCartao.writeValueAsString(pagamentoCartaoCredito);
+
+        System.out.println("--------Envio dados pagamento cartão--------: "+ jsonCartao);
+
+        ClientResponse clientResponseCartao = webResourceCartao
+                .accept("application/json;charset=UTF-8")
+                .header("Content-Type", "application/json;charset=UTF-8")
+                .header("X-API-Version", 2)
+                .header("X-Resource-Token", TokenIntegracao.TOKEN_PRIVATE_JUNO)
+                .header("Authorization", "Bearer " + accessTokenJunoAPI.getAccess_token())
+                .post(ClientResponse.class, jsonCartao);
+
+        String stringRetornoCartao = clientResponseCartao.getEntity(String.class);
+
+        System.out.println("--------Retorno dados pagamento cartão--------: "+ stringRetornoCartao);
+
+        if (clientResponseCartao.getStatus() != 200) {
+
+            ErroResponseDTO erroResponse = objectMapper.readValue(stringRetornoCartao, new TypeReference<ErroResponseDTO>() {});
+
+            for (BoletoJuno boletoJuno : boletosJuno) {
+                serviceJuno.cancelarBoleto(boletoJuno.getCode());
+            }
+
+            return new ResponseEntity<String>(erroResponse.listaErro(), HttpStatus.OK);
+        }
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
