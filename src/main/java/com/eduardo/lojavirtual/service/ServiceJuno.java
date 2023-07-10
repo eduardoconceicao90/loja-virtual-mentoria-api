@@ -212,6 +212,7 @@ public class ServiceJuno {
                 .put(ClientResponse.class);
 
         if (clientResponse.getStatus() == 204) {
+            boletoJunoRepository.deleteByCode(code);
             return "Cancelado com sucesso";
         }
         return clientResponse.getEntity(String.class);
