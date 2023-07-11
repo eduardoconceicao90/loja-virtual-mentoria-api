@@ -1,7 +1,11 @@
 package com.eduardo.lojavirtual.service;
 
+import com.eduardo.lojavirtual.model.dto.asaas.ClienteAsaasApiPagamentoDTO;
 import com.eduardo.lojavirtual.model.dto.asaas.ObjetoPostCarneAssasDTO;
 import com.eduardo.lojavirtual.util.AsaasApiPagamentoStatus;
+import com.eduardo.lojavirtual.util.ValidaCPF;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
@@ -9,6 +13,7 @@ import org.apache.tomcat.util.json.JSONParser;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 
 @Service
 public class ServiceAsaas {
@@ -50,7 +55,34 @@ public class ServiceAsaas {
         Integer total = Integer.parseInt(parser.get("totalCount").toString());
 
         if (total <= 0) { /* Cria o cliente */
+            ClienteAsaasApiPagamentoDTO clienteAsaasApiPagamento = new ClienteAsaasApiPagamentoDTO();
 
+            if (!ValidaCPF.isCPF(dados.getPayerCpfCnpj())) {
+                clienteAsaasApiPagamento.setCpfCnpj("60051803046");
+            }else {
+                clienteAsaasApiPagamento.setCpfCnpj(dados.getPayerCpfCnpj());
+            }
+
+            clienteAsaasApiPagamento.setEmail(dados.getEmail());
+            clienteAsaasApiPagamento.setName(dados.getPayerName());
+            clienteAsaasApiPagamento.setPhone(dados.getPayerPhone());
+
+            Client client2 = new HostIgnoringClient(AsaasApiPagamentoStatus.URL_API_ASAAS).hostIgnoringClient();
+            WebResource webResource2 = client2.resource(AsaasApiPagamentoStatus.URL_API_ASAAS + "customers");
+
+            ClientResponse clientResponse2 = webResource2.accept("application/json;charset=UTF-8")
+                    .header("Content-Type", "application/json")
+                    .header("access_token", AsaasApiPagamentoStatus.API_KEY)
+                    .post(ClientResponse.class, new ObjectMapper().writeValueAsBytes(clienteAsaasApiPagamento));
+
+            LinkedHashMap<String, Object> parser2 = new JSONParser(clientResponse2.getEntity(String.class)).parseObject();
+            clientResponse2.close();
+
+            customer_id = parser2.get("id").toString();
+
+        }else { /* Já tem cliente cadastrado */
+            List<Object> data = (List<Object>) parser.get("data");
+            customer_id = new Gson().toJsonTree(data.get(0)).getAsJsonObject().get("id").toString().replaceAll("\"", "");
         }
 
         return customer_id;
