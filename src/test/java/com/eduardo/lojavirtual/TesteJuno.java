@@ -2,7 +2,6 @@ package com.eduardo.lojavirtual;
 
 import com.eduardo.lojavirtual.model.dto.juno.notificacaoPagamento.CriarWebHookDTO;
 import com.eduardo.lojavirtual.service.ServiceJuno;
-import junit.framework.TestCase;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,7 +9,7 @@ import org.springframework.context.annotation.Profile;
 
 @Profile("dev")
 @SpringBootTest(classes = LojaVirtualApplication.class)
-public class TesteJuno extends TestCase {
+public class TesteJuno {
 
     @Autowired
     private ServiceJuno serviceJuno;
