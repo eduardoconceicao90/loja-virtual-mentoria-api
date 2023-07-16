@@ -29,8 +29,22 @@ public class TesteAsaas extends TestCase {
         dados.setPayerCpfCnpj("05217956569");
         dados.setPayerPhone("81983784049");
 
-        String  customer_id = serviceAsaas.buscaClientePessoaApiAsaas(dados);
+        String customer_id = serviceAsaas.buscaClientePessoaApiAsaas(dados);
 
         assertEquals("cus_000058875584", customer_id);
+    }
+
+    @Test
+    public void testeGerarCarneApiAsaas() throws Exception {
+
+        ObjetoPostCarneAssasDTO dados = new ObjetoPostCarneAssasDTO();
+        dados.setEmail("eduardosaconceicao@gmail.com");
+        dados.setPayerName("Eduardo Conceição");
+        dados.setPayerCpfCnpj("05217956569");
+        dados.setPayerPhone("81983784049");
+        dados.setIdVenda(25L);
+
+        String retorno = serviceAsaas.gerarCarneApiAsaas(dados);
+        System.out.println(retorno);
     }
 }

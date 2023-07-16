@@ -4,7 +4,6 @@ import com.eduardo.lojavirtual.model.BoletoAsaas;
 import com.eduardo.lojavirtual.model.VendaCompraLojaVirtual;
 import com.eduardo.lojavirtual.model.dto.asaas.*;
 import com.eduardo.lojavirtual.repository.BoletoAsaasRepository;
-import com.eduardo.lojavirtual.repository.BoletoJunoRepository;
 import com.eduardo.lojavirtual.repository.VendaCompraLojaVirtualRepository;
 import com.eduardo.lojavirtual.util.AsaasApiPagamentoStatus;
 import com.eduardo.lojavirtual.util.ValidaCPF;
@@ -125,7 +124,20 @@ public class ServiceAsaas {
         cobrancaApiAsaas.getInterest().setValue(1F);
         cobrancaApiAsaas.getFine().setValue(1F);
 
-        return "";
+        String json  = new ObjectMapper().writeValueAsString(cobrancaApiAsaas);
+        Client client = new HostIgnoringClient(AsaasApiPagamentoStatus.URL_API_ASAAS).hostIgnoringClient();
+        WebResource webResource = client.resource(AsaasApiPagamentoStatus.URL_API_ASAAS + "payments");
+
+        ClientResponse clientResponse = webResource
+                .accept("application/json;charset=UTF-8")
+                .header("Content-Type", "application/json")
+                .header("access_token", AsaasApiPagamentoStatus.API_KEY)
+                .post(ClientResponse.class, json);
+
+        String stringRetorno = clientResponse.getEntity(String.class);
+        clientResponse.close();
+
+        return stringRetorno;
 
     }
 }
