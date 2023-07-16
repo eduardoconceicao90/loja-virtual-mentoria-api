@@ -104,6 +104,29 @@ public class ServiceAsaas {
         return customer_id;
     }
 
+    public ObjetoQrCodePixAsaasDTO buscarQrCodeCodigoPix(String idCobranca) throws Exception {
+
+        Client client = new HostIgnoringClient(AsaasApiPagamentoStatus.URL_API_ASAAS).hostIgnoringClient();
+        WebResource webResource = client.resource(AsaasApiPagamentoStatus.URL_API_ASAAS + "payments/"+idCobranca +"/pixQrCode");
+
+        ClientResponse clientResponse = webResource
+                .accept("application/json;charset=UTF-8")
+                .header("Content-Type", "application/json")
+                .header("access_token", AsaasApiPagamentoStatus.API_KEY)
+                .get(ClientResponse.class);
+
+        String stringRetorno = clientResponse.getEntity(String.class);
+        clientResponse.close();
+
+        ObjetoQrCodePixAsaasDTO codePixAsaas = new ObjetoQrCodePixAsaasDTO();
+
+        LinkedHashMap<String, Object> parser = new JSONParser(stringRetorno).parseObject();
+        codePixAsaas.setEncodedImage(parser.get("encodedImage").toString());
+        codePixAsaas.setPayload(parser.get("payload").toString());
+
+        return codePixAsaas;
+    }
+
     public String gerarCarneApiAsaas(ObjetoPostCarneAssasDTO objetoPostCarneAssas) throws Exception {
 
         VendaCompraLojaVirtual vendaCompraLojaVirtual = vendaCompraLojaVirtualRepository.findById(objetoPostCarneAssas.getIdVenda()).get();
@@ -174,6 +197,11 @@ public class ServiceAsaas {
             boletoAsaas.setIdChrBoleto(data.getId());
             boletoAsaas.setInstallmentLink(data.getInvoiceUrl());
             boletoAsaas.setRecorrencia(recorrencia);
+
+            ObjetoQrCodePixAsaasDTO codePixAsaas = this.buscarQrCodeCodigoPix(data.getId());
+
+            boletoAsaas.setPayloadInBase64(codePixAsaas.getPayload());
+            boletoAsaas.setImageInBase64(codePixAsaas.getEncodedImage());
 
             boletosAsaas.add(boletoAsaas);
             recorrencia ++;
