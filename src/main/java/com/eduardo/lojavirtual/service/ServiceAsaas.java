@@ -137,7 +137,51 @@ public class ServiceAsaas {
         String stringRetorno = clientResponse.getEntity(String.class);
         clientResponse.close();
 
-        return stringRetorno;
+        /* Buscando parcelas geradas */
+
+        LinkedHashMap<String, Object> parser = new JSONParser(stringRetorno).parseObject();
+        String installment = parser.get("installment").toString();
+        Client client2 = new HostIgnoringClient(AsaasApiPagamentoStatus.URL_API_ASAAS).hostIgnoringClient();
+        WebResource webResource2 = client2.resource(AsaasApiPagamentoStatus.URL_API_ASAAS + "payments?installment=" + installment);
+        ClientResponse clientResponse2 = webResource2
+                .accept("application/json;charset=UTF-8")
+                .header("Content-Type", "application/json")
+                .header("access_token", AsaasApiPagamentoStatus.API_KEY)
+                .get(ClientResponse.class);
+
+        String retornoCobrancas = clientResponse2.getEntity(String.class);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
+        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+
+        CobrancaGeradaAsaasApiDTO listaCobranca = objectMapper
+                .readValue(retornoCobrancas, new TypeReference<CobrancaGeradaAsaasApiDTO>() {});
+
+        List<BoletoAsaas> boletosAsaas = new ArrayList<BoletoAsaas>();
+        int recorrencia = 1;
+        for (CobrancaGeradaAsaasDataDTO data : listaCobranca.getData()) {
+
+            BoletoAsaas boletoAsaas = new BoletoAsaas();
+
+            boletoAsaas.setEmpresa(vendaCompraLojaVirtual.getEmpresa());
+            boletoAsaas.setVendaCompraLojaVirtual(vendaCompraLojaVirtual);
+            boletoAsaas.setCode(data.getId());
+            boletoAsaas.setLink(data.getInvoiceUrl());
+            boletoAsaas.setDataVencimento(new SimpleDateFormat("yyyy-MM-dd").format(new SimpleDateFormat("yyyy-MM-dd").parse(data.getDueDate())));
+            boletoAsaas.setCheckoutUrl(data.getInvoiceUrl());
+            boletoAsaas.setValor(new BigDecimal(data.getValue()));
+            boletoAsaas.setIdChrBoleto(data.getId());
+            boletoAsaas.setInstallmentLink(data.getInvoiceUrl());
+            boletoAsaas.setRecorrencia(recorrencia);
+
+            boletosAsaas.add(boletoAsaas);
+            recorrencia ++;
+        }
+
+        boletoAsaasRepository.saveAllAndFlush(boletosAsaas);
+
+        return boletosAsaas.get(0).getCheckoutUrl();
 
     }
 }
