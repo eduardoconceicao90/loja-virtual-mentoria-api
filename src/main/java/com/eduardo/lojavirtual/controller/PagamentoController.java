@@ -1,16 +1,21 @@
 package com.eduardo.lojavirtual.controller;
 
 import com.eduardo.lojavirtual.model.AccessTokenJunoAPI;
+import com.eduardo.lojavirtual.model.BoletoAsaas;
 import com.eduardo.lojavirtual.model.BoletoJuno;
 import com.eduardo.lojavirtual.model.VendaCompraLojaVirtual;
 import com.eduardo.lojavirtual.model.dto.VendaCompraLojaVirtualDTO;
 import com.eduardo.lojavirtual.model.dto.asaas.CobrancaApiAsaasCartaoDTO;
+import com.eduardo.lojavirtual.model.dto.asaas.ObjetoPostCarneAssasDTO;
 import com.eduardo.lojavirtual.model.dto.juno.*;
+import com.eduardo.lojavirtual.repository.BoletoAsaasRepository;
 import com.eduardo.lojavirtual.repository.BoletoJunoRepository;
 import com.eduardo.lojavirtual.repository.VendaCompraLojaVirtualRepository;
 import com.eduardo.lojavirtual.service.HostIgnoringClient;
+import com.eduardo.lojavirtual.service.ServiceAsaas;
 import com.eduardo.lojavirtual.service.ServiceJuno;
 import com.eduardo.lojavirtual.service.VendaService;
+import com.eduardo.lojavirtual.util.AsaasApiPagamentoStatus;
 import com.eduardo.lojavirtual.util.TokenIntegracao;
 import com.eduardo.lojavirtual.util.ValidaCPF;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -50,6 +55,12 @@ public class PagamentoController {
 
     @Autowired
     private BoletoJunoRepository boletoJunoRepository;
+
+    @Autowired
+    private BoletoAsaasRepository boletoAsaasRepository;
+
+    @Autowired
+    private ServiceAsaas serviceAsaas;
 
     @RequestMapping(method = RequestMethod.GET, value = "**/pagamento/{idVendaCompra}")
     public ModelAndView pagamento(@PathVariable(value = "idVendaCompra", required = false) String idVendaCompra) {
@@ -330,7 +341,24 @@ public class PagamentoController {
             return new ResponseEntity<String>("Valor da venda não pode ser Zero(0).", HttpStatus.OK);
         }
 
+        List<BoletoAsaas> cobrancas = boletoAsaasRepository.cobrancaDaVendaCompra(idVendaCampo);
+
+        for (BoletoAsaas boletoAsaas : cobrancas) {
+            boletoAsaasRepository.deleteById(boletoAsaas.getId());
+            boletoAsaasRepository.flush();
+        }
+
+        /* INICIO - Gerando cobranca por cartão */
+        ObjetoPostCarneAssasDTO carne = new ObjetoPostCarneAssasDTO();
+        carne.setPayerCpfCnpj(cpfLimpo);
+        carne.setPayerName(holderName);
+        carne.setPayerPhone(vendaCompraLojaVirtual.getPessoa().getTelefone());
+
         CobrancaApiAsaasCartaoDTO cobrancaApiAsaasCartao = new CobrancaApiAsaasCartaoDTO();
+        cobrancaApiAsaasCartao.setCustomer(serviceAsaas.buscaClientePessoaApiAsaas(carne));
+        cobrancaApiAsaasCartao.setBillingType(AsaasApiPagamentoStatus.CREDIT_CARD);
+        cobrancaApiAsaasCartao.setDescription("Venda realizada para cliente por cartão de crédito: ID Venda -> " + idVendaCampo);
+
 
         return null;
     }
