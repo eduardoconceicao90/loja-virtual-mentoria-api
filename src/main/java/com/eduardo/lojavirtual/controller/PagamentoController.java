@@ -2,10 +2,7 @@ package com.eduardo.lojavirtual.controller;
 
 import com.eduardo.lojavirtual.model.*;
 import com.eduardo.lojavirtual.model.dto.VendaCompraLojaVirtualDTO;
-import com.eduardo.lojavirtual.model.dto.asaas.CartaoCreditoApiAsaasDTO;
-import com.eduardo.lojavirtual.model.dto.asaas.CartaoCreditoAsaasHolderInfoDTO;
-import com.eduardo.lojavirtual.model.dto.asaas.CobrancaApiAsaasCartaoDTO;
-import com.eduardo.lojavirtual.model.dto.asaas.ObjetoPostCarneAssasDTO;
+import com.eduardo.lojavirtual.model.dto.asaas.*;
 import com.eduardo.lojavirtual.model.dto.juno.*;
 import com.eduardo.lojavirtual.repository.BoletoAsaasRepository;
 import com.eduardo.lojavirtual.repository.BoletoJunoRepository;
@@ -393,6 +390,38 @@ public class PagamentoController {
         creditCardHolderInfo.setMobilePhone(pessoaFisica.getTelefone());
 
         cobrancaApiAsaasCartao.setCreditCardHolderInfo(creditCardHolderInfo);
+
+        String json = new ObjectMapper().writeValueAsString(cobrancaApiAsaasCartao);
+        Client client = new HostIgnoringClient(AsaasApiPagamentoStatus.URL_API_ASAAS).hostIgnoringClient();
+        WebResource webResource = client.resource(AsaasApiPagamentoStatus.URL_API_ASAAS + "payments");
+
+        ClientResponse clientResponse = webResource
+                .accept("application/json;charset=UTF-8")
+                .header("Content-Type", "application/json;charset=UTF-8")
+                .header("access_token", AsaasApiPagamentoStatus.API_KEY)
+                .post(ClientResponse.class, json);
+
+        String stringRetorno = clientResponse.getEntity(String.class);
+        int status = clientResponse.getStatus();
+        clientResponse.close();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
+        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+
+        if (status != 200) { /* Deu erro */
+
+            for (BoletoAsaas boletoAsaas : cobrancas) {
+                if (boletoAsaasRepository.existsById(boletoAsaas.getId())) {
+                    boletoAsaasRepository.deleteById(boletoAsaas.getId());
+                    boletoAsaasRepository.flush();
+                }
+            }
+
+            ErroResponseApiAsaasDTO apiAsaas = objectMapper.readValue(stringRetorno, new TypeReference<ErroResponseApiAsaasDTO>() {});
+
+            return new ResponseEntity<String>("Erro ao efetuar cobrança: " + apiAsaas.listaErros(), HttpStatus.OK);
+        }
 
 
         return null;
