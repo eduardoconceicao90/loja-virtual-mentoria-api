@@ -4,6 +4,7 @@ import com.eduardo.lojavirtual.model.AccessTokenJunoAPI;
 import com.eduardo.lojavirtual.model.BoletoJuno;
 import com.eduardo.lojavirtual.model.VendaCompraLojaVirtual;
 import com.eduardo.lojavirtual.model.dto.VendaCompraLojaVirtualDTO;
+import com.eduardo.lojavirtual.model.dto.asaas.CobrancaApiAsaasCartaoDTO;
 import com.eduardo.lojavirtual.model.dto.juno.*;
 import com.eduardo.lojavirtual.repository.BoletoJunoRepository;
 import com.eduardo.lojavirtual.repository.VendaCompraLojaVirtualRepository;
@@ -328,6 +329,8 @@ public class PagamentoController {
         if (vendaCompraLojaVirtual.getValorTotal().doubleValue() <= 0) {
             return new ResponseEntity<String>("Valor da venda não pode ser Zero(0).", HttpStatus.OK);
         }
+
+        CobrancaApiAsaasCartaoDTO cobrancaApiAsaasCartao = new CobrancaApiAsaasCartaoDTO();
 
         return null;
     }
