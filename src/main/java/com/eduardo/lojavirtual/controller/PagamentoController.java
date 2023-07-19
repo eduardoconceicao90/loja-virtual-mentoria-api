@@ -295,7 +295,7 @@ public class PagamentoController {
 
             vendaCompraLojaVirtualRepository.updateFinalizaVenda(vendaCompraLojaVirtual.getId());
 
-            return new ResponseEntity<String>("sucesso", HttpStatus.OK);
+            return new ResponseEntity<String>("Sucesso", HttpStatus.OK);
         }
 
         return new ResponseEntity<String>("Nenhuma operação realizada!",HttpStatus.OK);
@@ -461,7 +461,18 @@ public class PagamentoController {
 
         boletoAsaasRepository.saveAllAndFlush(boletosAsaas);
 
+        if(cartaoCredito.getStatus().equalsIgnoreCase("CONFIRMED")) {
 
-        return null;
+            for(BoletoAsaas boletoAsaas : boletosAsaas) {
+                boletoAsaasRepository.quitarBoletoById(boletoAsaas.getId());
+            }
+
+            vendaCompraLojaVirtualRepository.updateFinalizaVenda(vendaCompraLojaVirtual.getId());
+
+            return new ResponseEntity<String>("Sucesso", HttpStatus.OK);
+        }else {
+            return new ResponseEntity<String>("Pagamento não pode ser finalizado: Status: " + cartaoCredito.getStatus(), HttpStatus.OK);
+        }
+
     }
 }
