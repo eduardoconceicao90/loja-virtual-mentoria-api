@@ -423,6 +423,8 @@ public class PagamentoController {
             return new ResponseEntity<String>("Erro ao efetuar cobrança: " + apiAsaas.listaErros(), HttpStatus.OK);
         }
 
+        CobrancaGeradaCartaoCreditoAsaasDTO cartaoCredito = objectMapper.readValue(stringRetorno,  new TypeReference<CobrancaGeradaCartaoCreditoAsaasDTO>() {});
+
 
         return null;
     }
