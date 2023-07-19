@@ -35,6 +35,7 @@ import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -424,6 +425,41 @@ public class PagamentoController {
         }
 
         CobrancaGeradaCartaoCreditoAsaasDTO cartaoCredito = objectMapper.readValue(stringRetorno,  new TypeReference<CobrancaGeradaCartaoCreditoAsaasDTO>() {});
+
+        int recorrencia = 1;
+        List<BoletoAsaas> boletosAsaas = new ArrayList<BoletoAsaas>();
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date dataCobranca = dateFormat.parse(cobrancaApiAsaasCartao.getDueDate());
+        Calendar calendar = Calendar.getInstance();
+
+        for(int p = 1 ; p <= qtdparcela; p++) {
+
+            BoletoAsaas boletoAsaas = new BoletoAsaas();
+
+            boletoAsaas.setChargeICartao(cartaoCredito.getId());
+            boletoAsaas.setCheckoutUrl(cartaoCredito.getInvoiceUrl());
+            boletoAsaas.setCode(cartaoCredito.getId());
+            boletoAsaas.setDataVencimento(dateFormat.format(dataCobranca));
+
+            calendar.setTime(dataCobranca);
+            calendar.add(Calendar.MONTH, 1);
+            dataCobranca = calendar.getTime();
+
+            boletoAsaas.setEmpresa(vendaCompraLojaVirtual.getEmpresa());
+            boletoAsaas.setIdChrBoleto(cartaoCredito.getId());
+            boletoAsaas.setIdPix(cartaoCredito.getId());
+            boletoAsaas.setInstallmentLink(cartaoCredito.getInvoiceUrl());
+            boletoAsaas.setQuitado(false);
+            boletoAsaas.setRecorrencia(recorrencia);
+            boletoAsaas.setValor(BigDecimal.valueOf(cobrancaApiAsaasCartao.getInstallmentValue()));
+            boletoAsaas.setVendaCompraLojaVirtual(vendaCompraLojaVirtual);
+
+            recorrencia++;
+            boletosAsaas.add(boletoAsaas);
+        }
+
+        boletoAsaasRepository.saveAllAndFlush(boletosAsaas);
 
 
         return null;
