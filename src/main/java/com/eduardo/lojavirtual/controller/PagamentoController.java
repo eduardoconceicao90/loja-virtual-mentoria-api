@@ -65,8 +65,8 @@ public class PagamentoController {
         return modelAndView;
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "**/finalizarCompraCartao")
-    public ResponseEntity<String> finalizarCompraCartao(@RequestParam("cardHash") String cardHash,
+    @RequestMapping(method = RequestMethod.POST, value = "**/finalizarCompraCartaoJuno")
+    public ResponseEntity<String> finalizarCompraCartaoJuno(@RequestParam("cardHash") String cardHash,
                                                         @RequestParam("cardNumber") String cardNumber,
                                                         @RequestParam("holderName") String holderName,
                                                         @RequestParam("securityCode") String securityCode,
@@ -290,5 +290,45 @@ public class PagamentoController {
         }
 
         return new ResponseEntity<String>("Nenhuma operação realizada!",HttpStatus.OK);
+    }
+
+    // -------------------- ASAAS:
+
+    @RequestMapping(method = RequestMethod.POST, value = "**/finalizarCompraCartaoAsaas")
+    public ResponseEntity<String> finalizarCompraCartaoAsaas(@RequestParam("cardNumber") String cardNumber,
+                                                        @RequestParam("holderName") String holderName,
+                                                        @RequestParam("securityCode") String securityCode,
+                                                        @RequestParam("expirationMonth") String expirationMonth,
+                                                        @RequestParam("expirationYear") String expirationYear,
+                                                        @RequestParam("idVendaCampo") Long idVendaCampo,
+                                                        @RequestParam("cpf") String cpf,
+                                                        @RequestParam("qtdparcela") Integer qtdparcela,
+                                                        @RequestParam("cep") String cep,
+                                                        @RequestParam("rua") String rua,
+                                                        @RequestParam("numero") String numero,
+                                                        @RequestParam("estado") String estado,
+                                                        @RequestParam("cidade") String cidade) throws Exception {
+
+        VendaCompraLojaVirtual vendaCompraLojaVirtual = vendaCompraLojaVirtualRepository.findById(idVendaCampo).orElse(null);
+
+        if (vendaCompraLojaVirtual == null) {
+            return new ResponseEntity<String>("Código da venda não existe!", HttpStatus.OK);
+        }
+
+        String cpfLimpo = cpf.replaceAll("\\.", "").replaceAll("\\-", "");
+
+        if (!ValidaCPF.isCPF(cpfLimpo)) {
+            return new ResponseEntity<String>("CPF informado é inválido.", HttpStatus.OK);
+        }
+
+        if (qtdparcela > 12 || qtdparcela <= 0) {
+            return new ResponseEntity<String>("Quantidade de parcelar deve ser de  1 até 12.", HttpStatus.OK);
+        }
+
+        if (vendaCompraLojaVirtual.getValorTotal().doubleValue() <= 0) {
+            return new ResponseEntity<String>("Valor da venda não pode ser Zero(0).", HttpStatus.OK);
+        }
+
+        return null;
     }
 }
