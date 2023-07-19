@@ -20,10 +20,7 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
 
-    <script type="text/javascript" src="https://www.boletobancario.com/boletofacil/wro/direct-checkout.min.js"></script>
-
     <script type="text/javascript">
-    <!--var checkout = new DirectCheckout('PUBLIC_TOKEN');-->
 
         $(document).ready(function() {
 
@@ -168,47 +165,38 @@
 			expirationYear: anovalidade
 	      };
 
-          var isValidCardNumber = checkout.isValidCardNumber(cardData.cardNumber);
+          var isValidCardNumber = cardData.cardNumber !=  null;
 
           if (isValidCardNumber == false){
               alert('Número do cartão é inválido');
               return;
           }
 
-          var isValidSecurityCode = checkout.isValidSecurityCode(cardData.cardNumber, cvv);
+          var isValidSecurityCode = cardData.cardNumber != null &&  cvv != null;
 
           if (isValidSecurityCode == false){
               alert('Códivo CVV de segurança é inválido.');
               return;
           }
 
-          var isValidExpireDate = checkout.isValidExpireDate(cardData.expirationMonth, cardData.expirationYear);
+          var isValidExpireDate = cardData.expirationMonth != null && cardData.expirationYear != null;
 
           if (isValidExpireDate == false){
               alert('Data de validade é inválida');
               return;
           }
 
-          var isValidCardData = checkout.isValidCardData(cardData, function(error) {
-              if (error.toString().includes('Invalid holder name', error)){
-                  alert('Seu nome informado não está igual ao escrito no cartão de crédito.');
-              }else{
-                  alert('Mensagem de erro: ' + error.toString());
-              }
-              return;
-	      });
+          var isValidCardData =  cardData != null;
 
 	      if (isValidCardData && isValidExpireDate && isValidSecurityCode && isValidCardNumber){
-		     checkout.getCardHash(cardData, function(cardHash) {
 
-		     document.getElementById('buttonrealizarPagamento').disabled = true;
-			 document.getElementById('buttonrealizarPagamento').value = 'Efetuando pagamento...';
+			document.getElementById('buttonrealizarPagamento').disabled = true;
+			document.getElementById('buttonrealizarPagamento').value = 'Efetuando pagamento...';
 
-		     $.ajax({
+		   $.ajax({
 			   method: 'POST',
 			   url: 'finalizarCompraCartaoAsaas',
 			   data: {
-				   cardHash: cardHash,
 				   cardNumber: cardData.cardNumber,
 				   holderName: cardData.holderName,
 				   securityCode: cardData.securityCode,
@@ -223,8 +211,9 @@
 				   estado: estado,
 				   cidade: cidade
 			   }
-		     }).success(function (response) {
-			   if (response == 'sucesso') {
+		   }).success(function (response) {
+
+			   if (response == 'Sucesso') {
 			      document.getElementById('buttonrealizarPagamento').disabled = true;
 			      document.getElementById('buttonrealizarPagamento').value = 'Sucesso, OK... Pago';
 			   }else {
@@ -233,17 +222,14 @@
 
 				   alert(response);
 			   }
-		     }).fail(function (xhr, status, errorThrown) {
+
+		   }).fail(function (xhr, status, errorThrown) {
 			   document.getElementById('buttonrealizarPagamento').disabled = false;
 			   document.getElementById('buttonrealizarPagamento').value = 'Realizar Pagamento';
 
 			   alert('Erro ao efetuar pagamento: ' + errorThrown);
 			   return;
-		     });
-		  }, function(error) {
-		      alert('Não foi possível gerar o HASH do cartão de crédito": ' + error);
-			  return;
-		    });
+		   });
           }else {
               alert('O pagamento não pode ser realizado.');
               return;
