@@ -1,10 +1,9 @@
 package com.eduardo.lojavirtual.controller;
 
-import com.eduardo.lojavirtual.model.AccessTokenJunoAPI;
-import com.eduardo.lojavirtual.model.BoletoAsaas;
-import com.eduardo.lojavirtual.model.BoletoJuno;
-import com.eduardo.lojavirtual.model.VendaCompraLojaVirtual;
+import com.eduardo.lojavirtual.model.*;
 import com.eduardo.lojavirtual.model.dto.VendaCompraLojaVirtualDTO;
+import com.eduardo.lojavirtual.model.dto.asaas.CartaoCreditoApiAsaasDTO;
+import com.eduardo.lojavirtual.model.dto.asaas.CartaoCreditoAsaasHolderInfoDTO;
 import com.eduardo.lojavirtual.model.dto.asaas.CobrancaApiAsaasCartaoDTO;
 import com.eduardo.lojavirtual.model.dto.asaas.ObjetoPostCarneAssasDTO;
 import com.eduardo.lojavirtual.model.dto.juno.*;
@@ -358,6 +357,42 @@ public class PagamentoController {
         cobrancaApiAsaasCartao.setCustomer(serviceAsaas.buscaClientePessoaApiAsaas(carne));
         cobrancaApiAsaasCartao.setBillingType(AsaasApiPagamentoStatus.CREDIT_CARD);
         cobrancaApiAsaasCartao.setDescription("Venda realizada para cliente por cartão de crédito: ID Venda -> " + idVendaCampo);
+
+        if (qtdparcela == 1) {
+            cobrancaApiAsaasCartao.setInstallmentValue(vendaCompraLojaVirtual.getValorTotal().floatValue());
+        }else {
+            BigDecimal valorParcela = vendaCompraLojaVirtual.getValorTotal()
+                    .divide(BigDecimal.valueOf(qtdparcela), RoundingMode.DOWN)
+                    .setScale(2, RoundingMode.DOWN);
+
+            cobrancaApiAsaasCartao.setInstallmentValue(valorParcela.floatValue());
+        }
+
+        cobrancaApiAsaasCartao.setInstallmentCount(qtdparcela);
+        cobrancaApiAsaasCartao.setDueDate(new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime()));
+
+        /* Dados cartão de crédito */
+        CartaoCreditoApiAsaasDTO creditCard = new CartaoCreditoApiAsaasDTO();
+        creditCard.setCcv(securityCode);
+        creditCard.setExpiryMonth(expirationMonth);
+        creditCard.setExpiryYear(expirationYear);
+        creditCard.setHolderName(holderName);
+        creditCard.setNumber(cardNumber);
+
+        cobrancaApiAsaasCartao.setCreditCard(creditCard);
+
+        PessoaFisica pessoaFisica = vendaCompraLojaVirtual.getPessoa();
+        CartaoCreditoAsaasHolderInfoDTO creditCardHolderInfo = new CartaoCreditoAsaasHolderInfoDTO();
+        creditCardHolderInfo.setName(pessoaFisica.getNome());
+        creditCardHolderInfo.setEmail(pessoaFisica.getEmail());
+        creditCardHolderInfo.setCpfCnpj(pessoaFisica.getCpf());
+        creditCardHolderInfo.setPostalCode(cep);
+        creditCardHolderInfo.setAddressNumber(numero);
+        creditCardHolderInfo.setAddressComplement(null);
+        creditCardHolderInfo.setPhone(pessoaFisica.getTelefone());
+        creditCardHolderInfo.setMobilePhone(pessoaFisica.getTelefone());
+
+        cobrancaApiAsaasCartao.setCreditCardHolderInfo(creditCardHolderInfo);
 
 
         return null;
