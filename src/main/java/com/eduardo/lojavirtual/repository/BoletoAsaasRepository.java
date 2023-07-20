@@ -1,6 +1,7 @@
 package com.eduardo.lojavirtual.repository;
 
 import com.eduardo.lojavirtual.model.BoletoAsaas;
+import com.eduardo.lojavirtual.model.BoletoJuno;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -19,5 +20,8 @@ public interface BoletoAsaasRepository extends JpaRepository<BoletoAsaas, Long> 
     @Modifying(flushAutomatically = true)
     @Query(nativeQuery = true, value = "update boleto_asaas set quitado = true where id = ?1")
     public void quitarBoletoById(Long id);
+
+    @Query("select b from BoletoAsaas b where b.code = ?1")
+    public BoletoAsaas findByCode (String code);
 
 }
