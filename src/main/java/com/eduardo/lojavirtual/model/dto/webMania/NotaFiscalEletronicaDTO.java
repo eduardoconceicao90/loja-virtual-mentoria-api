@@ -7,11 +7,20 @@ public class NotaFiscalEletronicaDTO {
 
     private String ID;
     private String url_notificacao;
+
+    // 0 é Entrada e 1 é Saída
     private Integer operacao;
+
     private String natureza_operacao;
+
+    // 1 é NF-e e 1 é NFC-e
     private String modelo;
+
     private Integer finalidade;
+
+    // 1 é Produção e 2 é Homologação
     private Integer ambiente;
+
     private ClienteDTO cliente;
     private List<ProdutoDTO> produtos = new ArrayList<>();
     private PedidoDTO pedido;
