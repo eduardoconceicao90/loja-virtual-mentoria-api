@@ -59,11 +59,25 @@ public class TesteWebMania {
         produto.setUnidade("UN");
         produto.setPeso("0.200");
         produto.setOrigem(0);
-        produto.setSubtotal("29.90");
-        produto.setTotal("29.90");
+        produto.setSubtotal("15.00");
+        produto.setTotal("15.00");
         produto.setClasse_imposto("REF1000");
 
+        ProdutoDTO produto2 = new ProdutoDTO();
+        produto2.setNome("Cabo tipo C");
+        produto2.setCodigo("1119");
+        produto2.setNcm("6109.10.00");
+        produto2.setCest("28.038.00");
+        produto2.setQuantidade(1);
+        produto2.setUnidade("UN");
+        produto2.setPeso("0.200");
+        produto2.setOrigem(0);
+        produto2.setSubtotal("15.00");
+        produto2.setTotal("15.00");
+        produto2.setClasse_imposto("REF1000");
+
         produtos.add(produto);
+        produtos.add(produto2);
         notaFiscalEletronica.setProdutos(produtos);
 
         /* Dados do Pedido */
@@ -73,7 +87,7 @@ public class TesteWebMania {
         pedido.setModalidade_frete(0);
         pedido.setFrete("12.56");
         pedido.setDesconto("10.00");
-        pedido.setTotal("32.46");
+        pedido.setTotal("32.56");
 
         notaFiscalEletronica.setPedido(pedido);
 
