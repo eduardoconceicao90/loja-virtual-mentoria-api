@@ -53,4 +53,23 @@ public class WebManiaNotaFiscalService {
 
         return stringRetorno;
     }
+
+    public String consultarNotaFiscal(String uuid) throws Exception {
+
+        Client client = new HostIgnoringClient("https://webmaniabr.com/api/").hostIgnoringClient();
+        WebResource webResource = client.resource("https://webmaniabr.com/api/1/nfe/consulta/");
+
+        ClientResponse clientResponse = webResource.queryParam("uuid", uuid)
+                .accept("application/json;charset=UTF-8")
+                .header("Content-Type", "application/json;charset=UTF-8")
+                .header("X-Consumer-Key", CredenciaisWebMania.CONSUMER_KEY)
+                .header("X-Consumer-Secret", CredenciaisWebMania.CONSUMER_SECRET)
+                .header("X-Access-Token", CredenciaisWebMania.ACCESS_TOKEN)
+                .header("X-Access-Token-Secret", CredenciaisWebMania.ACCESS_TOKEN_SECRET)
+                .get(ClientResponse.class);
+
+        String stringRetorno = clientResponse.getEntity(String.class);
+
+        return stringRetorno;
+    }
 }

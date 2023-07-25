@@ -103,4 +103,12 @@ public class TesteWebMania {
 
     }
 
+    @Test
+    public void TesteConsultaNotaFiscal() throws Exception {
+
+        String retorno = webManiaNotaFiscalService.consultarNotaFiscal("000000000000000000000000");
+        System.out.println("---------> Retorno Consulta Nota Fiscal: " + retorno);
+
+    }
+
 }
