@@ -94,4 +94,13 @@ public class TesteWebMania {
         String retorno = webManiaNotaFiscalService.emitirNotaFiscal(notaFiscalEletronica);
         System.out.println("---------> Retorno Emissão Nota Fiscal: " + retorno);
     }
+
+    @Test
+    public void TesteCancelaNotaFiscal() throws Exception {
+
+        String retorno = webManiaNotaFiscalService.cancelarNotaFiscal("000000000000000000000000","Cancelamento teste");
+        System.out.println("---------> Retorno Cancelamento Nota Fiscal: " + retorno);
+
+    }
+
 }
