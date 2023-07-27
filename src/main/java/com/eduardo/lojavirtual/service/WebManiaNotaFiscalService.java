@@ -1,15 +1,23 @@
 package com.eduardo.lojavirtual.service;
 
+import com.eduardo.lojavirtual.model.NotaFiscalVenda;
+import com.eduardo.lojavirtual.model.VendaCompraLojaVirtual;
 import com.eduardo.lojavirtual.model.dto.webMania.NotaFiscalEletronicaDTO;
+import com.eduardo.lojavirtual.model.dto.webMania.ObjetoEmissaoNotaFiscalWebManiaDTO;
+import com.eduardo.lojavirtual.repository.NotaFiscalVendaRepository;
 import com.eduardo.lojavirtual.util.CredenciaisWebMania;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class WebManiaNotaFiscalService {
+
+    @Autowired
+    private NotaFiscalVendaRepository notaFiscalVendaRepository;
 
     public String emitirNotaFiscal(NotaFiscalEletronicaDTO notaFiscalEletronica) throws Exception {
 
@@ -71,5 +79,28 @@ public class WebManiaNotaFiscalService {
         String stringRetorno = clientResponse.getEntity(String.class);
 
         return stringRetorno;
+    }
+
+    public NotaFiscalVenda gravaNotaParaVenda(ObjetoEmissaoNotaFiscalWebManiaDTO emissaoNotaFiscalWebMania, VendaCompraLojaVirtual vendaCompraLojaVirtual) {
+
+        NotaFiscalVenda notaFiscalVendaBusca = notaFiscalVendaRepository.buscaNotaPorVendaUnica(vendaCompraLojaVirtual.getId());
+
+        NotaFiscalVenda notaFiscalVenda = new NotaFiscalVenda();
+
+        if (notaFiscalVendaBusca != null && notaFiscalVendaBusca.getId() > 0) {
+            notaFiscalVenda.setId(notaFiscalVendaBusca.getId());
+        }
+
+        notaFiscalVenda.setEmpresa(vendaCompraLojaVirtual.getEmpresa());
+        notaFiscalVenda.setNumero(emissaoNotaFiscalWebMania.getUuid());
+        notaFiscalVenda.setPdf(emissaoNotaFiscalWebMania.getDanfe());
+        notaFiscalVenda.setSerie(emissaoNotaFiscalWebMania.getSerie());
+        notaFiscalVenda.setTipo(emissaoNotaFiscalWebMania.getModelo());
+        notaFiscalVenda.setVendaCompraLojaVirtual(vendaCompraLojaVirtual);
+        notaFiscalVenda.setXml(emissaoNotaFiscalWebMania.getXml());
+        notaFiscalVenda.setChave(emissaoNotaFiscalWebMania.getChave());
+
+        return notaFiscalVendaRepository.saveAndFlush(notaFiscalVenda);
+
     }
 }

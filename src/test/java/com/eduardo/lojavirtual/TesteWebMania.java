@@ -1,10 +1,12 @@
 package com.eduardo.lojavirtual;
 
-import com.eduardo.lojavirtual.model.dto.webMania.ClienteDTO;
-import com.eduardo.lojavirtual.model.dto.webMania.NotaFiscalEletronicaDTO;
-import com.eduardo.lojavirtual.model.dto.webMania.PedidoDTO;
-import com.eduardo.lojavirtual.model.dto.webMania.ProdutoDTO;
+import com.eduardo.lojavirtual.model.VendaCompraLojaVirtual;
+import com.eduardo.lojavirtual.model.dto.webMania.*;
+import com.eduardo.lojavirtual.repository.VendaCompraLojaVirtualRepository;
 import com.eduardo.lojavirtual.service.WebManiaNotaFiscalService;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,8 +22,16 @@ public class TesteWebMania {
     @Autowired
     private WebManiaNotaFiscalService webManiaNotaFiscalService;
 
+    @Autowired
+    private VendaCompraLojaVirtualRepository vendaCompraLojaVirtualRepository;
+
     @Test
-    public void TesteEmissaoNotaFiscal() throws Exception {
+    public void testeEmissaoNota() throws Exception {
+        emiteNotaFiscal();
+    }
+
+    @Test
+    public String emiteNotaFiscal() throws Exception {
 
         NotaFiscalEletronicaDTO notaFiscalEletronica = new NotaFiscalEletronicaDTO();
 
@@ -93,6 +103,7 @@ public class TesteWebMania {
 
         String retorno = webManiaNotaFiscalService.emitirNotaFiscal(notaFiscalEletronica);
         System.out.println("---------> Retorno Emissão Nota Fiscal: " + retorno);
+        return retorno;
     }
 
     @Test
@@ -108,6 +119,23 @@ public class TesteWebMania {
 
         String retorno = webManiaNotaFiscalService.consultarNotaFiscal("000000000000000000000000");
         System.out.println("---------> Retorno Consulta Nota Fiscal: " + retorno);
+
+    }
+
+    @Test
+    public void testeGravaNotaNoBanco() throws Exception {
+
+        String json = emiteNotaFiscal();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
+
+        ObjetoEmissaoNotaFiscalWebManiaDTO notaFiscalWebMania = objectMapper
+                .readValue(json, new TypeReference<ObjetoEmissaoNotaFiscalWebManiaDTO>() {});
+
+        VendaCompraLojaVirtual vendaCompraLojaVirtual = vendaCompraLojaVirtualRepository.findById(25L).get();
+
+        webManiaNotaFiscalService.gravaNotaParaVenda(notaFiscalWebMania, vendaCompraLojaVirtual);
 
     }
 

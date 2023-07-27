@@ -22,6 +22,9 @@ public class NotaFiscalVenda {
     @Column(nullable = false)
     private String tipo;
 
+    @Column(nullable = false)
+    private String chave;
+
     @Column(columnDefinition = "text", nullable = false)
     private String xml;
 
@@ -67,6 +70,14 @@ public class NotaFiscalVenda {
 
     public void setTipo(String tipo) {
         this.tipo = tipo;
+    }
+
+    public String getChave() {
+        return chave;
+    }
+
+    public void setChave(String chave) {
+        this.chave = chave;
     }
 
     public String getXml() {
