@@ -3,6 +3,7 @@ package com.eduardo.lojavirtual.service;
 import com.eduardo.lojavirtual.model.NotaFiscalVenda;
 import com.eduardo.lojavirtual.model.VendaCompraLojaVirtual;
 import com.eduardo.lojavirtual.model.dto.webMania.NotaFiscalEletronicaDTO;
+import com.eduardo.lojavirtual.model.dto.webMania.ObjetoDevolucaoNotaFiscalWebManiaDTO;
 import com.eduardo.lojavirtual.model.dto.webMania.ObjetoEmissaoNotaFiscalWebManiaDTO;
 import com.eduardo.lojavirtual.model.dto.webMania.ObjetoEstornoNotaFiscalWebManiaDTO;
 import com.eduardo.lojavirtual.repository.NotaFiscalVendaRepository;
@@ -102,6 +103,29 @@ public class WebManiaNotaFiscalService {
         String stringRetorno = clientResponse.getEntity(String.class);
 
         return stringRetorno;
+    }
+
+    public String devolucaoNotaFiscal(ObjetoDevolucaoNotaFiscalWebManiaDTO devolucao) throws Exception {
+
+        Client client = new HostIgnoringClient("https://webmaniabr.com/api/").hostIgnoringClient();
+        WebResource webResource = client.resource("https://webmaniabr.com/api/1/nfe/devolucao/");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(devolucao);
+
+        ClientResponse clientResponse = webResource
+                .accept("application/json;charset=UTF-8")
+                .header("Content-Type", "application/json;charset=UTF-8")
+                .header("X-Consumer-Key", CredenciaisWebMania.CONSUMER_KEY)
+                .header("X-Consumer-Secret", CredenciaisWebMania.CONSUMER_SECRET)
+                .header("X-Access-Token", CredenciaisWebMania.ACCESS_TOKEN)
+                .header("X-Access-Token-Secret", CredenciaisWebMania.ACCESS_TOKEN_SECRET)
+                .post(ClientResponse.class, json);
+
+        String stringRetorno = clientResponse.getEntity(String.class);
+
+        return stringRetorno;
+
     }
 
     public NotaFiscalVenda gravaNotaParaVenda(ObjetoEmissaoNotaFiscalWebManiaDTO emissaoNotaFiscalWebMania, VendaCompraLojaVirtual vendaCompraLojaVirtual) {

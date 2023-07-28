@@ -132,6 +132,24 @@ public class TesteWebMania {
     }
 
     @Test
+    public void devolucaNota() throws Exception {
+
+        ObjetoDevolucaoNotaFiscalWebManiaDTO objetoEstornoNotaFiscalWebMania = new ObjetoDevolucaoNotaFiscalWebManiaDTO();
+
+        objetoEstornoNotaFiscalWebMania.setChave("00000000000000000000000000");
+        objetoEstornoNotaFiscalWebMania.setNatureza_operacao("Devolução de venda de produção do estabelecimento");
+        objetoEstornoNotaFiscalWebMania.setCodigo_cfop("1.102");
+        objetoEstornoNotaFiscalWebMania.setAmbiente("2");
+        objetoEstornoNotaFiscalWebMania.setVolume(1);
+        objetoEstornoNotaFiscalWebMania.setProdutos(new int[] {1});
+        objetoEstornoNotaFiscalWebMania.setQuantidade(new int[] {1});
+
+        String retorno = webManiaNotaFiscalService.devolucaoNotaFiscal(objetoEstornoNotaFiscalWebMania);
+
+        System.out.println("----------->> Retorno da devolução da nota: " + retorno);
+    }
+
+    @Test
     public void TesteConsultaNotaFiscal() throws Exception {
 
         String retorno = webManiaNotaFiscalService.consultarNotaFiscal("000000000000000000000000");
