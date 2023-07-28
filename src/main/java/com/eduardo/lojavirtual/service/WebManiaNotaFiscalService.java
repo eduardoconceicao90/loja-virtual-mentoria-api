@@ -4,6 +4,7 @@ import com.eduardo.lojavirtual.model.NotaFiscalVenda;
 import com.eduardo.lojavirtual.model.VendaCompraLojaVirtual;
 import com.eduardo.lojavirtual.model.dto.webMania.NotaFiscalEletronicaDTO;
 import com.eduardo.lojavirtual.model.dto.webMania.ObjetoEmissaoNotaFiscalWebManiaDTO;
+import com.eduardo.lojavirtual.model.dto.webMania.ObjetoEstornoNotaFiscalWebManiaDTO;
 import com.eduardo.lojavirtual.repository.NotaFiscalVendaRepository;
 import com.eduardo.lojavirtual.util.CredenciaisWebMania;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -81,6 +82,28 @@ public class WebManiaNotaFiscalService {
         return stringRetorno;
     }
 
+    public String estornoNotaFiscal(ObjetoEstornoNotaFiscalWebManiaDTO estorno) throws Exception {
+
+        Client client = new HostIgnoringClient("https://webmaniabr.com/api/").hostIgnoringClient();
+        WebResource webResource = client.resource("https://webmaniabr.com/api/1/nfe/devolucao/");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(estorno);
+
+        ClientResponse clientResponse = webResource
+                .accept("application/json;charset=UTF-8")
+                .header("Content-Type", "application/json;charset=UTF-8")
+                .header("X-Consumer-Key", CredenciaisWebMania.CONSUMER_KEY)
+                .header("X-Consumer-Secret", CredenciaisWebMania.CONSUMER_SECRET)
+                .header("X-Access-Token", CredenciaisWebMania.ACCESS_TOKEN)
+                .header("X-Access-Token-Secret", CredenciaisWebMania.ACCESS_TOKEN_SECRET)
+                .post(ClientResponse.class, json);
+
+        String stringRetorno = clientResponse.getEntity(String.class);
+
+        return stringRetorno;
+    }
+
     public NotaFiscalVenda gravaNotaParaVenda(ObjetoEmissaoNotaFiscalWebManiaDTO emissaoNotaFiscalWebMania, VendaCompraLojaVirtual vendaCompraLojaVirtual) {
 
         NotaFiscalVenda notaFiscalVendaBusca = notaFiscalVendaRepository.buscaNotaPorVendaUnica(vendaCompraLojaVirtual.getId());
@@ -101,6 +124,5 @@ public class WebManiaNotaFiscalService {
         notaFiscalVenda.setChave(emissaoNotaFiscalWebMania.getChave());
 
         return notaFiscalVendaRepository.saveAndFlush(notaFiscalVenda);
-
     }
 }

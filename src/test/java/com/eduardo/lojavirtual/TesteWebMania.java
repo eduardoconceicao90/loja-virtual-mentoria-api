@@ -104,6 +104,7 @@ public class TesteWebMania {
         String retorno = webManiaNotaFiscalService.emitirNotaFiscal(notaFiscalEletronica);
         System.out.println("---------> Retorno Emissão Nota Fiscal: " + retorno);
         return retorno;
+
     }
 
     @Test
@@ -111,6 +112,22 @@ public class TesteWebMania {
 
         String retorno = webManiaNotaFiscalService.cancelarNotaFiscal("000000000000000000000000","Cancelamento teste");
         System.out.println("---------> Retorno Cancelamento Nota Fiscal: " + retorno);
+
+    }
+
+    @Test
+    public void estornoNota() throws Exception {
+
+        ObjetoEstornoNotaFiscalWebManiaDTO objetoEstornoNotaFiscalWebMania = new ObjetoEstornoNotaFiscalWebManiaDTO();
+
+        objetoEstornoNotaFiscalWebMania.setChave("00000000000000000000000000000");
+        objetoEstornoNotaFiscalWebMania.setNatureza_operacao("999");
+        objetoEstornoNotaFiscalWebMania.setCodigo_cfop("1.102");
+        objetoEstornoNotaFiscalWebMania.setAmbiente("2");
+
+        String retorno = webManiaNotaFiscalService.estornoNotaFiscal(objetoEstornoNotaFiscalWebMania);
+
+        System.out.println("----------->> Retorno do estorno da nota: " + retorno);
 
     }
 
