@@ -5,7 +5,7 @@ import com.eduardo.lojavirtual.model.VendaCompraLojaVirtual;
 import com.eduardo.lojavirtual.model.dto.asaas.*;
 import com.eduardo.lojavirtual.repository.BoletoAsaasRepository;
 import com.eduardo.lojavirtual.repository.VendaCompraLojaVirtualRepository;
-import com.eduardo.lojavirtual.util.AsaasApiPagamentoStatus;
+import com.eduardo.lojavirtual.util.TokenIntegracao;
 import com.eduardo.lojavirtual.util.ValidaCPF;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -37,12 +37,12 @@ public class ServiceAsaas {
     /* Cria a chave da API Asass para o PIX */
     public String criarChavePixAsaas() throws Exception {
 
-        Client client = new HostIgnoringClient(AsaasApiPagamentoStatus.URL_API_ASAAS).hostIgnoringClient();
-        WebResource webResource = client.resource(AsaasApiPagamentoStatus.URL_API_ASAAS + "pix/addressKeys");
+        Client client = new HostIgnoringClient(TokenIntegracao.URL_API_ASAAS).hostIgnoringClient();
+        WebResource webResource = client.resource(TokenIntegracao.URL_API_ASAAS + "pix/addressKeys");
 
         ClientResponse clientResponse = webResource.accept("application/json;charset=UTF-8")
                 .header("Content-Type", "application/json")
-                .header("access_token", AsaasApiPagamentoStatus.API_KEY)
+                .header("access_token", TokenIntegracao.API_KEY)
                 .post(ClientResponse.class, "{\"type\":\"EVP\"}");
 
         String stringRetorno = clientResponse.getEntity(String.class);
@@ -58,12 +58,12 @@ public class ServiceAsaas {
 
         /* --------------INICIO - criando ou consultando o cliente */
 
-        Client client = new HostIgnoringClient(AsaasApiPagamentoStatus.URL_API_ASAAS).hostIgnoringClient();
-        WebResource webResource = client.resource(AsaasApiPagamentoStatus.URL_API_ASAAS + "customers?email="+dados.getEmail());
+        Client client = new HostIgnoringClient(TokenIntegracao.URL_API_ASAAS).hostIgnoringClient();
+        WebResource webResource = client.resource(TokenIntegracao.URL_API_ASAAS + "customers?email="+dados.getEmail());
 
         ClientResponse clientResponse = webResource.accept("application/json;charset=UTF-8")
                 .header("Content-Type", "application/json")
-                .header("access_token", AsaasApiPagamentoStatus.API_KEY)
+                .header("access_token", TokenIntegracao.API_KEY)
                 .get(ClientResponse.class);
 
         LinkedHashMap<String, Object> parser = new JSONParser(clientResponse.getEntity(String.class)).parseObject();
@@ -83,12 +83,12 @@ public class ServiceAsaas {
             clienteAsaasApiPagamento.setName(dados.getPayerName());
             clienteAsaasApiPagamento.setPhone(dados.getPayerPhone());
 
-            Client client2 = new HostIgnoringClient(AsaasApiPagamentoStatus.URL_API_ASAAS).hostIgnoringClient();
-            WebResource webResource2 = client2.resource(AsaasApiPagamentoStatus.URL_API_ASAAS + "customers");
+            Client client2 = new HostIgnoringClient(TokenIntegracao.URL_API_ASAAS).hostIgnoringClient();
+            WebResource webResource2 = client2.resource(TokenIntegracao.URL_API_ASAAS + "customers");
 
             ClientResponse clientResponse2 = webResource2.accept("application/json;charset=UTF-8")
                     .header("Content-Type", "application/json")
-                    .header("access_token", AsaasApiPagamentoStatus.API_KEY)
+                    .header("access_token", TokenIntegracao.API_KEY)
                     .post(ClientResponse.class, new ObjectMapper().writeValueAsBytes(clienteAsaasApiPagamento));
 
             LinkedHashMap<String, Object> parser2 = new JSONParser(clientResponse2.getEntity(String.class)).parseObject();
@@ -106,13 +106,13 @@ public class ServiceAsaas {
 
     public ObjetoQrCodePixAsaasDTO buscarQrCodeCodigoPix(String idCobranca) throws Exception {
 
-        Client client = new HostIgnoringClient(AsaasApiPagamentoStatus.URL_API_ASAAS).hostIgnoringClient();
-        WebResource webResource = client.resource(AsaasApiPagamentoStatus.URL_API_ASAAS + "payments/"+idCobranca +"/pixQrCode");
+        Client client = new HostIgnoringClient(TokenIntegracao.URL_API_ASAAS).hostIgnoringClient();
+        WebResource webResource = client.resource(TokenIntegracao.URL_API_ASAAS + "payments/"+idCobranca +"/pixQrCode");
 
         ClientResponse clientResponse = webResource
                 .accept("application/json;charset=UTF-8")
                 .header("Content-Type", "application/json")
-                .header("access_token", AsaasApiPagamentoStatus.API_KEY)
+                .header("access_token", TokenIntegracao.API_KEY)
                 .get(ClientResponse.class);
 
         String stringRetorno = clientResponse.getEntity(String.class);
@@ -148,13 +148,13 @@ public class ServiceAsaas {
         cobrancaApiAsaas.getFine().setValue(1F);
 
         String json  = new ObjectMapper().writeValueAsString(cobrancaApiAsaas);
-        Client client = new HostIgnoringClient(AsaasApiPagamentoStatus.URL_API_ASAAS).hostIgnoringClient();
-        WebResource webResource = client.resource(AsaasApiPagamentoStatus.URL_API_ASAAS + "payments");
+        Client client = new HostIgnoringClient(TokenIntegracao.URL_API_ASAAS).hostIgnoringClient();
+        WebResource webResource = client.resource(TokenIntegracao.URL_API_ASAAS + "payments");
 
         ClientResponse clientResponse = webResource
                 .accept("application/json;charset=UTF-8")
                 .header("Content-Type", "application/json")
-                .header("access_token", AsaasApiPagamentoStatus.API_KEY)
+                .header("access_token", TokenIntegracao.API_KEY)
                 .post(ClientResponse.class, json);
 
         String stringRetorno = clientResponse.getEntity(String.class);
@@ -164,12 +164,12 @@ public class ServiceAsaas {
 
         LinkedHashMap<String, Object> parser = new JSONParser(stringRetorno).parseObject();
         String installment = parser.get("installment").toString();
-        Client client2 = new HostIgnoringClient(AsaasApiPagamentoStatus.URL_API_ASAAS).hostIgnoringClient();
-        WebResource webResource2 = client2.resource(AsaasApiPagamentoStatus.URL_API_ASAAS + "payments?installment=" + installment);
+        Client client2 = new HostIgnoringClient(TokenIntegracao.URL_API_ASAAS).hostIgnoringClient();
+        WebResource webResource2 = client2.resource(TokenIntegracao.URL_API_ASAAS + "payments?installment=" + installment);
         ClientResponse clientResponse2 = webResource2
                 .accept("application/json;charset=UTF-8")
                 .header("Content-Type", "application/json")
-                .header("access_token", AsaasApiPagamentoStatus.API_KEY)
+                .header("access_token", TokenIntegracao.API_KEY)
                 .get(ClientResponse.class);
 
         String retornoCobrancas = clientResponse2.getEntity(String.class);

@@ -11,7 +11,6 @@ import com.eduardo.lojavirtual.service.HostIgnoringClient;
 import com.eduardo.lojavirtual.service.ServiceAsaas;
 import com.eduardo.lojavirtual.service.ServiceJuno;
 import com.eduardo.lojavirtual.service.VendaService;
-import com.eduardo.lojavirtual.util.AsaasApiPagamentoStatus;
 import com.eduardo.lojavirtual.util.TokenIntegracao;
 import com.eduardo.lojavirtual.util.ValidaCPF;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -353,7 +352,7 @@ public class PagamentoController {
 
         CobrancaApiAsaasCartaoDTO cobrancaApiAsaasCartao = new CobrancaApiAsaasCartaoDTO();
         cobrancaApiAsaasCartao.setCustomer(serviceAsaas.buscaClientePessoaApiAsaas(carne));
-        cobrancaApiAsaasCartao.setBillingType(AsaasApiPagamentoStatus.CREDIT_CARD);
+        cobrancaApiAsaasCartao.setBillingType(TokenIntegracao.CREDIT_CARD);
         cobrancaApiAsaasCartao.setDescription("Venda realizada para cliente por cartão de crédito: ID Venda -> " + idVendaCampo);
 
         if (qtdparcela == 1) {
@@ -393,13 +392,13 @@ public class PagamentoController {
         cobrancaApiAsaasCartao.setCreditCardHolderInfo(creditCardHolderInfo);
 
         String json = new ObjectMapper().writeValueAsString(cobrancaApiAsaasCartao);
-        Client client = new HostIgnoringClient(AsaasApiPagamentoStatus.URL_API_ASAAS).hostIgnoringClient();
-        WebResource webResource = client.resource(AsaasApiPagamentoStatus.URL_API_ASAAS + "payments");
+        Client client = new HostIgnoringClient(TokenIntegracao.URL_API_ASAAS).hostIgnoringClient();
+        WebResource webResource = client.resource(TokenIntegracao.URL_API_ASAAS + "payments");
 
         ClientResponse clientResponse = webResource
                 .accept("application/json;charset=UTF-8")
                 .header("Content-Type", "application/json;charset=UTF-8")
-                .header("access_token", AsaasApiPagamentoStatus.API_KEY)
+                .header("access_token", TokenIntegracao.API_KEY)
                 .post(ClientResponse.class, json);
 
         String stringRetorno = clientResponse.getEntity(String.class);
