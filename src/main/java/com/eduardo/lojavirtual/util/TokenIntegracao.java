@@ -20,7 +20,7 @@ public class TokenIntegracao {
     public static String BOLETO_PIX = "UNDEFINED"; /* Cobrança que pode ser paga por pix, boleto e cartão */
 
     /* GET RESPONSE */
-    public static final String TOKEN_GET_RESPONSE = "fxjfa8mfo2rulacsozijjd3q7yq9m7bf";
+    public static final String TOKEN_GET_RESPONSE = "api-key fxjfa8mfo2rulacsozijjd3q7yq9m7bf";
     public static final String URL_END_POINT_GET_RESPONSE = "https://api.getresponse.com/v3/";
 
 }
