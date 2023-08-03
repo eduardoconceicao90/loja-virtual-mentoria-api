@@ -1,6 +1,8 @@
 package com.eduardo.lojavirtual;
 
 import com.eduardo.lojavirtual.model.dto.getResponse.CampanhaGetResponseDTO;
+import com.eduardo.lojavirtual.model.dto.getResponse.LeadCampanhaGetResponseCadastroDTO;
+import com.eduardo.lojavirtual.model.dto.getResponse.LeadCampanhaGetResponseDTO;
 import com.eduardo.lojavirtual.service.ServiceGetResponseEmailMarketing;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,23 @@ public class TesteCampanhaGetResponse {
             System.out.println(campanhaGetResponse);
             System.out.println("---------------------------");
         }
+
+    }
+
+    @Test
+    public void testCriaLead() throws Exception {
+
+        LeadCampanhaGetResponseDTO lead = new LeadCampanhaGetResponseDTO();
+        lead.setName("Eduardo teste api");
+        lead.setEmail("eduardodevjavaweb@gmail.com");
+
+        LeadCampanhaGetResponseCadastroDTO campanha = new LeadCampanhaGetResponseCadastroDTO();
+        campanha.setCampaignId("******");
+        lead.setCampaign(campanha);
+
+        String retorno = serviceGetResponseEmailMarketing.criaLeadApiGetResponse(lead);
+
+        System.out.println(retorno);
 
     }
 }
