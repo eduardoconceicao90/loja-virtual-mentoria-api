@@ -1,6 +1,6 @@
 package com.eduardo.lojavirtual.model.dto.getResponse;
 
-public class AttachmenteNewsLatterGetResponseDTO {
+public class AttachmentNewsLatterGetResponseDTO {
 
     private String fileName;
     private String content;

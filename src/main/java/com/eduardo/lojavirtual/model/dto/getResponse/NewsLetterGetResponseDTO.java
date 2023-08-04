@@ -15,8 +15,8 @@ public class NewsLetterGetResponseDTO {
     /*Tipo broadcast : transmissao ou draft : rascunho*/
     private String type = "broadcast";
 
-
     private String editor = "custom";
+
     /*O assunto do e-mail*/
     private String subject;
 
@@ -33,7 +33,7 @@ public class NewsLetterGetResponseDTO {
     private String sendOn;
 
     /*Os anexos e arquivos caso queira enviar*/
-    private ArrayList<AttachmenteNewsLatterGetResponseDTO> attachments = new ArrayList<>();
+    private ArrayList<AttachmentNewsLatterGetResponseDTO> attachments = new ArrayList<>();
 
     /*Configuraçoes extras*/
     private SendSettingsDTO sendSettings = new SendSettingsDTO();
@@ -118,11 +118,11 @@ public class NewsLetterGetResponseDTO {
         this.sendOn = sendOn;
     }
 
-    public ArrayList<AttachmenteNewsLatterGetResponseDTO> getAttachments() {
+    public ArrayList<AttachmentNewsLatterGetResponseDTO> getAttachments() {
         return attachments;
     }
 
-    public void setAttachments(ArrayList<AttachmenteNewsLatterGetResponseDTO> attachments) {
+    public void setAttachments(ArrayList<AttachmentNewsLatterGetResponseDTO> attachments) {
         this.attachments = attachments;
     }
 

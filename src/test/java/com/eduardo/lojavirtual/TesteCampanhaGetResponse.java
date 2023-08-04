@@ -3,6 +3,7 @@ package com.eduardo.lojavirtual;
 import com.eduardo.lojavirtual.model.dto.getResponse.CampanhaGetResponseDTO;
 import com.eduardo.lojavirtual.model.dto.getResponse.LeadCampanhaGetResponseCadastroDTO;
 import com.eduardo.lojavirtual.model.dto.getResponse.LeadCampanhaGetResponseDTO;
+import com.eduardo.lojavirtual.model.dto.getResponse.ObjetoFromFieldIdGetResponseDTO;
 import com.eduardo.lojavirtual.service.ServiceGetResponseEmailMarketing;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,7 @@ public class TesteCampanhaGetResponse {
     }
 
     @Test
-    public void testCriaLead() throws Exception {
+    public void testeCriaLead() throws Exception {
 
         LeadCampanhaGetResponseDTO lead = new LeadCampanhaGetResponseDTO();
         lead.setName("Eduardo teste api");
@@ -45,5 +46,23 @@ public class TesteCampanhaGetResponse {
 
         System.out.println(retorno);
 
+    }
+
+    @Test
+    public void testeEnviaEmailporAPI() throws Exception {
+
+        String retorno = serviceGetResponseEmailMarketing.enviaEmailApiGetResponse("******",  "Teste de e-mail", "<html><body>text do email</body></html>");
+
+        System.out.println(retorno);
+    }
+
+    @Test
+    public void testeBuscaFromFielId() throws Exception {
+
+        List<ObjetoFromFieldIdGetResponseDTO> fieldIdGetResponses = serviceGetResponseEmailMarketing.listaFromFieldId();
+
+        for (ObjetoFromFieldIdGetResponseDTO objetoFromFieldIdGetResponse : fieldIdGetResponses) {
+            System.out.println(objetoFromFieldIdGetResponse);
+        }
     }
 }
