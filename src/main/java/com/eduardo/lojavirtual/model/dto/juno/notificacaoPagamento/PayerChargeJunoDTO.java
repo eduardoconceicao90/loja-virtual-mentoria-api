@@ -1,7 +1,5 @@
 package com.eduardo.lojavirtual.model.dto.juno.notificacaoPagamento;
 
-import com.eduardo.lojavirtual.model.dto.juno.notificacaoPagamento.AddressPayerJunoDTO;
-
 public class PayerChargeJunoDTO {
 
     private String name;

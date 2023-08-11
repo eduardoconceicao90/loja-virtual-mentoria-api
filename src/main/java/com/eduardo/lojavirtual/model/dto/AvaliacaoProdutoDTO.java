@@ -1,7 +1,6 @@
 package com.eduardo.lojavirtual.model.dto;
 
 import com.eduardo.lojavirtual.model.AvaliacaoProduto;
-import com.eduardo.lojavirtual.model.Produto;
 
 public class AvaliacaoProdutoDTO {
 

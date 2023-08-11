@@ -1,7 +1,5 @@
 package com.eduardo.lojavirtual.model.dto;
 
-import com.eduardo.lojavirtual.model.Produto;
-
 public class ItemVendaDTO {
 
     private Double quantidade;

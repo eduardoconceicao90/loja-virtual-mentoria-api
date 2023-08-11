@@ -1,7 +1,5 @@
 package com.eduardo.lojavirtual.model.dto.juno.notificacaoPagamento;
 
-import com.eduardo.lojavirtual.model.dto.juno.notificacaoPagamento.DataNotificacaoJunoDTO;
-
 import java.util.ArrayList;
 import java.util.List;
 

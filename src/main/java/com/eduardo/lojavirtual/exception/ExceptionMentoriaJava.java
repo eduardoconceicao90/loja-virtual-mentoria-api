@@ -2,7 +2,9 @@ package com.eduardo.lojavirtual.exception;
 
 public class ExceptionMentoriaJava extends Exception {
 
-    public ExceptionMentoriaJava(String msgErro) {
+	private static final long serialVersionUID = 1L;
+
+	public ExceptionMentoriaJava(String msgErro) {
         super(msgErro);
     }
 }
