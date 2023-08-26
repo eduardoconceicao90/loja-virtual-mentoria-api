@@ -31,8 +31,8 @@ public class WebConfigSecurity extends WebSecurityConfigurerAdapter implements H
         http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 .disable().authorizeRequests().antMatchers("/").permitAll()
                 .antMatchers("/index","/pagamento/**","/resources/**","/static/**","/templates/**","classpath:/static/**","classpath:/resources/**","classpath:/templates/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/requisicaojunoboleto/**","/requisicaoasaasboleto/**","/pagamento/**","/resources/**","/static/**","/templates/**","classpath:/static/**","classpath:/resources/**","classpath:/templates/**").permitAll()
-                .antMatchers(HttpMethod.POST, "/requisicaojunoboleto/**","/requisicaoasaasboleto/**","/pagamento/**","/resources/**","/static/**","/templates/**","classpath:/static/**","classpath:/resources/**","classpath:/templates/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/requisicaojunoboleto/**","/requisicaoasaasboleto/**","/pagamento/**","/resources/**","/static/**","/templates/**","classpath:/static/**","classpath:/resources/**","classpath:/templates/**","/recuperarSenha").permitAll()
+                .antMatchers(HttpMethod.POST, "/requisicaojunoboleto/**","/requisicaoasaasboleto/**","/pagamento/**","/resources/**","/static/**","/templates/**","classpath:/static/**","classpath:/resources/**","classpath:/templates/**","/recuperarSenha").permitAll()
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
                 /* Redireciona ou da um retorno para index quando desloga */
@@ -57,7 +57,7 @@ public class WebConfigSecurity extends WebSecurityConfigurerAdapter implements H
     @Override
     public void configure(WebSecurity web) throws Exception {
                   web.ignoring()
-                          .antMatchers(HttpMethod.GET, "/requisicaojunoboleto/**","/requisicaoasaasboleto/**","/pagamento/**","/resources/**","/static/**","/templates/**","classpath:/static/**","classpath:/resources/**","classpath:/templates/**","/webjars/**","/WEB-INF/classes/static/**")
-                          .antMatchers(HttpMethod.POST, "/requisicaojunoboleto/**","/requisicaoasaasboleto/**","/pagamento/**","/resources/**","/static/**","/templates/**","classpath:/static/**","classpath:/resources/**","classpath:/templates/**","/webjars/**","/WEB-INF/classes/static/**");
+                          .antMatchers(HttpMethod.GET, "/requisicaojunoboleto/**","/requisicaoasaasboleto/**","/pagamento/**","/resources/**","/static/**","/templates/**","classpath:/static/**","classpath:/resources/**","classpath:/templates/**","/webjars/**","/WEB-INF/classes/static/**","/recuperarSenha")
+                          .antMatchers(HttpMethod.POST, "/requisicaojunoboleto/**","/requisicaoasaasboleto/**","/pagamento/**","/resources/**","/static/**","/templates/**","classpath:/static/**","classpath:/resources/**","classpath:/templates/**","/webjars/**","/WEB-INF/classes/static/**","/recuperarSenha");
     }
 }

@@ -33,4 +33,9 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
     @Query(value = "select u from Usuario u where u.dataAtualSenha <= current_date - 90")
     List<Usuario> usuarioSenhaVencida();
+    
+    @Transactional
+    @Modifying
+    @Query(value = "update usuario set senha = ?1 where login =?2", nativeQuery = true)
+    void updateSenhaUser(String senha, String login);
 }

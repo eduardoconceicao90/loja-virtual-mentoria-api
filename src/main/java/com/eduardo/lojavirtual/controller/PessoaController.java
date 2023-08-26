@@ -4,23 +4,31 @@ import com.eduardo.lojavirtual.exception.ExceptionMentoriaJava;
 import com.eduardo.lojavirtual.model.Endereco;
 import com.eduardo.lojavirtual.model.PessoaFisica;
 import com.eduardo.lojavirtual.model.PessoaJuridica;
+import com.eduardo.lojavirtual.model.Usuario;
 import com.eduardo.lojavirtual.model.dto.CepDTO;
 import com.eduardo.lojavirtual.model.dto.ConsultaCnpjDTO;
 import com.eduardo.lojavirtual.model.enums.TipoPessoa;
 import com.eduardo.lojavirtual.repository.EnderecoRepository;
 import com.eduardo.lojavirtual.repository.PessoaFisicaRepository;
 import com.eduardo.lojavirtual.repository.PessoaJuridicaRepository;
+import com.eduardo.lojavirtual.repository.UsuarioRepository;
 import com.eduardo.lojavirtual.service.ContagemAcessoApi;
 import com.eduardo.lojavirtual.service.PessoaUserService;
+import com.eduardo.lojavirtual.service.ServiceSendEmail;
 import com.eduardo.lojavirtual.util.ValidaCNPJ;
 import com.eduardo.lojavirtual.util.ValidaCPF;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import javax.validation.Valid;
+
+import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 public class PessoaController {
@@ -39,6 +47,12 @@ public class PessoaController {
 
     @Autowired
     private ContagemAcessoApi contagemAcessoApi;
+    
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+    
+    @Autowired
+    private ServiceSendEmail sendEmail;
 
     @ResponseBody
     @GetMapping(value = "**/consultaCep/{cep}")
@@ -169,4 +183,29 @@ public class PessoaController {
 
         return new ResponseEntity<PessoaFisica>(pessoaFisica, HttpStatus.OK);
     }
+    
+    @ResponseBody
+    @PostMapping(value = "**/recuperarSenha")
+    public ResponseEntity<String> recuperarAcesso(@RequestBody String login) throws Exception {
+    	Usuario usuario = usuarioRepository.findUserByLogin(login);
+    	
+    	if(usuario == null) {
+    		return new ResponseEntity<String>("Usuário não encontrado", HttpStatus.OK);
+    	}
+    	
+    	String senha = UUID.randomUUID().toString();
+    	senha = senha.substring(0, 6);
+    	
+    	String senhaCriptografada = new BCryptPasswordEncoder().encode(senha);
+    	
+    	usuarioRepository.updateSenhaUser(senhaCriptografada, login);
+    	
+    	StringBuilder sb = new StringBuilder();
+    	sb.append("<b>Sua nova senha é: </b>").append(senha);
+    	sendEmail.enviarEmailHtml("Sua nova senha", sb.toString(), usuario.getLogin());
+    		
+    	return new ResponseEntity<String>("Senha enviada para seu e-mail", HttpStatus.OK);
+    }
+    
+    
 }
