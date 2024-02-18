@@ -211,6 +211,13 @@ public class PessoaController {
     		
     	return new ResponseEntity<ObjetoMsgGeralDTO>(new ObjetoMsgGeralDTO("Senha enviada para seu e-mail"), HttpStatus.OK);
     }
-    
-    
+
+    @ResponseBody
+    @GetMapping(value = "**/possuiAcesso/{username}/{role}")
+    public ResponseEntity<Boolean> possuiAcesso(@PathVariable String username, @PathVariable String role){
+
+        String sqlRole = "'" + role.replace(",", "','") + "'";
+        System.out.println(sqlRole);
+        return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+    }
 }

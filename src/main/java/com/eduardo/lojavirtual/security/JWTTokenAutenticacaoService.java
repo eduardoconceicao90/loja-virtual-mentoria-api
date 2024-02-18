@@ -47,7 +47,7 @@ public class JWTTokenAutenticacaoService {
         liberacaoCors(response);
 
         /* Usado para ver no Postman para teste */
-        response.getWriter().write("{\"Authorization\": \"" + token + "\"}");
+        response.getWriter().write("{\"Authorization\": \"" + token + "\", \"username\": \"" + username + "\"}");
     }
 
     /* Retorna o usuário validado com token ou caso nao seja valido retona null */
