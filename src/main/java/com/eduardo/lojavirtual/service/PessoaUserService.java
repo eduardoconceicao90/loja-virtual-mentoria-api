@@ -14,6 +14,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import java.util.Calendar;
 
 @Service
@@ -33,6 +36,9 @@ public class PessoaUserService {
 
     @Autowired
     private PessoaFisicaRepository pessoaFisicaRepository;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     public PessoaJuridica salvarPessoaJuridica(PessoaJuridica juridica) {
 
@@ -141,6 +147,17 @@ public class PessoaUserService {
 
     public ConsultaCnpjDTO consultaCnpjReceitaWS(String cnpj) {
         return new RestTemplate().getForEntity("https://receitaws.com.br/v1/cnpj/" + cnpj, ConsultaCnpjDTO.class).getBody();
+    }
+
+    public Boolean possuiAcesso(String username, String acessos){
+        String sql = "select count(1) > 0 from usuario_acesso as ua " +
+                     "inner join usuario as u on u.id = ua.usuario_id " +
+                     "inner join acesso as a on a.id = ua.acesso_id " +
+                     "where u.login = '"+ username + "' " +
+                     "and a.descricao in ("+ acessos + ")";
+
+        Query query = entityManager.createNativeQuery(sql);
+        return Boolean.valueOf(query.getSingleResult().toString());
     }
 
 }

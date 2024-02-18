@@ -215,9 +215,8 @@ public class PessoaController {
     @ResponseBody
     @GetMapping(value = "**/possuiAcesso/{username}/{role}")
     public ResponseEntity<Boolean> possuiAcesso(@PathVariable String username, @PathVariable String role){
-
         String sqlRole = "'" + role.replace(",", "','") + "'";
-        System.out.println(sqlRole);
-        return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+        Boolean possuiAcesso = pessoaUserService.possuiAcesso(username, sqlRole);
+        return new ResponseEntity<Boolean>(possuiAcesso, HttpStatus.OK);
     }
 }
