@@ -26,6 +26,15 @@ public class CategoriaProdutoController {
         return new ResponseEntity<List<CategoriaProduto>>(categoriaProduto, HttpStatus.OK);
     }
 
+    @ResponseBody
+    @GetMapping(value = "**/listarCategoriaProduto/{codEmpresa}")
+    public ResponseEntity<List<CategoriaProduto>> listarCategoriaProduto(@PathVariable("codEmpresa") Long codEmpresa) {
+
+        List<CategoriaProduto> categoriaProduto = categoriaProdutoRepository.findAll(codEmpresa);
+
+        return new ResponseEntity<List<CategoriaProduto>>(categoriaProduto, HttpStatus.OK);
+    }
+
     @ResponseBody /* Poder dar um retorno da API */
     @PostMapping(value = "**/deleteCategoria") /* Mapeando a url para receber JSON */
     public ResponseEntity<?> deleteCategoria(@RequestBody CategoriaProduto categoriaProduto) { /* Recebe o JSON e converte pra Objeto */
