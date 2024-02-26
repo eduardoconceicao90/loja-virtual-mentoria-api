@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class CategoriaProdutoController {
@@ -18,7 +19,16 @@ public class CategoriaProdutoController {
     private CategoriaProdutoRepository categoriaProdutoRepository;
 
     @ResponseBody
-    @GetMapping(value = "**/buscarPorDescCatgoria/{desc}")
+    @GetMapping(value = "**/buscarCategoriaPorId/{id}")
+    public ResponseEntity<CategoriaProduto> buscarCategoriaPorId(@PathVariable("id") Long id) {
+
+       CategoriaProduto categoriaProduto = categoriaProdutoRepository.findById(id).get();
+
+        return new ResponseEntity<CategoriaProduto>(categoriaProduto, HttpStatus.OK);
+    }
+
+    @ResponseBody
+    @GetMapping(value = "**/buscarPorDescCategoria/{desc}")
     public ResponseEntity<List<CategoriaProduto>> buscarPorDesc(@PathVariable("desc") String desc) {
 
         List<CategoriaProduto> categoriaProduto = categoriaProdutoRepository.buscarCategoriaDes(desc.toUpperCase());
