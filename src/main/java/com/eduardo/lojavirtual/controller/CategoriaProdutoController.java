@@ -4,6 +4,7 @@ import com.eduardo.lojavirtual.exception.ExceptionMentoriaJava;
 import com.eduardo.lojavirtual.model.CategoriaProduto;
 import com.eduardo.lojavirtual.model.dto.CatgoriaProdutoDTO;
 import com.eduardo.lojavirtual.repository.CategoriaProdutoRepository;
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,15 +48,15 @@ public class CategoriaProdutoController {
 
     @ResponseBody /* Poder dar um retorno da API */
     @PostMapping(value = "**/deleteCategoria") /* Mapeando a url para receber JSON */
-    public ResponseEntity<?> deleteCategoria(@RequestBody CategoriaProduto categoriaProduto) { /* Recebe o JSON e converte pra Objeto */
+    public ResponseEntity<String> deleteCategoria(@RequestBody CategoriaProduto categoriaProduto) throws ExceptionMentoriaJava { /* Recebe o JSON e converte pra Objeto */
 
         if (categoriaProdutoRepository.findById(categoriaProduto.getId()).isPresent() == false) {
-            return new ResponseEntity("Categoria já foi removida",HttpStatus.OK);
+            throw new ExceptionMentoriaJava("Categoria já foi removida");
         }
 
         categoriaProdutoRepository.deleteById(categoriaProduto.getId());
 
-        return new ResponseEntity("Categoria Removida",HttpStatus.OK);
+        return new ResponseEntity<String>(new Gson().toJson("Categoria removida"),HttpStatus.OK);
     }
 
     @ResponseBody
