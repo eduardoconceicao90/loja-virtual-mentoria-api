@@ -38,6 +38,15 @@ public class CategoriaProdutoController {
     }
 
     @ResponseBody
+    @GetMapping(value = "**/buscarPorDescEEmpresaCategoria/{desc}/{empresa}")
+    public ResponseEntity<List<CategoriaProduto>> buscarPorDescEEmpresa(@PathVariable("desc") String desc, @PathVariable("empresa") Long empresa) {
+
+        List<CategoriaProduto> categoriaProduto = categoriaProdutoRepository.buscarCategoriaPorDescEEmpresa(desc.toUpperCase(), empresa);
+
+        return new ResponseEntity<List<CategoriaProduto>>(categoriaProduto, HttpStatus.OK);
+    }
+
+    @ResponseBody
     @GetMapping(value = "**/listarCategoriaProduto/{codEmpresa}")
     public ResponseEntity<List<CategoriaProduto>> listarCategoriaProduto(@PathVariable("codEmpresa") Long codEmpresa) {
 

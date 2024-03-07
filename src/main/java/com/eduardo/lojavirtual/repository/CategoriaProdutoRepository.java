@@ -18,4 +18,7 @@ public interface CategoriaProdutoRepository extends JpaRepository<CategoriaProdu
 
     @Query("select a from CategoriaProduto a where a.empresa.id = ?1")
     List<CategoriaProduto> findAll(Long codEmpresa);
+
+    @Query("select a from CategoriaProduto a where upper(trim(a.nomeDesc)) like %?1% and a.empresa.id = ?2")
+    List<CategoriaProduto> buscarCategoriaPorDescEEmpresa(String nomeDesc, Long empresa);
 }
