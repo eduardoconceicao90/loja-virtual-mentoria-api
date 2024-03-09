@@ -21,4 +21,7 @@ public interface CategoriaProdutoRepository extends JpaRepository<CategoriaProdu
 
     @Query("select a from CategoriaProduto a where upper(trim(a.nomeDesc)) like %?1% and a.empresa.id = ?2")
     List<CategoriaProduto> buscarCategoriaPorDescEEmpresa(String nomeDesc, Long empresa);
+
+    @Query(value = "SELECT cast((count(1) / 5) as integer) + 1 as qtdpagina FROM categoria_produto WHERE empresa_id = ?1", nativeQuery = true)
+    public Integer qdtPagina(Long idEmpresa);
 }

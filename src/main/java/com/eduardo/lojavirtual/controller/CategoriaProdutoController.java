@@ -90,4 +90,11 @@ public class CategoriaProdutoController {
         return new ResponseEntity<CatgoriaProdutoDTO>(catgoriaProdutoDto, HttpStatus.OK);
     }
 
+    @ResponseBody
+    @GetMapping(value = "**/qtdPaginaCategoriaProduto/{idEmpresa}")
+    public ResponseEntity<Integer> qtdPagina(@PathVariable Long idEmpresa){
+        Integer qtdPagina = categoriaProdutoRepository.qdtPagina(idEmpresa);
+        return new ResponseEntity<Integer>(qtdPagina, HttpStatus.OK)
+    }
+
 }
