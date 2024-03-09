@@ -6,6 +6,9 @@ import com.eduardo.lojavirtual.model.dto.CatgoriaProdutoDTO;
 import com.eduardo.lojavirtual.repository.CategoriaProdutoRepository;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -94,7 +97,16 @@ public class CategoriaProdutoController {
     @GetMapping(value = "**/qtdPaginaCategoriaProduto/{idEmpresa}")
     public ResponseEntity<Integer> qtdPagina(@PathVariable Long idEmpresa){
         Integer qtdPagina = categoriaProdutoRepository.qdtPagina(idEmpresa);
-        return new ResponseEntity<Integer>(qtdPagina, HttpStatus.OK)
+        return new ResponseEntity<Integer>(qtdPagina, HttpStatus.OK);
+    }
+
+    @ResponseBody
+    @GetMapping(value = "**/listaPorPageCategoriaProduto/{idEmpresa}/{pagina}")
+    public ResponseEntity<List<CategoriaProduto>> pages(@PathVariable Long idEmpresa,
+                                                        @PathVariable Integer pagina){
+        Pageable pages = PageRequest.of(pagina, 5, Sort.by("nomeDesc"));
+        List<CategoriaProduto> lista = categoriaProdutoRepository.findPorPage(idEmpresa, pages);
+        return new ResponseEntity<List<CategoriaProduto>>(lista, HttpStatus.OK);
     }
 
 }

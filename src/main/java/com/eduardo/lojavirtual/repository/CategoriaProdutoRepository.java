@@ -1,6 +1,7 @@
 package com.eduardo.lojavirtual.repository;
 
 import com.eduardo.lojavirtual.model.CategoriaProduto;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -24,4 +25,7 @@ public interface CategoriaProdutoRepository extends JpaRepository<CategoriaProdu
 
     @Query(value = "SELECT cast((count(1) / 5) as integer) + 1 as qtdpagina FROM categoria_produto WHERE empresa_id = ?1", nativeQuery = true)
     public Integer qdtPagina(Long idEmpresa);
+
+    @Query("select a from CategoriaProduto a where a.empresa.id = ?1")
+    public List<CategoriaProduto> findPorPage(Long idEmpresa, Pageable pageable);
 }
