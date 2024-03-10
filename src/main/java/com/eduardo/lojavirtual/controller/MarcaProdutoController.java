@@ -69,6 +69,15 @@ public class MarcaProdutoController {
     }
 
     @ResponseBody
+    @GetMapping(value = "**/buscarPorDescEEmpresaMarca/{desc}/{empresa}")
+    public ResponseEntity<List<MarcaProduto>> buscarPorDescEEmpresa(@PathVariable("desc") String desc, @PathVariable("empresa") Long empresa) {
+
+        List<MarcaProduto> marcaProduto = marcaProdutoRepository.buscarMarcaPorDescEEmpresa(desc.toUpperCase(), empresa);
+
+        return new ResponseEntity<List<MarcaProduto>>(marcaProduto, HttpStatus.OK);
+    }
+
+    @ResponseBody
     @GetMapping(value = "**/qtdPaginaMarcaProduto/{idEmpresa}")
     public ResponseEntity<Integer> qtdPagina(@PathVariable Long idEmpresa){
         Integer qtdPagina = marcaProdutoRepository.qdtPagina(idEmpresa);
