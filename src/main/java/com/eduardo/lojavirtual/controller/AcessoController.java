@@ -4,7 +4,11 @@ import com.eduardo.lojavirtual.exception.ExceptionMentoriaJava;
 import com.eduardo.lojavirtual.model.Acesso;
 import com.eduardo.lojavirtual.repository.AcessoRepository;
 import com.eduardo.lojavirtual.service.AcessoService;
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,16 +41,16 @@ public class AcessoController {
 
     @ResponseBody
     @PostMapping(value = "**/deletarAcesso")
-    public ResponseEntity<?> delete(@RequestBody Acesso acesso){
+    public ResponseEntity<String> delete(@RequestBody Acesso acesso){
         acessoService.delete(acesso.getId());
-        return new ResponseEntity("Acesso removido", HttpStatus.NO_CONTENT);
+        return new ResponseEntity<String>(new Gson().toJson("Acesso removido"), HttpStatus.OK);
     }
 
     @ResponseBody
     @DeleteMapping(value = "**/deletarAcessoPorId/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id){
+    public ResponseEntity<String> delete(@PathVariable Long id){
         acessoService.delete(id);
-        return new ResponseEntity("Acesso removido", HttpStatus.NO_CONTENT);
+        return new ResponseEntity<String>(new Gson().toJson("Acesso removido"), HttpStatus.OK);
     }
 
     @ResponseBody
@@ -64,5 +68,28 @@ public class AcessoController {
     public ResponseEntity<List<Acesso>> buscarPorDesc(@PathVariable String desc){
         List<Acesso> acesso = acessoRepository.buscarAcessoDesc(desc.toUpperCase());
         return new ResponseEntity(acesso, HttpStatus.OK);
+    }
+
+    @ResponseBody
+    @GetMapping(value = "**/buscarPorDescEEmpresaAcesso/{desc}/{empresa}")
+    public ResponseEntity<List<Acesso>> buscarPorDescEEmpresa(@PathVariable("desc") String desc, @PathVariable("empresa") Long empresa) {
+        List<Acesso> acesso = acessoRepository.buscarAcessoPorDescEEmpresa(desc.toUpperCase(), empresa);
+        return new ResponseEntity<List<Acesso>>(acesso, HttpStatus.OK);
+    }
+
+    @ResponseBody
+    @GetMapping(value = "**/qtdPaginaAcesso/{idEmpresa}")
+    public ResponseEntity<Integer> qtdPagina(@PathVariable Long idEmpresa){
+        Integer qtdPagina = acessoRepository.qdtPagina(idEmpresa);
+        return new ResponseEntity<Integer>(qtdPagina, HttpStatus.OK);
+    }
+
+    @ResponseBody
+    @GetMapping(value = "**/listaPorPageAcesso/{idEmpresa}/{pagina}")
+    public ResponseEntity<List<Acesso>> pages(@PathVariable Long idEmpresa,
+                                              @PathVariable Integer pagina){
+        Pageable pages = PageRequest.of(pagina, 5, Sort.by("nomeDesc"));
+        List<Acesso> lista = acessoRepository.findPorPage(idEmpresa, pages);
+        return new ResponseEntity<List<Acesso>>(lista, HttpStatus.OK);
     }
 }
