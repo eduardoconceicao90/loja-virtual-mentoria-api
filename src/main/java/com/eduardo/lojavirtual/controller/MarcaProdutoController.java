@@ -4,6 +4,9 @@ import com.eduardo.lojavirtual.exception.ExceptionMentoriaJava;
 import com.eduardo.lojavirtual.model.MarcaProduto;
 import com.eduardo.lojavirtual.repository.MarcaProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -82,5 +85,14 @@ public class MarcaProdutoController {
     public ResponseEntity<Integer> qtdPagina(@PathVariable Long idEmpresa){
         Integer qtdPagina = marcaProdutoRepository.qdtPagina(idEmpresa);
         return new ResponseEntity<Integer>(qtdPagina, HttpStatus.OK);
+    }
+
+    @ResponseBody
+    @GetMapping(value = "**/listaPorPageMarcaProduto/{idEmpresa}/{pagina}")
+    public ResponseEntity<List<MarcaProduto>> pages(@PathVariable Long idEmpresa,
+                                                        @PathVariable Integer pagina){
+        Pageable pages = PageRequest.of(pagina, 5, Sort.by("nomeDesc"));
+        List<MarcaProduto> lista = marcaProdutoRepository.findPorPage(idEmpresa, pages);
+        return new ResponseEntity<List<MarcaProduto>>(lista, HttpStatus.OK);
     }
 }
