@@ -88,7 +88,7 @@ public class AcessoController {
     @GetMapping(value = "**/listaPorPageAcesso/{idEmpresa}/{pagina}")
     public ResponseEntity<List<Acesso>> pages(@PathVariable Long idEmpresa,
                                               @PathVariable Integer pagina){
-        Pageable pages = PageRequest.of(pagina, 5, Sort.by("nomeDesc"));
+        Pageable pages = PageRequest.of(pagina, 5, Sort.by("descricao"));
         List<Acesso> lista = acessoRepository.findPorPage(idEmpresa, pages);
         return new ResponseEntity<List<Acesso>>(lista, HttpStatus.OK);
     }
