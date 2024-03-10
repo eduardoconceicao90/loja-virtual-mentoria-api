@@ -3,6 +3,7 @@ package com.eduardo.lojavirtual.controller;
 import com.eduardo.lojavirtual.exception.ExceptionMentoriaJava;
 import com.eduardo.lojavirtual.model.MarcaProduto;
 import com.eduardo.lojavirtual.repository.MarcaProdutoRepository;
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -41,7 +42,7 @@ public class MarcaProdutoController {
     @PostMapping(value = "**/deleteMarca")
     public ResponseEntity<?> deleteMarca(@RequestBody MarcaProduto marcaProduto) {
         marcaProdutoRepository.deleteById(marcaProduto.getId());
-        return new ResponseEntity("Marca Removida",HttpStatus.OK);
+        return new ResponseEntity<String>(new Gson().toJson("Marca removida"),HttpStatus.OK);
     }
 
     @ResponseBody
