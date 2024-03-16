@@ -15,6 +15,7 @@ import com.eduardo.lojavirtual.service.PessoaUserService;
 import com.eduardo.lojavirtual.service.ServiceSendEmail;
 import com.eduardo.lojavirtual.util.ValidaCNPJ;
 import com.eduardo.lojavirtual.util.ValidaCPF;
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -203,6 +204,13 @@ public class PessoaController {
     	sendEmail.enviarEmailHtml("Sua nova senha", sb.toString(), usuario.getLogin());
     		
     	return new ResponseEntity<ObjetoMsgGeralDTO>(new ObjetoMsgGeralDTO("Senha enviada para seu e-mail"), HttpStatus.OK);
+    }
+
+    @ResponseBody
+    @PostMapping(value = "**/deletarPj")
+    public ResponseEntity<String> delete(@RequestBody PessoaJuridica pj){
+        pessoaJuridicaRepository.deleteById(pj.getId());
+        return new ResponseEntity<String>(new Gson().toJson("Pessoa Juridica removida"), HttpStatus.OK);
     }
 
     @ResponseBody
