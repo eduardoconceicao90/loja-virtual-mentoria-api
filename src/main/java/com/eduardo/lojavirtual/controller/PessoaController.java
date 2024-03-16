@@ -1,26 +1,7 @@
 package com.eduardo.lojavirtual.controller;
 
-import java.util.List;
-import java.util.UUID;
-
-import javax.validation.Valid;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.eduardo.lojavirtual.exception.ExceptionMentoriaJava;
-import com.eduardo.lojavirtual.model.Endereco;
-import com.eduardo.lojavirtual.model.PessoaFisica;
-import com.eduardo.lojavirtual.model.PessoaJuridica;
-import com.eduardo.lojavirtual.model.Usuario;
+import com.eduardo.lojavirtual.model.*;
 import com.eduardo.lojavirtual.model.dto.CepDTO;
 import com.eduardo.lojavirtual.model.dto.ConsultaCnpjDTO;
 import com.eduardo.lojavirtual.model.dto.ObjetoMsgGeralDTO;
@@ -34,6 +15,18 @@ import com.eduardo.lojavirtual.service.PessoaUserService;
 import com.eduardo.lojavirtual.service.ServiceSendEmail;
 import com.eduardo.lojavirtual.util.ValidaCNPJ;
 import com.eduardo.lojavirtual.util.ValidaCPF;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.List;
+import java.util.UUID;
 
 @RestController
 public class PessoaController {
@@ -213,10 +206,43 @@ public class PessoaController {
     }
 
     @ResponseBody
+    @GetMapping(value = "**/buscarPjPorId/{id}")
+    public ResponseEntity<PessoaJuridica> buscarPjPorId(@PathVariable Long id) throws ExceptionMentoriaJava {
+        PessoaJuridica pj = pessoaJuridicaRepository.findById(id).orElse(null);
+        if (pj == null){
+            throw new ExceptionMentoriaJava("Não encontrou Pessoa Juridica com o codigo: " + id);
+        }
+        return new ResponseEntity(pj, HttpStatus.OK);
+    }
+
+    @ResponseBody
     @GetMapping(value = "**/possuiAcesso/{username}/{role}")
     public ResponseEntity<Boolean> possuiAcesso(@PathVariable String username, @PathVariable String role){
         String sqlRole = "'" + role.replace(",", "','") + "'";
         Boolean possuiAcesso = pessoaUserService.possuiAcesso(username, sqlRole);
         return new ResponseEntity<Boolean>(possuiAcesso, HttpStatus.OK);
+    }
+
+    @ResponseBody
+    @GetMapping(value = "**/buscarPjPorNomeFantasiaEEmpresa/{nomeFantasia}/{empresa}")
+    public ResponseEntity<List<PessoaJuridica>> buscarPjPorNomeFantasiaEEmpresa(@PathVariable("nomeFantasia") String nomeFantasia, @PathVariable("empresa") Long empresa) {
+        List<PessoaJuridica> pj = pessoaJuridicaRepository.buscarPjPorNomeFantasiaEEmpresa(nomeFantasia.toUpperCase(), empresa);
+        return new ResponseEntity<List<PessoaJuridica>>(pj, HttpStatus.OK);
+    }
+
+    @ResponseBody
+    @GetMapping(value = "**/qtdPaginaPj/{idEmpresa}")
+    public ResponseEntity<Integer> qtdPaginaPj(@PathVariable Long idEmpresa){
+        Integer qtdPagina = pessoaJuridicaRepository.qdtPagina(idEmpresa);
+        return new ResponseEntity<Integer>(qtdPagina, HttpStatus.OK);
+    }
+
+    @ResponseBody
+    @GetMapping(value = "**/listaPorPagePj/{idEmpresa}/{pagina}")
+    public ResponseEntity<List<PessoaJuridica>> pagesPj(@PathVariable Long idEmpresa,
+                                              @PathVariable Integer pagina){
+        Pageable pages = PageRequest.of(pagina, 5, Sort.by("nomeFantasia"));
+        List<PessoaJuridica> lista = pessoaJuridicaRepository.findPorPage(idEmpresa, pages);
+        return new ResponseEntity<List<PessoaJuridica>>(lista, HttpStatus.OK);
     }
 }
