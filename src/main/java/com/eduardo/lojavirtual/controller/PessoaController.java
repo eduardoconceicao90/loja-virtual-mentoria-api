@@ -209,6 +209,8 @@ public class PessoaController {
     @ResponseBody
     @PostMapping(value = "**/deletarPj")
     public ResponseEntity<String> delete(@RequestBody PessoaJuridica pj){
+        usuarioRepository.deleteAcessoUser(pj.getId());
+        usuarioRepository.deleteByPj(pj.getId());
         pessoaJuridicaRepository.deleteById(pj.getId());
         return new ResponseEntity<String>(new Gson().toJson("Pessoa Juridica removida"), HttpStatus.OK);
     }

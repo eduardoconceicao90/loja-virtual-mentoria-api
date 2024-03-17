@@ -38,4 +38,14 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     @Modifying
     @Query(value = "update usuario set senha = ?1 where login =?2", nativeQuery = true)
     void updateSenhaUser(String senha, String login);
+
+    @Transactional
+    @Modifying(flushAutomatically = true)
+    @Query(value = "delete from usuario where empresa_id = ?1", nativeQuery = true)
+    void deleteByPj(Long id);
+
+    @Transactional
+    @Modifying(flushAutomatically = true)
+    @Query(value = "delete from usuario_acesso where usuario_id in (select distinct usuario_id from usuario_acesso where usuario_id in (select id from usuario where empresa_id = ?1))", nativeQuery = true)
+    void deleteAcessoUser(Long id);
 }
