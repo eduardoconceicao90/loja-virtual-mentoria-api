@@ -210,7 +210,7 @@ public class PessoaController {
     @PostMapping(value = "**/deletarPj")
     public ResponseEntity<String> delete(@RequestBody PessoaJuridica pj){
         usuarioRepository.deleteAcessoUser(pj.getId());
-        usuarioRepository.deleteByPj(pj.getId());
+        usuarioRepository.deleteByPessoa(pj.getId());
         pessoaJuridicaRepository.deleteById(pj.getId());
         return new ResponseEntity<String>(new Gson().toJson("Pessoa Juridica removida"), HttpStatus.OK);
     }
@@ -254,5 +254,47 @@ public class PessoaController {
         Pageable pages = PageRequest.of(pagina, 5, Sort.by("nomeFantasia"));
         List<PessoaJuridica> lista = pessoaJuridicaRepository.findPorPage(idEmpresa, pages);
         return new ResponseEntity<List<PessoaJuridica>>(lista, HttpStatus.OK);
+    }
+
+    @ResponseBody
+    @GetMapping(value = "**/buscarPfPorNomeEEmpresa/{nome}/{empresa}")
+    public ResponseEntity<List<PessoaFisica>> buscarPfPorNomeEEmpresa(@PathVariable("nome") String nome, @PathVariable("empresa") Long empresa) {
+        List<PessoaFisica> pf = pessoaFisicaRepository.buscarPfPorNomeEEmpresa(nome.toUpperCase(), empresa);
+        return new ResponseEntity<List<PessoaFisica>>(pf, HttpStatus.OK);
+    }
+
+    @ResponseBody
+    @GetMapping(value = "**/qtdPaginaPf/{idEmpresa}")
+    public ResponseEntity<Integer> qtdPaginaPf(@PathVariable Long idEmpresa){
+        Integer qtdPagina = pessoaFisicaRepository.qdtPagina(idEmpresa);
+        return new ResponseEntity<Integer>(qtdPagina, HttpStatus.OK);
+    }
+
+    @ResponseBody
+    @GetMapping(value = "**/listaPorPagePf/{idEmpresa}/{pagina}")
+    public ResponseEntity<List<PessoaFisica>> pagesPf(@PathVariable Long idEmpresa,
+                                                        @PathVariable Integer pagina){
+        Pageable pages = PageRequest.of(pagina, 5, Sort.by("nome"));
+        List<PessoaFisica> lista = pessoaFisicaRepository.findPorPage(idEmpresa, pages);
+        return new ResponseEntity<List<PessoaFisica>>(lista, HttpStatus.OK);
+    }
+
+    @ResponseBody
+    @PostMapping(value = "**/deletarPf")
+    public ResponseEntity<String> delete(@RequestBody PessoaFisica pf){
+        usuarioRepository.deleteAcessoUser(pf.getId());
+        usuarioRepository.deleteByPessoa(pf.getId());
+        pessoaFisicaRepository.deleteById(pf.getId());
+        return new ResponseEntity<String>(new Gson().toJson("Pessoa Física removida"), HttpStatus.OK);
+    }
+
+    @ResponseBody
+    @GetMapping(value = "**/buscarPfPorId/{id}")
+    public ResponseEntity<PessoaFisica> buscarPfPorId(@PathVariable Long id) throws ExceptionMentoriaJava {
+        PessoaFisica pf = pessoaFisicaRepository.findById(id).orElse(null);
+        if (pf == null){
+            throw new ExceptionMentoriaJava("Não encontrou Pessoa Física com o codigo: " + id);
+        }
+        return new ResponseEntity(pf, HttpStatus.OK);
     }
 }
