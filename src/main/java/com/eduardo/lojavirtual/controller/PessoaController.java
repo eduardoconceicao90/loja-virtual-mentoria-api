@@ -118,20 +118,27 @@ public class PessoaController {
         }
 
         if (!ValidaCNPJ.isCNPJ(pessoaJuridica.getCnpj())) {
-            throw new ExceptionMentoriaJava("Cnpj : " + pessoaJuridica.getCnpj() + " está inválido.");
+            throw new ExceptionMentoriaJava("Cnpj: " + pessoaJuridica.getCnpj() + " está inválido.");
         }
 
         if (pessoaJuridica.getId() == null || pessoaJuridica.getId() <= 0) {
 
             for (int p = 0; p < pessoaJuridica.getEnderecos().size(); p++) {
 
-                CepDTO cepDTO = pessoaUserService.consultaCep(pessoaJuridica.getEnderecos().get(p).getCep());
+                String cep = pessoaJuridica.getEnderecos().get(p).getCep();
+                CepDTO cepDTO = pessoaUserService.consultaCep(cep);
+
+                if(cepDTO == null || (cepDTO != null && cepDTO.getCep() == null)){
+                    throw new ExceptionMentoriaJava("CEP: " + cep + " está inválido.");
+                }
 
                 pessoaJuridica.getEnderecos().get(p).setBairro(cepDTO.getBairro());
                 pessoaJuridica.getEnderecos().get(p).setCidade(cepDTO.getLocalidade());
                 pessoaJuridica.getEnderecos().get(p).setComplemento(cepDTO.getComplemento());
                 pessoaJuridica.getEnderecos().get(p).setRuaLogra(cepDTO.getLogradouro());
                 pessoaJuridica.getEnderecos().get(p).setUf(cepDTO.getUf());
+                pessoaJuridica.getEnderecos().get(p).setEmpresa(pessoaJuridica.getEmpresa());
+                pessoaJuridica.getEnderecos().get(p).setPessoa(pessoaJuridica);
 
             }
         } else {
@@ -142,13 +149,20 @@ public class PessoaController {
 
                 if (!enderecoTemp.getCep().equals(pessoaJuridica.getEnderecos().get(p).getCep())) {
 
-                    CepDTO cepDTO = pessoaUserService.consultaCep(pessoaJuridica.getEnderecos().get(p).getCep());
+                    String cep = pessoaJuridica.getEnderecos().get(p).getCep();
+                    CepDTO cepDTO = pessoaUserService.consultaCep(cep);
+
+                    if(cepDTO == null || (cepDTO != null && cepDTO.getCep() == null)){
+                        throw new ExceptionMentoriaJava("CEP: " + cep + " está inválido.");
+                    }
 
                     pessoaJuridica.getEnderecos().get(p).setBairro(cepDTO.getBairro());
                     pessoaJuridica.getEnderecos().get(p).setCidade(cepDTO.getLocalidade());
                     pessoaJuridica.getEnderecos().get(p).setComplemento(cepDTO.getComplemento());
                     pessoaJuridica.getEnderecos().get(p).setRuaLogra(cepDTO.getLogradouro());
                     pessoaJuridica.getEnderecos().get(p).setUf(cepDTO.getUf());
+                    pessoaJuridica.getEnderecos().get(p).setEmpresa(pessoaJuridica.getEmpresa());
+                    pessoaJuridica.getEnderecos().get(p).setPessoa(pessoaJuridica);
                 }
             }
         }

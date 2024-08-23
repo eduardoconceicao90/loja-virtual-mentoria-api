@@ -44,7 +44,7 @@ public class PessoaUserService {
 
         for (int i = 0; i< juridica.getEnderecos().size(); i++) {
             juridica.getEnderecos().get(i).setPessoa(juridica);
-            juridica.getEnderecos().get(i).setEmpresa(juridica);
+            juridica.getEnderecos().get(i).setEmpresa(juridica.getEmpresa());
         }
 
         juridica = pessoaJuridicaRepository.save(juridica);
