@@ -145,25 +145,30 @@ public class PessoaController {
 
             for (int p = 0; p < pessoaJuridica.getEnderecos().size(); p++) {
 
-                Endereco enderecoTemp =  enderecoRepository.findById(pessoaJuridica.getEnderecos().get(p).getId()).get();
+                Long idCep = pessoaJuridica.getEnderecos().get(p).getId();
 
-                if (!enderecoTemp.getCep().equals(pessoaJuridica.getEnderecos().get(p).getCep())) {
+                if(idCep != null){
+                    Endereco enderecoTemp =  enderecoRepository.findById(idCep).get();
 
-                    String cep = pessoaJuridica.getEnderecos().get(p).getCep();
-                    CepDTO cepDTO = pessoaUserService.consultaCep(cep);
+                    if (!enderecoTemp.getCep().equals(pessoaJuridica.getEnderecos().get(p).getCep())) {
 
-                    if(cepDTO == null || (cepDTO != null && cepDTO.getCep() == null)){
-                        throw new ExceptionMentoriaJava("CEP: " + cep + " está inválido.");
+                        String cep = pessoaJuridica.getEnderecos().get(p).getCep();
+                        CepDTO cepDTO = pessoaUserService.consultaCep(cep);
+
+                        if(cepDTO == null || (cepDTO != null && cepDTO.getCep() == null)){
+                            throw new ExceptionMentoriaJava("CEP: " + cep + " está inválido.");
+                        }
+
+                        pessoaJuridica.getEnderecos().get(p).setBairro(cepDTO.getBairro());
+                        pessoaJuridica.getEnderecos().get(p).setCidade(cepDTO.getLocalidade());
+                        pessoaJuridica.getEnderecos().get(p).setComplemento(cepDTO.getComplemento());
+                        pessoaJuridica.getEnderecos().get(p).setRuaLogra(cepDTO.getLogradouro());
+                        pessoaJuridica.getEnderecos().get(p).setUf(cepDTO.getUf());
+                        pessoaJuridica.getEnderecos().get(p).setEmpresa(pessoaJuridica.getEmpresa());
+                        pessoaJuridica.getEnderecos().get(p).setPessoa(pessoaJuridica);
                     }
-
-                    pessoaJuridica.getEnderecos().get(p).setBairro(cepDTO.getBairro());
-                    pessoaJuridica.getEnderecos().get(p).setCidade(cepDTO.getLocalidade());
-                    pessoaJuridica.getEnderecos().get(p).setComplemento(cepDTO.getComplemento());
-                    pessoaJuridica.getEnderecos().get(p).setRuaLogra(cepDTO.getLogradouro());
-                    pessoaJuridica.getEnderecos().get(p).setUf(cepDTO.getUf());
-                    pessoaJuridica.getEnderecos().get(p).setEmpresa(pessoaJuridica.getEmpresa());
-                    pessoaJuridica.getEnderecos().get(p).setPessoa(pessoaJuridica);
                 }
+
             }
         }
 
