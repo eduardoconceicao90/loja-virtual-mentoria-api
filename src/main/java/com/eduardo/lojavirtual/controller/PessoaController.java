@@ -316,4 +316,11 @@ public class PessoaController {
         }
         return new ResponseEntity(pf, HttpStatus.OK);
     }
+
+    @ResponseBody
+    @GetMapping(value = "**/findUserByEmpresa/{idEmpresa}")
+    public ResponseEntity<List<Usuario>> findUserByEmpresa(@PathVariable Long idEmpresa){
+        List<Usuario> usuarios = usuarioRepository.findUserByEmpresa(idEmpresa);
+        return new ResponseEntity<List<Usuario>>(usuarios, HttpStatus.OK);
+    }
 }
