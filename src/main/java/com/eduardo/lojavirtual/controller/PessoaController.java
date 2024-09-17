@@ -342,8 +342,7 @@ public class PessoaController {
             usuarioRepository.updateSenhaUserId(senhaCripto, usuario.getId());
         }
 
-        return new ResponseEntity<String>(new Gson().toJson("Usuário atualizado."), HttpStatus.OK);
+        return new ResponseEntity<String>(new Gson().toJson("Usuário salvo."), HttpStatus.OK);
     }
-
 
 }

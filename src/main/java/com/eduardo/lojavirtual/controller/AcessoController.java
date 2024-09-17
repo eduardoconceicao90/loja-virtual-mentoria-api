@@ -92,4 +92,11 @@ public class AcessoController {
         List<Acesso> lista = acessoRepository.findPorPage(idEmpresa, pages);
         return new ResponseEntity<List<Acesso>>(lista, HttpStatus.OK);
     }
+
+    @ResponseBody
+    @GetMapping(value = "**/listarAcesso/{idEmpresa}")
+    public ResponseEntity<List<Acesso>> listarAcesso(@PathVariable Long idEmpresa){
+        List<Acesso> lista = acessoRepository.listarAcesso(idEmpresa);
+        return new ResponseEntity<List<Acesso>>(lista, HttpStatus.OK);
+    }
 }
