@@ -331,4 +331,19 @@ public class PessoaController {
         return new ResponseEntity<Usuario>(usuario, HttpStatus.OK);
     }
 
+    @ResponseBody
+    @PostMapping(value = "**/salvarUsuario")
+    public ResponseEntity<String> salvarUsuario(@RequestBody Usuario usuario){
+        usuarioRepository.updateLoginUser(usuario.getLogin(), usuario.getId());
+        boolean senhaIgual = usuarioRepository.senhaIgual(usuario.getSenha(), usuario.getId());
+
+        if(!senhaIgual){
+            String senhaCripto = new BCryptPasswordEncoder().encode(usuario.getSenha());
+            usuarioRepository.updateSenhaUserId(senhaCripto, usuario.getId());
+        }
+
+        return new ResponseEntity<String>(new Gson().toJson("Usuário atualizado."), HttpStatus.OK);
+    }
+
+
 }

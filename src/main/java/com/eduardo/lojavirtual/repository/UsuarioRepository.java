@@ -43,6 +43,19 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     void updateSenhaUser(String senha, String login);
 
     @Transactional
+    @Modifying
+    @Query(value = "update usuario set senha = ?1 where id = ?2", nativeQuery = true)
+    void updateSenhaUserId(String senha, Long id);
+
+    @Query(value = "select count(1) > 0 from usuario where senha = ?1 and id = ?2", nativeQuery = true)
+    Boolean senhaIgual(String login, Long id);
+
+    @Transactional
+    @Modifying
+    @Query(value = "update usuario set login = ?1 where id =?2", nativeQuery = true)
+    void updateLoginUser(String login, Long id);
+
+    @Transactional
     @Modifying(flushAutomatically = true)
     @Query(value = "delete from usuario where pessoa_id = ?1", nativeQuery = true)
     void deleteByPessoa(Long id);
