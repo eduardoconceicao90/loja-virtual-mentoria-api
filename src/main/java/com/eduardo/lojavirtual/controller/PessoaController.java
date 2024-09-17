@@ -324,4 +324,11 @@ public class PessoaController {
         return new ResponseEntity<List<Usuario>>(usuarios, HttpStatus.OK);
     }
 
+    @ResponseBody
+    @GetMapping(value = "**/userById/{idUser}")
+    public ResponseEntity<Usuario> userById(@PathVariable Long idUser){
+        Usuario usuario = usuarioRepository.findById(idUser).get();
+        return new ResponseEntity<Usuario>(usuario, HttpStatus.OK);
+    }
+
 }
