@@ -342,7 +342,25 @@ public class PessoaController {
             usuarioRepository.updateSenhaUserId(senhaCripto, usuario.getId());
         }
 
-        return new ResponseEntity<String>(new Gson().toJson("Usuário salvo."), HttpStatus.OK);
+        return new ResponseEntity<String>(new Gson().toJson("Usuário salvo/atualizado."), HttpStatus.OK);
+    }
+
+    @ResponseBody
+    @PostMapping(value = "**/adicionarRemoverAcesso")
+    public ResponseEntity<String> adicionarRemoverAcesso(@RequestBody String params){
+        String[] paramAcesso = params.split("-");
+        Long idAcesso = Long.parseLong(paramAcesso[0]);
+        Long idUser = Long.parseLong(paramAcesso[1]);
+
+        Boolean possuiAcesso = usuarioRepository.possuiAcesso(idAcesso, idUser);
+
+        if(possuiAcesso){
+            usuarioRepository.deleteByAcesso(idAcesso, idUser);
+        }else{
+            usuarioRepository.adicionarAcesso(idAcesso, idUser);
+        }
+
+        return new ResponseEntity<String>(new Gson().toJson("Acesso salvo/atualizado."), HttpStatus.OK);
     }
 
 }

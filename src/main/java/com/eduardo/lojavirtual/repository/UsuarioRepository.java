@@ -64,4 +64,17 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     @Modifying(flushAutomatically = true)
     @Query(value = "delete from usuario_acesso where usuario_id in (select distinct usuario_id from usuario_acesso where usuario_id in (select id from usuario where pessoa_id = ?1))", nativeQuery = true)
     void deleteAcessoUser(Long id);
+
+    @Query(value = "select count(1) > 0 from usuario_acesso where acesso_id = ?1 and usuario_id = ?2", nativeQuery = true)
+    Boolean possuiAcesso(Long idAcesso, Long idUser);
+
+    @Transactional
+    @Modifying(flushAutomatically = true)
+    @Query(value = "delete from usuario_acesso where acesso_id = ?1 and usuario_id ?2", nativeQuery = true)
+    void deleteByAcesso(Long idAcesso, Long idUser);
+
+    @Transactional
+    @Modifying(flushAutomatically = true)
+    @Query(value = "insert into usuario_acesso (acesso_id, usuario_id) values (?1, ?2)", nativeQuery = true)
+    void adicionarAcesso(Long idAcesso, Long idUser);
 }
