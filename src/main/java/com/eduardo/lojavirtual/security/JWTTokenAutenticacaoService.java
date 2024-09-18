@@ -54,6 +54,7 @@ public class JWTTokenAutenticacaoService {
         response.getWriter().write("{\"Authorization\": \"" + token
                                         + "\", \"username\": \"" + username
                                         + "\", \"empresa\": \"" + usuario.getEmpresa().getId()
+                                         + "\", \"idUser\": \"" + usuario.getId()
                                         + "\"}");
     }
 

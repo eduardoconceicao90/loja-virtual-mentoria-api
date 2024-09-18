@@ -363,4 +363,13 @@ public class PessoaController {
         return new ResponseEntity<String>(new Gson().toJson("Acesso salvo/atualizado."), HttpStatus.OK);
     }
 
+    @ResponseBody
+    @PostMapping(value = "**/removerUsuario")
+    public ResponseEntity<String> removerUsuario(@RequestBody Long idUser){
+        Usuario usuario = usuarioRepository.findById(idUser).get();
+        usuarioRepository.deleteAcessoUser(usuario.getPessoa().getId());
+        usuarioRepository.deleteByPessoa(usuario.getPessoa().getId());
+        return new ResponseEntity<String>(new Gson().toJson("Usuário removido."), HttpStatus.OK);
+    }
+
 }
